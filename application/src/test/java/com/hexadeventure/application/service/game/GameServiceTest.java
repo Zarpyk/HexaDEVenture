@@ -1,15 +1,18 @@
 package com.hexadeventure.application.service.game;
 
-import org.junit.jupiter.api.Test;
 import com.hexadeventure.application.exceptions.GameStartedException;
 import com.hexadeventure.application.port.out.noise.NoiseGenerator;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.service.common.UserFactory;
 import com.hexadeventure.model.map.GameMap;
+import com.hexadeventure.model.map.Vector2;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -25,7 +28,7 @@ public class GameServiceTest {
     private final GameService gameService = new GameService(userRepository, gameMapRepository, noiseGenerator);
     
     @Test
-    public void givenUserWithSeedAndSize_whenItDontHaveStartedGame_thenCreateNewMap() {
+    public void givenEmailSeedAndSize_whenItDontHaveStartedGame_thenCreateNewMap() {
         UserFactory.createTestUser(userRepository);
         
         gameService.startGame(TEST_USER_EMAIL, TEST_SEED, TEST_SIZE);
@@ -40,7 +43,7 @@ public class GameServiceTest {
     }
     
     @Test
-    public void givenUserWithSeedAndSize_whenItHaveStartedGame_thenThrowException() {
+    public void givenEmailSeedAndSize_whenItHaveStartedGame_thenThrowException() {
         UserFactory.createTestUser(userRepository);
         
         gameService.startGame(TEST_USER_EMAIL, TEST_SEED, TEST_SIZE);
@@ -54,5 +57,18 @@ public class GameServiceTest {
         });
         
         verify(gameMapRepository, times(1)).save(any());
+    }
+    
+    @Test
+    public void givenEmailSeedAndSize_whenCreateNewMap_thenPlayerIsAdded() {
+        UserFactory.createTestUser(userRepository);
+        
+        gameService.startGame(TEST_USER_EMAIL, TEST_SEED, TEST_SIZE);
+        
+        ArgumentCaptor<GameMap> captor = ArgumentCaptor.forClass(GameMap.class);
+        verify(gameMapRepository).save(captor.capture());
+        
+        GameMap gameMap = captor.getValue();
+        assertThat(gameMap.getMainCharacter().getPosition()).isEqualTo(new Vector2(TEST_SIZE / 2, TEST_SIZE / 2));
     }
 }
