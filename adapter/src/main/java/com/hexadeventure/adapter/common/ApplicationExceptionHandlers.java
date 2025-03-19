@@ -1,5 +1,7 @@
 package com.hexadeventure.adapter.common;
 
+import com.hexadeventure.application.exceptions.GameStartedException;
+import com.hexadeventure.application.exceptions.UserExistException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -7,8 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import com.hexadeventure.application.exceptions.GameStartedException;
-import com.hexadeventure.application.exceptions.UserExistException;
 
 
 @RestControllerAdvice

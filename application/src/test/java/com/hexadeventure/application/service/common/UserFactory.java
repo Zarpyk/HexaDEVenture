@@ -13,7 +13,9 @@ public class UserFactory {
     public static final String PASSWORD = "test_password1234";
     public static final User USER = new User(EMAIL, USERNAME, PASSWORD);
     
-    public static void createTestUser(UserRepository userRepository) {
-        when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(USER));
+    public static User createTestUser(UserRepository userRepository) {
+        User user = new User(EMAIL, USERNAME, PASSWORD);
+        when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(user));
+        return user;
     }
 }

@@ -32,4 +32,11 @@ public interface UserRepository {
      * @param mapId the map ID to set
      */
     void updateMapIdByEmail(String email, String mapId);
+    
+    /**
+     * Deletes a user by their email.
+     *
+     * @param email the email of the user to delete
+     */
+    void deleteByEmail(String email);
 }

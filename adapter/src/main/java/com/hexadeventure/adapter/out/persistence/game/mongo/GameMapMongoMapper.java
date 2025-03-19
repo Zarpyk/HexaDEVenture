@@ -2,8 +2,7 @@ package com.hexadeventure.adapter.out.persistence.game.mongo;
 
 import com.hexadeventure.model.map.CellData;
 import com.hexadeventure.model.map.GameMap;
-
-import java.util.Arrays;
+import com.hexadeventure.model.map.Vector2;
 
 public class GameMapMongoMapper {
     public static GameMapMongoEntity toEntity(GameMap model) {
@@ -11,21 +10,16 @@ public class GameMapMongoMapper {
         mongoEntity.setId(model.getId());
         mongoEntity.setSeed(model.getSeed());
         mongoEntity.setGridSize(model.getMapSize());
-        CellDataMongoEntity[][] grid = Arrays.stream(model.getGrid())
-                                             .map(row -> Arrays.stream(row)
-                                                               .map(CellDataMongoMapper::toEntity)
-                                                               .toArray(CellDataMongoEntity[]::new))
-                                             .toArray(CellDataMongoEntity[][]::new);
-        mongoEntity.setGrid(grid);
+        mongoEntity.setMainCharacter(MainCharacterMongoMapper.toEntity(model.getMainCharacter()));
         return mongoEntity;
     }
     
-    public static GameMap toModel(GameMapMongoEntity entity) {
-        CellData[][] grid = Arrays.stream(entity.getGrid())
-                                  .map(row -> Arrays.stream(row)
-                                                    .map(CellDataMongoMapper::toModel)
-                                                    .toArray(CellData[]::new))
-                                  .toArray(CellData[][]::new);
-        return new GameMap(entity.getId(), entity.getUserId(), entity.getSeed(), grid);
+    public static GameMap toModel(GameMapMongoEntity entity, CellData[][] grid) {
+        GameMap gameMap = new GameMap(entity.getId(), entity.getUserId(), entity.getSeed(), grid);
+        MainCharacterMongoEntity mainCharacter = entity.getMainCharacter();
+        if(mainCharacter != null) {
+            gameMap.initMainCharacter(new Vector2(mainCharacter.getX(), mainCharacter.getY()));
+        }
+        return gameMap;
     }
 }

@@ -1,10 +1,11 @@
 package com.hexadeventure.model.map;
 
-import lombok.Getter;
 import com.hexadeventure.model.characters.MainCharacter;
 import com.hexadeventure.model.map.obstacles.ObstacleCell;
 import com.hexadeventure.utils.DoubleMapper;
+import lombok.Getter;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -41,7 +42,11 @@ public class GameMap {
     }
     
     public CellData getCell(Vector2 position) {
-        return grid[position.x][position.y];
+        return getCell(position.x, position.y);
+    }
+    
+    public CellData getCell(int x, int y) {
+        return grid[x][y];
     }
     
     public void setCell(Vector2 position, CellData cell) {
@@ -54,5 +59,16 @@ public class GameMap {
     
     public void initMainCharacter(Vector2 position) {
         mainCharacter = new MainCharacter(position);
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if(!(o instanceof GameMap gameMap)) return false;
+        return Objects.equals(id, gameMap.id);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

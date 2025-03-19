@@ -5,10 +5,17 @@ import com.hexadeventure.application.port.in.game.GameUseCase;
 import com.hexadeventure.application.port.out.noise.NoiseGenerator;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
+import com.hexadeventure.model.map.CellType;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.Vector2;
 import com.hexadeventure.model.user.User;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
 public class GameService implements GameUseCase {
@@ -24,16 +31,80 @@ public class GameService implements GameUseCase {
     }
     
     @Override
+    @Transactional
     public void startGame(String email, long seed, int size) {
         Optional<User> user = userRepository.findByEmail(email);
         assert user.isPresent();
-        Optional<GameMap> map = gameMapRepository.findById(user.get().getMapId());
-        if(map.isEmpty()) {
+        if(user.get().getMapId() == null) {
             GameMap newMap = generateMap(email, seed, size);
+            printMap(newMap);
             gameMapRepository.save(newMap);
             userRepository.updateMapIdByEmail(email, newMap.getId());
         } else {
             throw new GameStartedException();
+        }
+    }
+    
+    /**
+     * Temporal method generated with Claude 3.5 to print the map as an image
+     * @param map The map to print
+     */
+    @Deprecated(forRemoval = true)
+    private void printMap(GameMap map) {
+        int size = map.getMapSize();
+        int cellSize = 10; // Each cell will be 10x10 pixels
+        int gridThickness = 1;
+        int imageSize = size * cellSize;
+        
+        BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = image.createGraphics();
+        
+        // Fill background
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(0, 0, imageSize, imageSize);
+        
+        // Draw cells
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                if(map.getCell(x, y).getType() == CellType.OBSTACLE) {
+                    g2d.setColor(Color.BLACK);
+                    g2d.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                } else {
+                    g2d.setColor(Color.WHITE);
+                    g2d.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                }
+            }
+        }
+        
+        // Draw grid
+        g2d.setColor(Color.GRAY);
+        for (int x = 0; x <= size; x++) {
+            g2d.fillRect(x * cellSize, 0, gridThickness, imageSize);
+        }
+        for (int y = 0; y <= size; y++) {
+            g2d.fillRect(0, y * cellSize, imageSize, gridThickness);
+        }
+        
+        g2d.dispose();
+        
+        try {
+            File outputfile = new File("map.png");
+            ImageIO.write(image, "png", outputfile);
+            System.out.println(outputfile.getAbsolutePath());
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+        
+        // Draw cells
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                if(map.getCell(x, y).getType() == CellType.OBSTACLE) {
+                    System.out.print("O");
+                } else {
+                    System.out.print(" ");
+                }
+            }
+            System.out.println();
         }
     }
     

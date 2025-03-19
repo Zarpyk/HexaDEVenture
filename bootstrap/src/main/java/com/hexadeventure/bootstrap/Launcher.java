@@ -1,7 +1,7 @@
 package com.hexadeventure.bootstrap;
 
-import org.springframework.boot.SpringApplication;
 import com.hexadeventure.HexaDEVentureApplication;
+import org.springframework.boot.SpringApplication;
 
 /**
  * Launcher for the application: starts the Spring application.

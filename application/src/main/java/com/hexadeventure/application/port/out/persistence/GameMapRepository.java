@@ -19,4 +19,11 @@ public interface GameMapRepository {
      * @param newMap the GameMap to save
      */
     void save(GameMap newMap);
+    
+    /**
+     * Deletes a GameMap by its ID.
+     *
+     * @param mapId the ID of the GameMap to delete
+     */
+    void deleteById(String mapId);
 }

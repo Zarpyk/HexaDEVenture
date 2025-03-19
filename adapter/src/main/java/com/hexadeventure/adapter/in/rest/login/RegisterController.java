@@ -25,4 +25,10 @@ public class RegisterController {
         registerUseCase.register(user.toModel());
         return ResponseEntity.ok().build();
     }
+    
+    @PostMapping("/unregister")
+    public ResponseEntity<Void> unregister(Principal principal) {
+        registerUseCase.unregister(principal.getName());
+        return ResponseEntity.ok().build();
+    }
 }

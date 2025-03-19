@@ -17,4 +17,6 @@ public interface UserMongoSDRepository extends MongoRepository<UserMongoEntity, 
     @Query("{'email': email}")
     @Update("{'$set': {'mapId': mapId}}")
     void updateMapIdByEmail(@Param("email") String email, @Param("mapId") String mapId);
+    
+    void deleteByEmail(String email);
 }

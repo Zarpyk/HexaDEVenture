@@ -2,6 +2,7 @@ package com.hexadeventure.adapter.out.persistence.game.jpa;
 
 import com.hexadeventure.model.map.CellData;
 import com.hexadeventure.model.map.GameMap;
+import com.hexadeventure.model.map.Vector2;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +19,7 @@ public class GameMapJpaMapper {
                              .flatMap(Arrays::stream)
                              .map(CellDataJpaMapper::toEntity)
                              .collect(Collectors.toList()));
+        entity.setMainCharacter(MainCharacterJpaMapper.toEntity(model.getMainCharacter()));
         return entity;
     }
     
@@ -28,6 +30,14 @@ public class GameMapJpaMapper {
         for (CellData cellData : cellDataStream) {
             grid[cellData.getPosition().x][cellData.getPosition().y] = cellData;
         }
-        return new GameMap(entity.getId(), entity.getUserId(), entity.getSeed(), grid);
+        
+        GameMap gameMap = new GameMap(entity.getId(), entity.getUserId(), entity.getSeed(), grid);
+        
+        MainCharacterJpaEntity mainCharacter = entity.getMainCharacter();
+        if(mainCharacter != null) {
+            gameMap.initMainCharacter(new Vector2(mainCharacter.getX(), mainCharacter.getY()));
+        }
+        
+        return gameMap;
     }
 }

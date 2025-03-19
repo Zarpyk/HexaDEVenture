@@ -14,5 +14,6 @@ public class GameMapMongoEntity {
     private String userId;
     private long seed;
     private int gridSize;
-    private CellDataMongoEntity[][] grid;
+    private String gridFileId;
+    private MainCharacterMongoEntity mainCharacter;
 }

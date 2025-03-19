@@ -1,10 +1,12 @@
 package com.hexadeventure.model.map;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public abstract class CellData {
-    private final Vector2 position;
+    private Vector2 position;
     protected CellType type;
     
     protected CellData(Vector2 position) {

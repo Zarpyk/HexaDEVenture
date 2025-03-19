@@ -1,9 +1,9 @@
 package com.hexadeventure.adapter.out.persistence.users.jpa;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Repository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.model.user.User;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
@@ -36,5 +36,10 @@ public class UserJpaRepository implements UserRepository {
     @Override
     public void updateMapIdByEmail(String email, String mapId) {
         repo.updateMapIdByEmail(email, mapId);
+    }
+    
+    @Override
+    public void deleteByEmail(String email) {
+        repo.deleteByEmail(email);
     }
 }

@@ -1,10 +1,12 @@
 package com.hexadeventure.model.map;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
 @AllArgsConstructor
+@NoArgsConstructor
 public class Vector2 {
     public int x;
     public int y;

@@ -1,10 +1,10 @@
 package com.hexadeventure.adapter.out.persistence.users;
 
+import com.hexadeventure.application.port.out.persistence.UserRepository;
+import com.hexadeventure.model.user.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.hexadeventure.application.port.out.persistence.UserRepository;
-import com.hexadeventure.model.user.User;
 
 import java.util.Optional;
 
@@ -48,6 +48,16 @@ public abstract class AbstractUserRepositoryTest {
         repo.save(USER);
         Optional<User> user = repo.findByEmail(TEST_USER_EMAIL);
         assertThat(user).isNotEmpty();
+    }
+    
+    @Test
+    public void givenAnUser_whenDeleteByEmail_thenUserIsDeleted() {
+        repo.save(USER);
+        
+        repo.deleteByEmail(TEST_USER_EMAIL);
+        
+        Optional<User> user = repo.findByEmail(TEST_USER_EMAIL);
+        assertThat(user).isEmpty();
     }
     
     @Test

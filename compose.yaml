@@ -8,13 +8,13 @@ services:
     ports:
       - '27017:27017'
 
-  mysql:
-    image: 'mysql:latest'
-    environment:
-      - 'MYSQL_ROOT_PASSWORD=test'
-      - 'MYSQL_DATABASE=hexadeventure'
-    ports:
-      - '3306:3306'
+#  mysql:
+#    image: 'mysql:latest'
+#    environment:
+#      - 'MYSQL_ROOT_PASSWORD=test'
+#      - 'MYSQL_DATABASE=hexadeventure'
+#    ports:
+#      - '3306:3306'
 
   postgres:
     image: 'postgres:17-alpine'

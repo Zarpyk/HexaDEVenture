@@ -27,7 +27,7 @@ public class HexaDEVentureApplication {
     
     @Bean
     public RegisterUseCase registerUseCase() {
-        return new RegisterService(userRepository);
+        return new RegisterService(userRepository, gameMapRepository);
     }
     
     @Bean

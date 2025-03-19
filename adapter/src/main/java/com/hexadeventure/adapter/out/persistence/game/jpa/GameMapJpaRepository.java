@@ -1,9 +1,9 @@
 package com.hexadeventure.adapter.out.persistence.game.jpa;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Repository;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.model.map.GameMap;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
@@ -26,5 +26,10 @@ public class GameMapJpaRepository implements GameMapRepository {
     @Override
     public void save(GameMap newMap) {
         repo.save(GameMapJpaMapper.toEntity(newMap));
+    }
+    
+    @Override
+    public void deleteById(String mapId) {
+        repo.deleteById(mapId);
     }
 }

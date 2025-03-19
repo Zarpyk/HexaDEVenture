@@ -7,12 +7,13 @@ import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-@Document(collection = "CellDatas")
+@Document(collection = "MainCharacters")
 @Getter
 @Setter
-public class CellDataMongoEntity {
+public class MainCharacterMongoEntity {
     @MongoId
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String data;
+    private int x;
+    private int y;
 }
