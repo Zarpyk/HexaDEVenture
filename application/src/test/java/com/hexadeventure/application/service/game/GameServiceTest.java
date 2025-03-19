@@ -35,9 +35,10 @@ public class GameServiceTest {
         gameService.startGame(TEST_USER_EMAIL, TEST_SEED, TEST_SIZE);
         
         verify(noiseGenerator, times(1))
-                .initNoise(any(), eq(TEST_SEED), any(), any(), any(), any(), any(), any(), any());
+                .initNoise(any(), eq(TEST_SEED), anyDouble(),
+                           anyInt(), anyDouble(), anyDouble(), anyInt(), anyBoolean(), anyBoolean());
         verify(noiseGenerator, times(TEST_SIZE * TEST_SIZE))
-                .getPerlinNoise(any(Double.class), any(Double.class), any());
+                .getPerlinNoise(anyDouble(), anyDouble(), any());
         verify(noiseGenerator, times(1)).releaseNoise(any());
         
         verify(userRepository, times(1)).updateMapIdByEmail(eq(UserFactory.EMAIL), any());
