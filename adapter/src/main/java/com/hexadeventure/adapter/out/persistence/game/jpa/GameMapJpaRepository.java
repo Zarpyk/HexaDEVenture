@@ -4,6 +4,7 @@ import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.model.map.GameMap;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -24,11 +25,13 @@ public class GameMapJpaRepository implements GameMapRepository {
     }
     
     @Override
+    @Transactional
     public void save(GameMap newMap) {
         repo.save(GameMapJpaMapper.toEntity(newMap));
     }
     
     @Override
+    @Transactional
     public void deleteById(String mapId) {
         repo.deleteById(mapId);
     }

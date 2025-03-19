@@ -4,6 +4,7 @@ import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.model.user.User;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -24,21 +25,25 @@ public class UserJpaRepository implements UserRepository {
     }
     
     @Override
+    @Transactional
     public void save(User user) {
         repo.save(UserJpaMapper.toEntity(user));
     }
     
     @Override
+    @Transactional
     public void deleteAll() {
         repo.deleteAll();
     }
     
     @Override
+    @Transactional
     public void updateMapIdByEmail(String email, String mapId) {
         repo.updateMapIdByEmail(email, mapId);
     }
     
     @Override
+    @Transactional
     public void deleteByEmail(String email) {
         repo.deleteByEmail(email);
     }

@@ -27,7 +27,7 @@ public abstract class AbstractMapE2ETest {
     
     @Test
     public void givenUser_whenDontHaveStartedGame_thenReturnCreated() {
-        StartGameDTO startGameDTO = new StartGameDTO(1234, 1000);
+        StartGameDTO startGameDTO = new StartGameDTO(1234, 100);
         
         Response response = RestCommon.postWithBody(port, "/start", startGameDTO);
         response.then().statusCode(HttpStatus.CREATED.value());

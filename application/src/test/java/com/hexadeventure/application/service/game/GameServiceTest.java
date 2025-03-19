@@ -7,6 +7,7 @@ import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.service.common.UserFactory;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.user.User;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -44,13 +45,15 @@ public class GameServiceTest {
     
     @Test
     public void givenEmailSeedAndSize_whenItHaveStartedGame_thenThrowException() {
-        UserFactory.createTestUser(userRepository);
+        User testUser = UserFactory.createTestUser(userRepository);
         
         gameService.startGame(TEST_USER_EMAIL, TEST_SEED, TEST_SIZE);
         verify(gameMapRepository, times(1)).save(any());
         
         Optional<GameMap> gameMap = Optional.of(new GameMap(TEST_USER_EMAIL, TEST_SEED, TEST_SIZE));
         when(gameMapRepository.findById(any())).thenReturn(gameMap);
+        testUser.setMapId(gameMap.get().getId());
+        when(userRepository.findByEmail(eq(TEST_USER_EMAIL))).thenReturn(Optional.of(testUser));
         
         assertThatExceptionOfType(GameStartedException.class).isThrownBy(() -> {
             gameService.startGame(TEST_USER_EMAIL, TEST_SEED, TEST_SIZE);
