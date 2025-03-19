@@ -56,34 +56,38 @@ public class GameService implements GameUseCase {
         int gridThickness = 1;
         int imageSize = size * cellSize;
         
-        BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage(size * cellSize, size * cellSize,
+                                                BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = image.createGraphics();
         
-        // Fill background
+        // Draw background
         g2d.setColor(Color.WHITE);
         g2d.fillRect(0, 0, imageSize, imageSize);
         
         // Draw cells
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
+                int pixelX = x * cellSize;
+                int pixelY = y * cellSize;
+                
                 if(map.getCell(x, y).getType() == CellType.OBSTACLE) {
+                    // Draw obstacle cells in black
                     g2d.setColor(Color.BLACK);
-                    g2d.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-                } else {
-                    g2d.setColor(Color.WHITE);
-                    g2d.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                    g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
                 }
+                
+                // Draw grid lines
+                g2d.setColor(Color.GRAY);
+                g2d.drawRect(pixelX, pixelY, cellSize, cellSize);
             }
         }
         
-        // Draw grid
-        g2d.setColor(Color.GRAY);
-        for (int x = 0; x <= size; x++) {
-            g2d.fillRect(x * cellSize, 0, gridThickness, imageSize);
-        }
-        for (int y = 0; y <= size; y++) {
-            g2d.fillRect(0, y * cellSize, imageSize, gridThickness);
-        }
+        // Mark player position
+        Vector2 playerPos = map.getMainCharacter().getPosition();
+        g2d.setColor(Color.RED);
+        g2d.fillOval(playerPos.x * cellSize + cellSize / 4,
+                     playerPos.y * cellSize + cellSize / 4,
+                     cellSize / 2, cellSize / 2);
         
         g2d.dispose();
         
@@ -112,11 +116,15 @@ public class GameService implements GameUseCase {
         GameMap map = new GameMap(email, seed, size);
         generateCells(email, seed, size, map);
         generatePlayer(map);
+        clearCenter(map);
         return map;
     }
     
     private void generateCells(String email, long seed, int size, GameMap map) {
-        noiseGenerator.initNoise(email, seed);
+        noiseGenerator.initNoise(email, seed, 0.1,
+                                 4, 0.5, 1.5,
+                                 NoiseGenerator.FRACTAL_FBM, true,
+                                 true);
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
                 double noise = noiseGenerator.getPerlinNoise(x, y, email);
@@ -130,5 +138,9 @@ public class GameService implements GameUseCase {
         int mapSize = map.getMapSize();
         Vector2 center = new Vector2(mapSize / 2, mapSize / 2);
         map.initMainCharacter(center);
+    }
+    
+    private void clearCenter(GameMap map) {
+    
     }
 }

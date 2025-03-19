@@ -1,13 +1,26 @@
 package com.hexadeventure.application.port.out.noise;
 
 public interface NoiseGenerator {
+    int FRACTAL_FBM = 0;
+    int FRACTAL_RIDGED = 1;
+    int FRACTAL_TURBULENCE = 2;
+    
+    
     /**
      * Initializes the noise generator with a specific ID and seed.
      *
      * @param id the identifier for the noise generator
      * @param seed the seed value for noise generation
+     * @param octaves the number of octaves for octavation
+     * @param gain the gain value for octavation
+     * @param lacunarity the lacunarity value for octavation
+     * @param fractalFunction the type of fractal function to use for octavation (FRACTAL_FBM, FRACTAL_RIDGED,
+     *                        FRACTAL_TURBULENCE)
+     * @param incrementSeed whether to increment the seed for each octave
      */
-    void initNoise(String id, long seed);
+    void initNoise(String id, long seed, double scale, int octaves,
+                   double gain, double lacunarity, int fractalFunction, boolean incrementSeed,
+                   boolean invert);
     
     /**
      * Generates Perlin noise with the given ID noise generator based on the given coordinates.

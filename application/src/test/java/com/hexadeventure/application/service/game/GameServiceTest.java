@@ -34,7 +34,8 @@ public class GameServiceTest {
         
         gameService.startGame(TEST_USER_EMAIL, TEST_SEED, TEST_SIZE);
         
-        verify(noiseGenerator, times(1)).initNoise(any(), eq(TEST_SEED));
+        verify(noiseGenerator, times(1))
+                .initNoise(any(), eq(TEST_SEED), any(), any(), any(), any(), any(), any(), any());
         verify(noiseGenerator, times(TEST_SIZE * TEST_SIZE))
                 .getPerlinNoise(any(Double.class), any(Double.class), any());
         verify(noiseGenerator, times(1)).releaseNoise(any());
