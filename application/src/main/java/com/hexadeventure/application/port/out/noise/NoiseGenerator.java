@@ -28,9 +28,10 @@ public interface NoiseGenerator {
      * @param x the x-coordinate
      * @param y the y-coordinate
      * @param id the identifier for the noise generator
+     * @param normalized whether to normalize the noise value
      * @return the generated Perlin noise value
      */
-    double getPerlinNoise(double x, double y, String id);
+    double getPerlinNoise(double x, double y, String id, boolean normalized);
     
     /**
      * Removes the noise generator associated with the specified ID.
@@ -38,4 +39,13 @@ public interface NoiseGenerator {
      * @param id the identifier for the noise generator to be removed
      */
     void releaseNoise(String id);
+    
+    /**
+     * Generates a circle with a noisy edge.
+     *
+     * @param radius the radius of the circle
+     * @param seed the seed value for noise generation
+     * @return the generated circle with a noisy edge
+     */
+    double[][] getCircleWithNoisyEdge(int radius, long seed, int variation);
 }
