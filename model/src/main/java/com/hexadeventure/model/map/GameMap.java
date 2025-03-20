@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Getter
 public class GameMap {
-    public static final float OBSTACLE_THRESHOLD = 0.1f;
+    public static final float EMPTY_THRESHOLD = 0.07f;
     
     private final String id;
     private final String userId;
@@ -33,11 +33,11 @@ public class GameMap {
     }
     
     public void createCell(double cellTypeThreshold, int x, int y) {
-        if(cellTypeThreshold <= OBSTACLE_THRESHOLD) {
-            grid[x][y] = new ObstacleCell(new Vector2(x, y),
-                                          DoubleMapper.map(cellTypeThreshold, 0, OBSTACLE_THRESHOLD, 0, 1));
-        } else {
+        if(cellTypeThreshold < EMPTY_THRESHOLD) {
             grid[x][y] = new EmptyCell(new Vector2(x, y));
+        } else {
+            grid[x][y] = new ObstacleCell(new Vector2(x, y), DoubleMapper.map(cellTypeThreshold, EMPTY_THRESHOLD,
+                                                                              1, -1, 1));
         }
     }
     

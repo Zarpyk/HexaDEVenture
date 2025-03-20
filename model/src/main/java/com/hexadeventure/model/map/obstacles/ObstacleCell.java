@@ -14,12 +14,8 @@ public class ObstacleCell extends CellData {
     public ObstacleCell(Vector2 position, double threshold) {
         super(position);
         type = CellType.OBSTACLE;
-        // TODO: Implement this
-        if(threshold >= 0) {
-            this.obstacleType = ObstacleType.WALL;
-        } else {
-            this.obstacleType = null;
-        }
+        // TODO: Implement threshold to obstacle type mapping
+        this.obstacleType = ObstacleType.WALL;
     }
     
     public ObstacleCell(Vector2 position, ObstacleType obstacleType) {

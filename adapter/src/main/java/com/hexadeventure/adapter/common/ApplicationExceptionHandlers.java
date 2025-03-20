@@ -1,6 +1,7 @@
 package com.hexadeventure.adapter.common;
 
 import com.hexadeventure.application.exceptions.GameStartedException;
+import com.hexadeventure.application.exceptions.MapSizeException;
 import com.hexadeventure.application.exceptions.UserExistException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -25,6 +26,13 @@ public class ApplicationExceptionHandlers {
     @ExceptionHandler(UserExistException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     private String conflictExceptionHandler(Exception ex) {
+        return ex.getMessage();
+    }
+    
+    @ResponseBody
+    @ExceptionHandler(MapSizeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private String badRequestExceptionHandler(Exception ex) {
         return ex.getMessage();
     }
 }

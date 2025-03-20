@@ -1,9 +1,9 @@
 package com.hexadeventure.model.map.resources;
 
-import lombok.Getter;
 import com.hexadeventure.model.map.CellData;
 import com.hexadeventure.model.map.CellType;
 import com.hexadeventure.model.map.Vector2;
+import lombok.Getter;
 
 @Getter
 public class ResourceCell extends CellData {

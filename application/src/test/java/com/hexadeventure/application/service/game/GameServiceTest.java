@@ -1,6 +1,7 @@
 package com.hexadeventure.application.service.game;
 
 import com.hexadeventure.application.exceptions.GameStartedException;
+import com.hexadeventure.application.exceptions.MapSizeException;
 import com.hexadeventure.application.port.out.noise.NoiseGenerator;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
@@ -8,7 +9,10 @@ import com.hexadeventure.application.service.common.UserFactory;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.Vector2;
 import com.hexadeventure.model.user.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Optional;
@@ -28,6 +32,12 @@ public class GameServiceTest {
     private final NoiseGenerator noiseGenerator = mock(NoiseGenerator.class);
     private final GameService gameService = new GameService(userRepository, gameMapRepository, noiseGenerator);
     
+    @BeforeEach
+    public void beforeEach() {
+        when(noiseGenerator.getCircleWithNoisyEdge(anyInt(), anyLong(), anyInt()))
+                .thenAnswer(x -> new double[x.getArgument(0, Integer.class) * 2][x.getArgument(0, Integer.class) * 2]);
+    }
+    
     @Test
     public void givenEmailSeedAndSize_whenItDontHaveStartedGame_thenCreateNewMap() {
         UserFactory.createTestUser(userRepository);
@@ -38,7 +48,7 @@ public class GameServiceTest {
                 .initNoise(any(), eq(TEST_SEED), anyDouble(),
                            anyInt(), anyDouble(), anyDouble(), anyInt(), anyBoolean(), anyBoolean());
         verify(noiseGenerator, times(TEST_SIZE * TEST_SIZE))
-                .getPerlinNoise(anyDouble(), anyDouble(), any());
+                .getPerlinNoise(anyDouble(), anyDouble(), any(), anyBoolean());
         verify(noiseGenerator, times(1)).releaseNoise(any());
         
         verify(userRepository, times(1)).updateMapIdByEmail(eq(UserFactory.EMAIL), any());
@@ -75,5 +85,15 @@ public class GameServiceTest {
         
         GameMap gameMap = captor.getValue();
         assertThat(gameMap.getMainCharacter().getPosition()).isEqualTo(new Vector2(TEST_SIZE / 2, TEST_SIZE / 2));
+    }
+    
+    @ParameterizedTest(name = "Given size {0} when create new map then throw exception")
+    @ValueSource(ints = {0, GameService.MIN_MAP_SIZE - 1})
+    public void givenSmallSize_whenCreateNewMap_thenThrowException(int size) {
+        UserFactory.createTestUser(userRepository);
+        
+        assertThatExceptionOfType(MapSizeException.class).isThrownBy(() -> {
+            gameService.startGame(TEST_USER_EMAIL, TEST_SEED, size);
+        });
     }
 }
