@@ -251,7 +251,7 @@ public class GameService implements GameUseCase {
     private void generateFinalBoss(GameMap map, Random random) {
         Vector2 bossPosition = getBossPosition(map, random);
         
-        map.addEnemy(bossPosition, new Boss());
+        map.addEnemy(bossPosition, new Boss(bossPosition));
         clearPosition(map,
                       bossPosition,
                       BOSS_CLEAR_RADIUS,

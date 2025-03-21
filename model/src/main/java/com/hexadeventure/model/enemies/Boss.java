@@ -1,8 +1,10 @@
 package com.hexadeventure.model.enemies;
 
-import lombok.NoArgsConstructor;
+import com.hexadeventure.model.map.Vector2;
 
-@NoArgsConstructor
 public class Boss extends Enemy {
     // TODO
+    public Boss(Vector2 position) {
+        super(position);
+    }
 }
