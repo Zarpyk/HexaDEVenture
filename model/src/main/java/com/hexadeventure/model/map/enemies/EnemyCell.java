@@ -1,16 +1,18 @@
 package com.hexadeventure.model.map.enemies;
 
-import lombok.Getter;
 import com.hexadeventure.model.enemies.Enemy;
 import com.hexadeventure.model.map.CellData;
 import com.hexadeventure.model.map.CellType;
 import com.hexadeventure.model.map.Vector2;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class EnemyCell extends CellData {
     private Enemy enemy;
     
-    public EnemyCell(Vector2 position, double threshold) {
+    public EnemyCell(Vector2 position, double dificulty) {
         super(position);
         type = CellType.ENEMY;
         // TODO: Implement this

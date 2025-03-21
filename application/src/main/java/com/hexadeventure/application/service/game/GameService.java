@@ -4,12 +4,16 @@ import com.hexadeventure.application.exceptions.GameStartedException;
 import com.hexadeventure.application.exceptions.MapSizeException;
 import com.hexadeventure.application.port.in.game.GameUseCase;
 import com.hexadeventure.application.port.out.noise.NoiseGenerator;
+import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
+import com.hexadeventure.model.enemies.Boss;
 import com.hexadeventure.model.map.CellType;
-import com.hexadeventure.model.map.EmptyCell;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.map.empty.EmptyCell;
+import com.hexadeventure.model.map.empty.EmptyCellType;
+import com.hexadeventure.model.map.enemies.EnemyCell;
 import com.hexadeventure.model.map.obstacles.ObstacleCell;
 import com.hexadeventure.model.map.obstacles.ObstacleType;
 import com.hexadeventure.model.map.resources.ResourceCell;
@@ -23,6 +27,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Random;
 
 public class GameService implements GameUseCase {
@@ -40,16 +45,22 @@ public class GameService implements GameUseCase {
     private static final int GENERATE_RESOURCE_PROBABILITY = 5;
     
     private static final int BOSS_BORDER_OFFSET = 10;
+    private static final int BOSS_CLEAR_RADIUS = 5;
+    private static final double BOSS_CLEAR_CIRCLE_THRESHOLD = 0.15;
+    private static final int BOSS_CLEAR_CIRCLE_VARIATION = 0;
+    private static final int BOSS_PATH_EXTRA_WIDTH = 1;
     
     private final UserRepository userRepository;
     private final GameMapRepository gameMapRepository;
     private final NoiseGenerator noiseGenerator;
+    private final AStarPathfinder aStarPathfinder;
     
     public GameService(UserRepository userRepository, GameMapRepository gameMapRepository,
-                       NoiseGenerator noiseGenerator) {
+                       NoiseGenerator noiseGenerator, AStarPathfinder aStarPathfinder) {
         this.userRepository = userRepository;
         this.gameMapRepository = gameMapRepository;
         this.noiseGenerator = noiseGenerator;
+        this.aStarPathfinder = aStarPathfinder;
     }
     
     @Override
@@ -71,12 +82,13 @@ public class GameService implements GameUseCase {
     }
     
     private GameMap generateMap(String email, long seed, int size) {
+        Random random = new Random(seed);
         GameMap map = new GameMap(email, seed, size);
         generateCells(email, seed, size, map);
         generatePlayer(map);
-        clearPlayerPosition(map);
         generateBorder(map);
-        generateResources(map);
+        generateResources(map, random);
+        generateFinalBoss(map, random);
         return map;
     }
     
@@ -104,14 +116,36 @@ public class GameService implements GameUseCase {
                 int pixelX = x * cellSize;
                 int pixelY = y * cellSize;
                 
-                if(map.getCell(x, y).getType() == CellType.OBSTACLE) {
-                    // Draw obstacle cells in black
-                    g2d.setColor(Color.BLACK);
-                    g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
-                } else if(map.getCell(x, y).getType() == CellType.RESOURCE) {
-                    // Draw resource cells in green
-                    g2d.setColor(Color.GREEN);
-                    g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
+                switch (map.getCell(x, y).getType()) {
+                    case OBSTACLE -> {
+                        // Draw obstacle cells in black
+                        g2d.setColor(Color.BLACK);
+                        g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
+                    }
+                    case RESOURCE -> {
+                        // Draw resource cells in green
+                        g2d.setColor(Color.GREEN);
+                        g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
+                    }
+                    case ENEMY -> {
+                        if(((EnemyCell) map.getCell(x, y)).getEnemy() instanceof Boss) {
+                            // Draw boss cells in red
+                            g2d.setColor(Color.RED);
+                        } else {
+                            // Draw enemy cells in blue
+                            g2d.setColor(Color.BLUE);
+                        }
+                        g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
+                    }
+                    case EMPTY -> {
+                        if(((EmptyCell) map.getCell(x, y)).getEmptyCellType() == EmptyCellType.PATH) {
+                            // Draw path cells in gray
+                            g2d.setColor(Color.GRAY);
+                            g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
+                        }
+                    }
+                    case null, default -> {
+                    }
                 }
                 
                 // Draw grid lines
@@ -156,25 +190,11 @@ public class GameService implements GameUseCase {
         int mapSize = map.getMapSize();
         Vector2 center = new Vector2(mapSize / 2, mapSize / 2);
         map.initMainCharacter(center);
-    }
-    
-    private void clearPlayerPosition(GameMap map) {
-        double[][] circle = noiseGenerator.getCircleWithNoisyEdge(CLEAR_RADIUS_AROUND_PLAYER,
-                                                                  map.getSeed(),
-                                                                  CLEAR_AROUND_PLAYER_CIRCLE_VARIATION);
-        Vector2 playerPosition = map.getMainCharacter().getPosition();
-        int centerX = playerPosition.x;
-        int centerY = playerPosition.y;
-        
-        for (int x = 0; x < circle.length; x++) {
-            for (int y = 0; y < circle[x].length; y++) {
-                if(circle[x][y] < PLAYER_CIRCLE_CLEAR_THRESHOLD) {
-                    Vector2 position = new Vector2(centerX - CLEAR_RADIUS_AROUND_PLAYER + x,
-                                                   centerY - CLEAR_RADIUS_AROUND_PLAYER + y);
-                    map.setCell(position, new EmptyCell(position));
-                }
-            }
-        }
+        clearPosition(map, center,
+                      CLEAR_RADIUS_AROUND_PLAYER,
+                      PLAYER_CIRCLE_CLEAR_THRESHOLD,
+                      CLEAR_AROUND_PLAYER_CIRCLE_VARIATION,
+                      true);
     }
     
     private void generateBorder(GameMap map) {
@@ -200,9 +220,7 @@ public class GameService implements GameUseCase {
     }
     
     
-    private void generateResources(GameMap map) {
-        Random random = new Random(map.getSeed());
-        
+    private void generateResources(GameMap map, Random random) {
         double probability = GENERATE_RESOURCE_PROBABILITY / 100.0;
         
         int seedOffset = 0;
@@ -218,6 +236,93 @@ public class GameService implements GameUseCase {
                         double threshold = DoubleMapper.map(randomValue, 0, probability, -1, 1);
                         map.setCell(new Vector2(x, y), new ResourceCell(new Vector2(x, y), threshold));
                     }
+                }
+            }
+        }
+    }
+    
+    private void generateFinalBoss(GameMap map, Random random) {
+        Vector2 bossPosition = getBossPosition(map, random);
+        
+        map.setCell(bossPosition, new EnemyCell(bossPosition, new Boss()));
+        clearPosition(map,
+                      bossPosition,
+                      BOSS_CLEAR_RADIUS,
+                      BOSS_CLEAR_CIRCLE_THRESHOLD,
+                      BOSS_CLEAR_CIRCLE_VARIATION,
+                      false);
+        generateRoadToBoss(map, bossPosition);
+    }
+    
+    private static Vector2 getBossPosition(GameMap map, Random random) {
+        int randomDirection = random.nextInt(4);
+        Vector2 direction = switch (randomDirection) {
+            case 0 -> Vector2.UP;
+            case 1 -> Vector2.DOWN;
+            case 2 -> Vector2.LEFT;
+            case 3 -> Vector2.RIGHT;
+            default -> throw new IllegalStateException("Unexpected value: " + randomDirection);
+        };
+        
+        int center = map.getMapSize() / 2;
+        int distance = map.getMapSize() / 2 - BOSS_BORDER_OFFSET;
+        return new Vector2(center + distance * direction.x,
+                           center + distance * direction.y);
+    }
+    
+    private void generateRoadToBoss(GameMap map, Vector2 bossPosition) {
+        int[][] mapCost = new int[map.getMapSize()][map.getMapSize()];
+        for (int x = 0; x < map.getMapSize(); x++) {
+            for (int y = 0; y < map.getMapSize(); y++) {
+                if(map.getCell(x, y).getType() == CellType.OBSTACLE) {
+                    mapCost[x][y] = 10;
+                } else {
+                    mapCost[x][y] = 1;
+                }
+            }
+        }
+        Queue<Vector2> path = aStarPathfinder.generatePath(map.getMainCharacter().getPosition(),
+                                                           bossPosition,
+                                                           mapCost);
+        if(path == null) throw new RuntimeException("Fail creating path to boss");
+        
+        Vector2 direction = Vector2.UP;
+        while (!path.isEmpty()) {
+            Vector2 position = path.poll();
+            Vector2 nextPosition = path.peek();
+            if(nextPosition != null) direction = position.subtract(nextPosition);
+            direction.normalize();
+            
+            // Set the center path cell to empty cell
+            if(!position.equals(bossPosition)) map.setCell(position, new EmptyCell(position, EmptyCellType.PATH));
+            
+            //noinspection NonStrictComparisonCanBeEquality
+            for (int i = 1; i <= BOSS_PATH_EXTRA_WIDTH; i++) {
+                // Set left and right cells to create a path
+                Vector2 left = position.getLeft(direction, i);
+                Vector2 right = position.getRight(direction, i);
+                if(!left.equals(bossPosition)) map.setCell(left, new EmptyCell(left, EmptyCellType.PATH));
+                if(!right.equals(bossPosition)) map.setCell(right, new EmptyCell(right, EmptyCellType.PATH));
+            }
+        }
+    }
+    
+    private void clearPosition(GameMap map, Vector2 center, int radius, double threshold, int circleVariation,
+                               boolean clearCenter) {
+        double[][] circle = noiseGenerator.getCircleWithNoisyEdge(radius,
+                                                                  map.getSeed(),
+                                                                  circleVariation);
+        
+        for (int x = 0; x < circle.length; x++) {
+            for (int y = 0; y < circle[x].length; y++) {
+                if(!clearCenter && x == radius && y == radius) {
+                    continue;
+                }
+                
+                if(circle[x][y] < threshold) {
+                    Vector2 position = new Vector2(center.x - radius + x,
+                                                   center.y - radius + y);
+                    map.setCell(position, new EmptyCell(position));
                 }
             }
         }

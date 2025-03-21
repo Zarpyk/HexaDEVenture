@@ -1,0 +1,105 @@
+package com.hexadeventure.adapter.out.pathfinder;
+
+import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
+import com.hexadeventure.model.map.Vector2;
+import org.springframework.stereotype.Component;
+
+import java.util.*;
+
+@Component
+public class AStarAdapter implements AStarPathfinder {
+    
+    public Queue<Vector2> generatePath(Vector2 start, Vector2 end, int[][] mapCost) {
+        if(start == null || end == null || mapCost.length == 0) return null;
+        
+        PriorityQueue<Node> checklist = new PriorityQueue<>();
+        HashSet<Vector2> checkedPosition = new HashSet<>();
+        HashMap<Vector2, Node> nodeCache = new HashMap<>();
+        
+        Node startNode = new Node(start, null, 0, manhattanDistance(start, end));
+        checklist.add(startNode);
+        nodeCache.put(start, startNode);
+        
+        while (!checklist.isEmpty()) {
+            Node current = checklist.poll();
+            
+            if(current.position.equals(end)) {
+                return getFinalPath(current);
+            }
+            
+            checkedPosition.add(current.position);
+            
+            int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+            for (int[] dir : directions) {
+                Vector2 positionToCheck = new Vector2(current.position.x + dir[0],
+                                                      current.position.y + dir[1]);
+                
+                // If the position has already been checked or is out of bounds, skip it
+                if(checkedPosition.contains(positionToCheck) || !isValidPosition(positionToCheck, mapCost)) continue;
+                
+                // Check if the position can't be accessed
+                if(mapCost[positionToCheck.x][positionToCheck.y] < 0) continue;
+                
+                int nodeCost = current.actualCost + mapCost[positionToCheck.x][positionToCheck.y];
+                
+                Node checkNode = nodeCache.get(positionToCheck);
+                if(checkNode == null) {
+                    // If the node doesn't exist, create it
+                    checkNode = new Node(positionToCheck, current, nodeCost, manhattanDistance(positionToCheck, end));
+                    nodeCache.put(positionToCheck, checkNode);
+                    checklist.add(checkNode);
+                } else if(nodeCost < checkNode.actualCost) {
+                    // If the existing node has a higher cost, update it
+                    checkNode.parent = current;
+                    checkNode.actualCost = nodeCost;
+                    checkNode.totalCost = nodeCost + checkNode.heuristic;
+                    if(!checklist.contains(checkNode)) {
+                        checklist.add(checkNode);
+                    }
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    private static class Node implements Comparable<Node> {
+        Vector2 position;
+        Node parent;
+        int actualCost;
+        int heuristic;
+        int totalCost;
+        
+        Node(Vector2 pos, Node parent, int actualCost, int heuristic) {
+            this.position = pos;
+            this.parent = parent;
+            this.actualCost = actualCost;
+            this.heuristic = heuristic;
+            this.totalCost = actualCost + heuristic;
+        }
+        
+        @Override
+        public int compareTo(Node other) {
+            return Integer.compare(this.totalCost, other.totalCost);
+        }
+    }
+    
+    private int manhattanDistance(Vector2 start, Vector2 end) {
+        return Math.abs(end.x - start.x) + Math.abs(end.y - start.y);
+    }
+    
+    private boolean isValidPosition(Vector2 pos, int[][] map) {
+        return pos.x >= 0 && pos.x < map.length &&
+               pos.y >= 0 && pos.y < map[0].length;
+    }
+    
+    private Queue<Vector2> getFinalPath(Node end) {
+        LinkedList<Vector2> path = new LinkedList<>();
+        Node current = end;
+        while (current != null) {
+            path.addFirst(current.position);
+            current = current.parent;
+        }
+        return path;
+    }
+}

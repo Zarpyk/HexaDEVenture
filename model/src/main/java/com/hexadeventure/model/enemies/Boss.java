@@ -1,10 +1,8 @@
 package com.hexadeventure.model.enemies;
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @NoArgsConstructor
-public class Enemy {
-    private String id;
+public class Boss extends Enemy {
+    // TODO
 }

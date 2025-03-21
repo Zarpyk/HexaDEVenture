@@ -3,6 +3,7 @@ package com.hexadeventure.application.service.game;
 import com.hexadeventure.application.exceptions.GameStartedException;
 import com.hexadeventure.application.exceptions.MapSizeException;
 import com.hexadeventure.application.port.out.noise.NoiseGenerator;
+import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.service.common.UserFactory;
@@ -15,6 +16,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 
+import java.util.LinkedList;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,12 +32,16 @@ public class GameServiceTest {
     private final UserRepository userRepository = mock(UserRepository.class);
     private final GameMapRepository gameMapRepository = mock(GameMapRepository.class);
     private final NoiseGenerator noiseGenerator = mock(NoiseGenerator.class);
-    private final GameService gameService = new GameService(userRepository, gameMapRepository, noiseGenerator);
+    private final AStarPathfinder aStarPathfinder = mock(AStarPathfinder.class);
+    private final GameService gameService = new GameService(userRepository, gameMapRepository,
+                                                            noiseGenerator, aStarPathfinder);
     
     @BeforeEach
     public void beforeEach() {
         when(noiseGenerator.getCircleWithNoisyEdge(anyInt(), anyLong(), anyInt()))
                 .thenAnswer(x -> new double[x.getArgument(0, Integer.class) * 2][x.getArgument(0, Integer.class) * 2]);
+        
+        when(aStarPathfinder.generatePath(any(), any(), any())).thenReturn(new LinkedList<>());
     }
     
     @Test

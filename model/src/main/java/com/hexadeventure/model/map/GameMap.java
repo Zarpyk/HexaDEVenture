@@ -1,6 +1,7 @@
 package com.hexadeventure.model.map;
 
 import com.hexadeventure.model.characters.MainCharacter;
+import com.hexadeventure.model.map.empty.EmptyCell;
 import com.hexadeventure.model.map.obstacles.ObstacleCell;
 import com.hexadeventure.utils.DoubleMapper;
 import lombok.Getter;
