@@ -1,13 +1,11 @@
 package com.hexadeventure.model.map;
 
 import com.hexadeventure.model.characters.MainCharacter;
-import com.hexadeventure.model.map.empty.EmptyCell;
-import com.hexadeventure.model.map.obstacles.ObstacleCell;
-import com.hexadeventure.utils.DoubleMapper;
+import com.hexadeventure.model.enemies.Enemy;
+import com.hexadeventure.model.map.resources.Resource;
 import lombok.Getter;
 
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 public class GameMap {
@@ -17,6 +15,8 @@ public class GameMap {
     private final String userId;
     private final long seed;
     private final CellData[][] grid;
+    private final Map<Vector2, Resource> resources = new HashMap<>();
+    private final Map<Vector2, Enemy> enemies = new HashMap<>();
     private MainCharacter mainCharacter;
     
     public GameMap(String userId, long seed, int size) {
@@ -26,19 +26,21 @@ public class GameMap {
         grid = new CellData[size][size];
     }
     
-    public GameMap(String id, String userId, long seed, CellData[][] grid) {
+    public GameMap(String id, String userId, long seed, CellData[][] grid, Map<Vector2, Resource> resources,
+                   Map<Vector2, Enemy> enemies) {
         this.id = id;
         this.userId = userId;
         this.seed = seed;
         this.grid = grid;
+        this.resources.putAll(resources);
+        this.enemies.putAll(enemies);
     }
     
     public void createCell(double cellTypeThreshold, int x, int y) {
         if(cellTypeThreshold < EMPTY_THRESHOLD) {
-            grid[x][y] = new EmptyCell(new Vector2(x, y));
+            grid[x][y] = new CellData(new Vector2(x, y), CellType.GROUND);
         } else {
-            grid[x][y] = new ObstacleCell(new Vector2(x, y), DoubleMapper.map(cellTypeThreshold, EMPTY_THRESHOLD,
-                                                                              1, -1, 1));
+            grid[x][y] = new CellData(new Vector2(x, y), CellType.WALL);
         }
     }
     
@@ -50,8 +52,25 @@ public class GameMap {
         return grid[x][y];
     }
     
-    public void setCell(Vector2 position, CellData cell) {
-        grid[position.x][position.y] = cell;
+    public Resource getResource(Vector2 position) {
+        return resources.get(position);
+    }
+    
+    public Enemy getEnemy(Vector2 position) {
+        return enemies.get(position);
+    }
+    
+    public void setCell(Vector2 position, CellType type) {
+        grid[position.x][position.y] = new CellData(position, type);
+    }
+    
+    public void addResource(Vector2 position, double threshold, Random random) {
+        // TODO: Add more resources
+        resources.put(position, new Resource(position, threshold, random));
+    }
+    
+    public void addEnemy(Vector2 position, Enemy enemy) {
+        enemies.put(position, enemy);
     }
     
     public int getMapSize() {

@@ -5,11 +5,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public abstract class CellData {
+public class CellData {
     private Vector2 position;
-    protected CellType type;
+    private CellType type;
     
-    protected CellData(Vector2 position) {
+    public CellData(Vector2 position, CellType type) {
         this.position = position;
+        this.type = type;
     }
 }

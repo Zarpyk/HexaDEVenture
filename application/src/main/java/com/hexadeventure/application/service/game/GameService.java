@@ -8,15 +8,11 @@ import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.model.enemies.Boss;
+import com.hexadeventure.model.enemies.Enemy;
 import com.hexadeventure.model.map.CellType;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.Vector2;
-import com.hexadeventure.model.map.empty.EmptyCell;
-import com.hexadeventure.model.map.empty.EmptyCellType;
-import com.hexadeventure.model.map.enemies.EnemyCell;
-import com.hexadeventure.model.map.obstacles.ObstacleCell;
-import com.hexadeventure.model.map.obstacles.ObstacleType;
-import com.hexadeventure.model.map.resources.ResourceCell;
+import com.hexadeventure.model.map.resources.Resource;
 import com.hexadeventure.model.user.User;
 import com.hexadeventure.utils.DoubleMapper;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +22,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Random;
@@ -40,7 +37,7 @@ public class GameService implements GameUseCase {
     private static final int BORDER_OFFSET = 2;
     private static final double BORDER_THRESHOLD = 0.2;
     private static final int GENERATE_BORDER_CIRCLE_VARIATION = 1;
-    private static final ObstacleType BORDER_OBSTACLE_TYPE = ObstacleType.WALL;
+    private static final CellType BORDER_OBSTACLE_TYPE = CellType.WALL;
     
     private static final int GENERATE_RESOURCE_PROBABILITY = 5;
     
@@ -117,32 +114,15 @@ public class GameService implements GameUseCase {
                 int pixelY = y * cellSize;
                 
                 switch (map.getCell(x, y).getType()) {
-                    case OBSTACLE -> {
+                    case WALL -> {
                         // Draw obstacle cells in black
                         g2d.setColor(Color.BLACK);
                         g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
                     }
-                    case RESOURCE -> {
-                        // Draw resource cells in green
-                        g2d.setColor(Color.GREEN);
+                    case PATH -> {
+                        // Draw path cells in gray
+                        g2d.setColor(Color.GRAY);
                         g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
-                    }
-                    case ENEMY -> {
-                        if(((EnemyCell) map.getCell(x, y)).getEnemy() instanceof Boss) {
-                            // Draw boss cells in red
-                            g2d.setColor(Color.RED);
-                        } else {
-                            // Draw enemy cells in blue
-                            g2d.setColor(Color.BLUE);
-                        }
-                        g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
-                    }
-                    case EMPTY -> {
-                        if(((EmptyCell) map.getCell(x, y)).getEmptyCellType() == EmptyCellType.PATH) {
-                            // Draw path cells in gray
-                            g2d.setColor(Color.GRAY);
-                            g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
-                        }
                     }
                     case null, default -> {
                     }
@@ -152,6 +132,33 @@ public class GameService implements GameUseCase {
                 g2d.setColor(Color.GRAY);
                 g2d.drawRect(pixelX, pixelY, cellSize, cellSize);
             }
+        }
+        
+        for (Map.Entry<Vector2, Resource> resource : map.getResources().entrySet()) {
+            Vector2 position = resource.getKey();
+            int pixelX = position.x * cellSize;
+            int pixelY = position.y * cellSize;
+            
+            // Draw resources in green
+            g2d.setColor(Color.GREEN);
+            g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
+        }
+        
+        for (Map.Entry<Vector2, Enemy> enemy : map.getEnemies().entrySet()) {
+            Vector2 position = enemy.getKey();
+            int pixelX = position.x * cellSize;
+            int pixelY = position.y * cellSize;
+            
+            if(enemy.getValue() instanceof Boss) {
+                // Draw boss in red
+                g2d.setColor(Color.RED);
+                g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
+            } else {
+                // Draw enemies in blue
+                g2d.setColor(Color.BLUE);
+                g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
+            }
+            g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
         }
         
         // Mark player position
@@ -206,13 +213,13 @@ public class GameService implements GameUseCase {
             for (int y = 0; y < map.getMapSize(); y++) {
                 if(x < BORDER_OFFSET || y < BORDER_OFFSET || x >= map.getMapSize() - BORDER_OFFSET ||
                    y >= map.getMapSize() - BORDER_OFFSET) {
-                    map.setCell(new Vector2(x, y), new ObstacleCell(new Vector2(x, y), BORDER_OBSTACLE_TYPE));
+                    map.setCell(new Vector2(x, y), BORDER_OBSTACLE_TYPE);
                 } else {
                     int circleX = x - BORDER_OFFSET;
                     int circleY = y - BORDER_OFFSET;
                     if(circle[circleX][circleY] > BORDER_THRESHOLD) {
                         Vector2 position = new Vector2(x, y);
-                        map.setCell(position, new ObstacleCell(position, BORDER_OBSTACLE_TYPE));
+                        map.setCell(position, BORDER_OBSTACLE_TYPE);
                     }
                 }
             }
@@ -226,7 +233,7 @@ public class GameService implements GameUseCase {
         int seedOffset = 0;
         for (int x = 0; x < map.getMapSize(); x++) {
             for (int y = 0; y < map.getMapSize(); y++) {
-                if(map.getCell(x, y).getType() == CellType.EMPTY) {
+                if(map.getCell(x, y).getType() == CellType.GROUND) {
                     if(Math.abs(x - map.getMainCharacter().getPosition().x) <= CLEAR_RADIUS_AROUND_PLAYER &&
                        Math.abs(y - map.getMainCharacter().getPosition().y) <= CLEAR_RADIUS_AROUND_PLAYER) {
                         continue;
@@ -234,7 +241,7 @@ public class GameService implements GameUseCase {
                     double randomValue = random.nextDouble();
                     if(randomValue < probability) {
                         double threshold = DoubleMapper.map(randomValue, 0, probability, -1, 1);
-                        map.setCell(new Vector2(x, y), new ResourceCell(new Vector2(x, y), threshold));
+                        map.addResource(new Vector2(x, y), threshold, random);
                     }
                 }
             }
@@ -244,7 +251,7 @@ public class GameService implements GameUseCase {
     private void generateFinalBoss(GameMap map, Random random) {
         Vector2 bossPosition = getBossPosition(map, random);
         
-        map.setCell(bossPosition, new EnemyCell(bossPosition, new Boss()));
+        map.addEnemy(bossPosition, new Boss());
         clearPosition(map,
                       bossPosition,
                       BOSS_CLEAR_RADIUS,
@@ -274,11 +281,8 @@ public class GameService implements GameUseCase {
         int[][] mapCost = new int[map.getMapSize()][map.getMapSize()];
         for (int x = 0; x < map.getMapSize(); x++) {
             for (int y = 0; y < map.getMapSize(); y++) {
-                if(map.getCell(x, y).getType() == CellType.OBSTACLE) {
-                    mapCost[x][y] = 10;
-                } else {
-                    mapCost[x][y] = 1;
-                }
+                CellType cellType = map.getCell(x, y).getType();
+                mapCost[x][y] = CellType.getCost(cellType);
             }
         }
         Queue<Vector2> path = aStarPathfinder.generatePath(map.getMainCharacter().getPosition(),
@@ -294,15 +298,15 @@ public class GameService implements GameUseCase {
             direction.normalize();
             
             // Set the center path cell to empty cell
-            if(!position.equals(bossPosition)) map.setCell(position, new EmptyCell(position, EmptyCellType.PATH));
+            if(!position.equals(bossPosition)) map.setCell(position, CellType.PATH);
             
             //noinspection NonStrictComparisonCanBeEquality
             for (int i = 1; i <= BOSS_PATH_EXTRA_WIDTH; i++) {
                 // Set left and right cells to create a path
                 Vector2 left = position.getLeft(direction, i);
                 Vector2 right = position.getRight(direction, i);
-                if(!left.equals(bossPosition)) map.setCell(left, new EmptyCell(left, EmptyCellType.PATH));
-                if(!right.equals(bossPosition)) map.setCell(right, new EmptyCell(right, EmptyCellType.PATH));
+                if(!left.equals(bossPosition)) map.setCell(left, CellType.PATH);
+                if(!right.equals(bossPosition)) map.setCell(right, CellType.PATH);
             }
         }
     }
@@ -322,7 +326,7 @@ public class GameService implements GameUseCase {
                 if(circle[x][y] < threshold) {
                     Vector2 position = new Vector2(center.x - radius + x,
                                                    center.y - radius + y);
-                    map.setCell(position, new EmptyCell(position));
+                    map.setCell(position, CellType.GROUND);
                 }
             }
         }

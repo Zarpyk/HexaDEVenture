@@ -1,5 +1,8 @@
 package com.hexadeventure.adapter.out.persistence.game.jpa;
 
+import com.hexadeventure.adapter.out.persistence.game.jpa.data.CellDataJpaEntity;
+import com.hexadeventure.adapter.out.persistence.game.jpa.data.EnemyJpaEntity;
+import com.hexadeventure.adapter.out.persistence.game.jpa.data.ResourceJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +22,12 @@ public class GameMapJpaEntity {
     
     @OneToMany(mappedBy = "map", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<CellDataJpaEntity> grid;
+    
+    @OneToMany(mappedBy = "map", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<ResourceJpaEntity> resources;
+    
+    @OneToMany(mappedBy = "map", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<EnemyJpaEntity> enemies;
     
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "main_character_id")

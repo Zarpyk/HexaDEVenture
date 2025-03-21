@@ -1,13 +1,13 @@
-package com.hexadeventure.adapter.out.persistence.game.jpa;
+package com.hexadeventure.adapter.out.persistence.game.jpa.data;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
-import com.hexadeventure.model.map.CellData;
+import com.hexadeventure.model.enemies.Enemy;
 
-public class CellDataJpaMapper {
+public class EnemyJpaMapper {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     
     static {
@@ -20,8 +20,10 @@ public class CellDataJpaMapper {
                                            JsonTypeInfo.As.PROPERTY);
     }
     
-    public static CellDataJpaEntity toEntity(CellData model) {
-        CellDataJpaEntity entity = new CellDataJpaEntity();
+    public static EnemyJpaEntity toEntity(Enemy model) {
+        EnemyJpaEntity entity = new EnemyJpaEntity();
+        entity.setX(model.getPosition().x);
+        entity.setY(model.getPosition().y);
         try {
             String json = objectMapper.writeValueAsString(model);
             entity.setData(json);
@@ -31,12 +33,12 @@ public class CellDataJpaMapper {
         return entity;
     }
     
-    public static CellData toModel(CellDataJpaEntity entity) {
+    public static Enemy toModel(EnemyJpaEntity entity) {
         try {
             if(entity == null || entity.getData() == null) {
                 return null;
             }
-            return objectMapper.readValue(entity.getData(), CellData.class);
+            return objectMapper.readValue(entity.getData(), Enemy.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

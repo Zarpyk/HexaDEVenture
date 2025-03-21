@@ -2,14 +2,11 @@ package com.hexadeventure.model.map;
 
 import com.hexadeventure.common.UserFactory;
 import com.hexadeventure.model.enemies.Enemy;
-import com.hexadeventure.model.map.enemies.EnemyCell;
-import com.hexadeventure.model.map.obstacles.ObstacleCell;
-import com.hexadeventure.model.map.obstacles.ObstacleType;
-import com.hexadeventure.model.map.resources.ResourceCell;
-import com.hexadeventure.model.map.resources.ResourceType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,17 +20,17 @@ public class MapTest {
         assertThat(gameMap.getMapSize()).isEqualTo(SIZE);
     }
     
-    @ParameterizedTest(name = "Given a {0} threshold, then create EmptyCell")
+    @ParameterizedTest(name = "Given a {0} threshold, then create GROUND")
     @ValueSource(doubles = {-1, GameMap.EMPTY_THRESHOLD - 0.01})
     public void givenAThresholdMoreThanObstacle_whenCreateCell_thenReturnsEmptyCell(double noiseValue) {
         GameMap gameMap = new GameMap(UserFactory.EMAIL, SEED, SIZE);
         Vector2 position = new Vector2(1, 1);
         gameMap.createCell(noiseValue, position.x, position.y);
         
-        assertThat(gameMap.getCell(position).getType()).isEqualTo(CellType.EMPTY);
+        assertThat(gameMap.getCell(position).getType()).isEqualTo(CellType.GROUND);
     }
     
-    @ParameterizedTest(name = "Given a {0} threshold, then create ObstacleCell")
+    @ParameterizedTest(name = "Given a {0} threshold, then create WALL")
     @ValueSource(doubles = {GameMap.EMPTY_THRESHOLD, 1.0})
     public void givenAPositionAndLessThanObstacleThresholdNoise_whenCreateCell_thenReturnsObstableCell(
             double noiseValue) {
@@ -41,30 +38,46 @@ public class MapTest {
         Vector2 position = new Vector2(1, 1);
         gameMap.createCell(noiseValue, position.x, position.y);
         
-        assertThat(gameMap.getCell(position).getType()).isEqualTo(CellType.OBSTACLE);
+        assertThat(gameMap.getCell(position).getType()).isEqualTo(CellType.WALL);
     }
     
     @Test
-    public void givenAnObstacleCell_whenAddingItToTheMap_thenAddsTheObstacleCell() {
+    public void givenAnGroundType_whenAddingItToTheMap_thenAddsTheGroundCell() {
         GameMap gameMap = new GameMap(UserFactory.EMAIL, SEED, SIZE);
         Vector2 position = new Vector2(1, 1);
-        ObstacleCell cell = new ObstacleCell(position, ObstacleType.WALL);
-        gameMap.setCell(position, cell);
+        CellType cellType = CellType.GROUND;
+        gameMap.setCell(position, cellType);
         
-        assertThat(gameMap.getCell(position).getType()).isEqualTo(CellType.OBSTACLE);
-        assertThat(((ObstacleCell) gameMap.getCell(position)).getObstacleType()).isEqualTo(ObstacleType.WALL);
+        assertThat(gameMap.getCell(position).getType()).isEqualTo(CellType.GROUND);
     }
     
     @Test
-    public void givenAResourceCell_whenAddingItToTheMap_thenAddsTheResourceCell() {
+    public void givenAnPathType_whenAddingItToTheMap_thenAddsThePathCell() {
         GameMap gameMap = new GameMap(UserFactory.EMAIL, SEED, SIZE);
         Vector2 position = new Vector2(1, 1);
-        ResourceCell cell = new ResourceCell(position, ResourceType.WOOD, 5);
-        gameMap.setCell(position, cell);
+        CellType cellType = CellType.PATH;
+        gameMap.setCell(position, cellType);
         
-        assertThat(gameMap.getCell(position).getType()).isEqualTo(CellType.RESOURCE);
-        assertThat(((ResourceCell) gameMap.getCell(position)).getResourceType()).isEqualTo(ResourceType.WOOD);
-        assertThat(((ResourceCell) gameMap.getCell(position)).getQuantity()).isEqualTo(5);
+        assertThat(gameMap.getCell(position).getType()).isEqualTo(CellType.PATH);
+    }
+    
+    @Test
+    public void givenAnWallType_whenAddingItToTheMap_thenAddsTheWallCell() {
+        GameMap gameMap = new GameMap(UserFactory.EMAIL, SEED, SIZE);
+        Vector2 position = new Vector2(1, 1);
+        CellType cellType = CellType.WALL;
+        gameMap.setCell(position, cellType);
+        
+        assertThat(gameMap.getCell(position).getType()).isEqualTo(CellType.WALL);
+    }
+    
+    @Test
+    public void givenAResource_whenAddingItToTheMap_thenAddsTheResourceToThePosition() {
+        GameMap gameMap = new GameMap(UserFactory.EMAIL, SEED, SIZE);
+        Vector2 position = new Vector2(1, 1);
+        gameMap.addResource(position, 0, new Random());
+        
+        assertThat(gameMap.getResource(position)).isNotNull();
     }
     
     @Test
@@ -72,10 +85,10 @@ public class MapTest {
         GameMap gameMap = new GameMap(UserFactory.EMAIL, SEED, SIZE);
         Vector2 position = new Vector2(1, 1);
         Enemy enemy = new Enemy();
-        EnemyCell cell = new EnemyCell(position, enemy);
-        gameMap.setCell(position, cell);
+        gameMap.addEnemy(position, enemy);
         
-        assertThat(gameMap.getCell(position).getType()).isEqualTo(CellType.ENEMY);
+        assertThat(gameMap.getEnemy(position)).isNotNull();
+        assertThat(gameMap.getEnemy(position)).isEqualTo(enemy);
     }
     
     @Test

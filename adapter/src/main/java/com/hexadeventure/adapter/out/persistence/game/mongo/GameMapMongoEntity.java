@@ -15,5 +15,7 @@ public class GameMapMongoEntity {
     private long seed;
     private int gridSize;
     private String gridFileId;
+    private String resourcesFileId;
+    private String enemiesFileId;
     private MainCharacterMongoEntity mainCharacter;
 }
