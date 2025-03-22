@@ -40,6 +40,7 @@ public class GameService implements GameUseCase {
     private static final CellType BORDER_OBSTACLE_TYPE = CellType.WALL;
     
     private static final int GENERATE_RESOURCE_PROBABILITY = 5;
+    private static final int GENERATE_RESOURCE_CENTER_RADIUS = 5;
     
     private static final int BOSS_BORDER_OFFSET = 10;
     private static final int BOSS_CLEAR_RADIUS = 5;
@@ -47,8 +48,10 @@ public class GameService implements GameUseCase {
     private static final int BOSS_CLEAR_CIRCLE_VARIATION = 0;
     private static final int BOSS_PATH_EXTRA_WIDTH = 1;
     
-    private static final int GENERATE_ENEMY_PROBABILITY = 5;
-    private static final int GENERATE_ENEMY_PROBABILITY_MAX_INCREMENT = 50;
+    private static final double GENERATE_ENEMY_PROBABILITY = 0.5;
+    private static final double GENERATE_ENEMY_PROBABILITY_MAX_INCREMENT = 5;
+    private static final int GENERATE_ENEMY_CENTER_RADIUS = 5;
+    private static final int GENERATE_ENEMY_BOSS_RADIUS = 2;
     
     private final UserRepository userRepository;
     private final GameMapRepository gameMapRepository;
@@ -238,8 +241,8 @@ public class GameService implements GameUseCase {
         for (int x = 0; x < map.getMapSize(); x++) {
             for (int y = 0; y < map.getMapSize(); y++) {
                 if(map.getCell(x, y).getType() == CellType.GROUND) {
-                    if(Math.abs(x - map.getMainCharacter().getPosition().x) <= CLEAR_RADIUS_AROUND_PLAYER &&
-                       Math.abs(y - map.getMainCharacter().getPosition().y) <= CLEAR_RADIUS_AROUND_PLAYER) {
+                    if(Math.abs(x - map.getMainCharacter().getPosition().x) <= GENERATE_RESOURCE_CENTER_RADIUS &&
+                       Math.abs(y - map.getMainCharacter().getPosition().y) <= GENERATE_RESOURCE_CENTER_RADIUS) {
                         continue;
                     }
                     double randomValue = random.nextDouble();
@@ -329,8 +332,14 @@ public class GameService implements GameUseCase {
                 }
                 
                 // Don't spawn enemies on the center
-                if(Math.abs(x - center.x) <= CLEAR_RADIUS_AROUND_PLAYER &&
-                   Math.abs(y - center.y) <= CLEAR_RADIUS_AROUND_PLAYER) {
+                if(Math.abs(x - center.x) <= GENERATE_ENEMY_CENTER_RADIUS &&
+                   Math.abs(y - center.y) <= GENERATE_ENEMY_CENTER_RADIUS) {
+                    continue;
+                }
+                
+                // Don't spawn enemies on the boss position
+                if(Math.abs(x - map.getBossPosition().x) <= GENERATE_ENEMY_BOSS_RADIUS &&
+                   Math.abs(y - map.getBossPosition().y) <= GENERATE_ENEMY_BOSS_RADIUS) {
                     continue;
                 }
                 
@@ -339,8 +348,8 @@ public class GameService implements GameUseCase {
                 double normalizedDistance = Math.clamp(distance / maxDistance, 0, 1);
                 
                 // Increase enemy spawn chance based on distance from center
-                double spawnRate = GENERATE_ENEMY_PROBABILITY;
-                spawnRate += normalizedDistance * GENERATE_ENEMY_PROBABILITY_MAX_INCREMENT;
+                double spawnRate = GENERATE_ENEMY_PROBABILITY / 100.0;
+                spawnRate += normalizedDistance * (GENERATE_ENEMY_PROBABILITY_MAX_INCREMENT / 100.0);
                 
                 if(random.nextDouble() < spawnRate) {
                     map.addEnemy(position, new Enemy(position, normalizedDistance));
