@@ -1,4 +1,4 @@
-package com.hexadeventure.adapter;
+package com.hexadeventure.adapter.out.common;
 
 import org.springframework.context.annotation.Profile;
 import org.testcontainers.containers.PostgreSQLContainer;

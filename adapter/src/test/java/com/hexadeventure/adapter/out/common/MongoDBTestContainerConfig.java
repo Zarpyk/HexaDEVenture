@@ -1,8 +1,6 @@
-package com.hexadeventure.adapter;
+package com.hexadeventure.adapter.out.common;
 
 import org.springframework.context.annotation.Profile;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 

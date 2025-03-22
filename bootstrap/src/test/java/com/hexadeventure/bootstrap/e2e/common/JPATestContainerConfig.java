@@ -1,4 +1,4 @@
-package com.hexadeventure.bootstrap.e2e;
+package com.hexadeventure.bootstrap.e2e.common;
 
 import org.springframework.context.annotation.Profile;
 import org.testcontainers.containers.PostgreSQLContainer;

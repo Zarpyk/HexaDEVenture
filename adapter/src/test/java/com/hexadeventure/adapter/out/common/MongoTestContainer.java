@@ -1,4 +1,4 @@
-package com.hexadeventure.bootstrap.e2e;
+package com.hexadeventure.adapter.out.common;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
