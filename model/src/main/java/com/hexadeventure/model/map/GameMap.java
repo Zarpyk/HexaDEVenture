@@ -4,6 +4,7 @@ import com.hexadeventure.model.characters.MainCharacter;
 import com.hexadeventure.model.enemies.Enemy;
 import com.hexadeventure.model.map.resources.Resource;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.*;
 
@@ -18,6 +19,9 @@ public class GameMap {
     private final Map<Vector2, Resource> resources = new HashMap<>();
     private final Map<Vector2, Enemy> enemies = new HashMap<>();
     private MainCharacter mainCharacter;
+    
+    @Setter
+    private Vector2 bossPosition;
     
     public GameMap(String userId, long seed, int size) {
         this.id = UUID.randomUUID().toString();

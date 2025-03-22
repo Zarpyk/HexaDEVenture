@@ -47,6 +47,9 @@ public class GameService implements GameUseCase {
     private static final int BOSS_CLEAR_CIRCLE_VARIATION = 0;
     private static final int BOSS_PATH_EXTRA_WIDTH = 1;
     
+    private static final int GENERATE_ENEMY_PROBABILITY = 5;
+    private static final int GENERATE_ENEMY_PROBABILITY_MAX_INCREMENT = 50;
+    
     private final UserRepository userRepository;
     private final GameMapRepository gameMapRepository;
     private final NoiseGenerator noiseGenerator;
@@ -86,6 +89,7 @@ public class GameService implements GameUseCase {
         generateBorder(map);
         generateResources(map, random);
         generateFinalBoss(map, random);
+        generateEnemies(map, random);
         return map;
     }
     
@@ -251,6 +255,7 @@ public class GameService implements GameUseCase {
     private void generateFinalBoss(GameMap map, Random random) {
         Vector2 bossPosition = getBossPosition(map, random);
         
+        map.setBossPosition(bossPosition);
         map.addEnemy(bossPosition, new Boss(bossPosition));
         clearPosition(map,
                       bossPosition,
@@ -258,7 +263,7 @@ public class GameService implements GameUseCase {
                       BOSS_CLEAR_CIRCLE_THRESHOLD,
                       BOSS_CLEAR_CIRCLE_VARIATION,
                       false);
-        generateRoadToBoss(map, bossPosition);
+        generateRoadToBoss(map);
     }
     
     private static Vector2 getBossPosition(GameMap map, Random random) {
@@ -277,7 +282,7 @@ public class GameService implements GameUseCase {
                            center + distance * direction.y);
     }
     
-    private void generateRoadToBoss(GameMap map, Vector2 bossPosition) {
+    private void generateRoadToBoss(GameMap map) {
         int[][] mapCost = new int[map.getMapSize()][map.getMapSize()];
         for (int x = 0; x < map.getMapSize(); x++) {
             for (int y = 0; y < map.getMapSize(); y++) {
@@ -286,7 +291,7 @@ public class GameService implements GameUseCase {
             }
         }
         Queue<Vector2> path = aStarPathfinder.generatePath(map.getMainCharacter().getPosition(),
-                                                           bossPosition,
+                                                           map.getBossPosition(),
                                                            mapCost);
         if(path == null) throw new RuntimeException("Fail creating path to boss");
         
@@ -298,15 +303,48 @@ public class GameService implements GameUseCase {
             direction.normalize();
             
             // Set the center path cell to empty cell
-            if(!position.equals(bossPosition)) map.setCell(position, CellType.PATH);
+            if(!position.equals(map.getBossPosition())) map.setCell(position, CellType.PATH);
             
             //noinspection NonStrictComparisonCanBeEquality
             for (int i = 1; i <= BOSS_PATH_EXTRA_WIDTH; i++) {
                 // Set left and right cells to create a path
                 Vector2 left = position.getLeft(direction, i);
                 Vector2 right = position.getRight(direction, i);
-                if(!left.equals(bossPosition)) map.setCell(left, CellType.PATH);
-                if(!right.equals(bossPosition)) map.setCell(right, CellType.PATH);
+                if(!left.equals(map.getBossPosition())) map.setCell(left, CellType.PATH);
+                if(!right.equals(map.getBossPosition())) map.setCell(right, CellType.PATH);
+            }
+        }
+    }
+    
+    
+    private void generateEnemies(GameMap map, Random random) {
+        Vector2 center = new Vector2(map.getMapSize() / 2, map.getMapSize() / 2);
+        
+        for (int x = BORDER_OFFSET; x < map.getMapSize() - BORDER_OFFSET * 2; x++) {
+            for (int y = BORDER_OFFSET; y < map.getMapSize() - BORDER_OFFSET * 2; y++) {
+                Vector2 position = new Vector2(x, y);
+                
+                if(!CellType.isWalkable(map.getCell(position).getType()) || map.getResource(position) != null) {
+                    continue;
+                }
+                
+                // Don't spawn enemies on the center
+                if(Math.abs(x - center.x) <= CLEAR_RADIUS_AROUND_PLAYER &&
+                   Math.abs(y - center.y) <= CLEAR_RADIUS_AROUND_PLAYER) {
+                    continue;
+                }
+                
+                double distance = Vector2.getDistance(position, center);
+                double maxDistance = (map.getMapSize() / 2.0) - BORDER_OFFSET;
+                double normalizedDistance = Math.clamp(distance / maxDistance, 0, 1);
+                
+                // Increase enemy spawn chance based on distance from center
+                double spawnRate = GENERATE_ENEMY_PROBABILITY;
+                spawnRate += normalizedDistance * GENERATE_ENEMY_PROBABILITY_MAX_INCREMENT;
+                
+                if(random.nextDouble() < spawnRate) {
+                    map.addEnemy(position, new Enemy(position, normalizedDistance));
+                }
             }
         }
     }

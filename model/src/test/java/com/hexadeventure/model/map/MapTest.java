@@ -84,7 +84,7 @@ public class MapTest {
     public void givenAnEnemyCell_whenAddingItToTheMap_thenAddsTheEnemyCell() {
         GameMap gameMap = new GameMap(UserFactory.EMAIL, SEED, SIZE);
         Vector2 position = new Vector2(1, 1);
-        Enemy enemy = new Enemy(position);
+        Enemy enemy = new Enemy(position, 0);
         gameMap.addEnemy(position, enemy);
         
         assertThat(gameMap.getEnemy(position)).isNotNull();

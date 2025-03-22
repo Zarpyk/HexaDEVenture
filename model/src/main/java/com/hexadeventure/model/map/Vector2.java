@@ -56,6 +56,11 @@ public class Vector2 {
         y /= length;
     }
     
+    public static double getDistance(Vector2 a, Vector2 b) {
+        return Math.sqrt((a.x - b.x) * (a.x - b.x) +
+                         (a.y - b.y) * (a.y - b.y));
+    }
+    
     @Override
     public boolean equals(Object o) {
         if(!(o instanceof Vector2 vector2)) return false;
