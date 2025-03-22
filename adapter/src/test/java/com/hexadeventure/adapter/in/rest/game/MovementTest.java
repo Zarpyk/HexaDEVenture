@@ -13,6 +13,8 @@ import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -20,7 +22,7 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 public class MovementTest {
     private static final Vector2 movePosition = new Vector2(10, 10);
-    private static final MovementResponseDTO movementResponseDTO = new MovementResponseDTO();
+    private static final MovementResponseDTO movementResponseDTO = new MovementResponseDTO(new ArrayList<>());
     
     @Mock
     private GameUseCase gameUseCase;
