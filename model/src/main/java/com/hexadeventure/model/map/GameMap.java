@@ -36,8 +36,8 @@ public class GameMap {
         this.userId = userId;
         this.seed = seed;
         this.grid = grid;
-        this.resources.putAll(resources);
-        this.enemies.putAll(enemies);
+        if(resources != null) this.resources.putAll(resources);
+        if(enemies != null) this.enemies.putAll(enemies);
     }
     
     public void createCell(double cellTypeThreshold, int x, int y) {
@@ -94,5 +94,21 @@ public class GameMap {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+    
+    /**
+     * Returns the cost map of the game map.
+     * @param onlyWalkable if true, non-walkable cells will have a cost of -1, otherwise a big number will be used
+     * @return the cost map
+     */
+    public int[][] getCostMap(boolean onlyWalkable) {
+        int[][] costMap = new int[grid.length][grid.length];
+        for (int x = 0; x < grid.length; x++) {
+            for (int y = 0; y < grid.length; y++) {
+                CellType cellType = getCell(x, y).getType();
+                costMap[x][y] = CellType.getCost(cellType, onlyWalkable);
+            }
+        }
+        return costMap;
     }
 }

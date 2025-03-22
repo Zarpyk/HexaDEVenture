@@ -16,7 +16,7 @@ import static org.mockito.Mockito.doThrow;
 
 
 @RunWith(SpringRunner.class)
-public class GameControllerTest {
+public class StartGameTest {
     private static final long TEST_SEED = 1234;
     private static final int TEST_SIZE = 100;
     

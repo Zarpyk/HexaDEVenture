@@ -1,11 +1,12 @@
 package com.hexadeventure.adapter.in.rest.game;
 
+import com.hexadeventure.application.port.in.game.GameUseCase;
+import com.hexadeventure.application.service.game.MovementResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.hexadeventure.application.port.in.game.GameUseCase;
 
 import java.security.Principal;
 
@@ -22,5 +23,11 @@ public class GameController {
     public ResponseEntity<Void> startGame(Principal principal, @RequestBody StartGameDTO startGameDTO) {
         gameUseCase.startGame(principal.getName(), startGameDTO.seed(), startGameDTO.size());
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+    
+    @PostMapping("/game/move")
+    public ResponseEntity<MovementResponseDTO> move(Principal principal, @RequestBody MovementDTO movementDTO) {
+        MovementResponseDTO response = gameUseCase.move(principal.getName(), movementDTO.toModel());
+        return ResponseEntity.ok(response);
     }
 }

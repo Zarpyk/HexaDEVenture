@@ -9,11 +9,11 @@ public enum CellType {
         return cellType != WALL;
     }
     
-    public static int getCost(CellType cellType) {
+    public static int getCost(CellType cellType, boolean onlyWalkable) {
         return switch (cellType) {
             case PATH -> 1;
             case GROUND -> 2;
-            case WALL -> 200;
+            case WALL -> onlyWalkable ? -1 : 200;
         };
     }
 }

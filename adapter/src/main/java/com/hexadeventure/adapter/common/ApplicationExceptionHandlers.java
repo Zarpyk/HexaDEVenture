@@ -1,5 +1,6 @@
 package com.hexadeventure.adapter.common;
 
+import com.hexadeventure.application.exceptions.GameNotStartedException;
 import com.hexadeventure.application.exceptions.GameStartedException;
 import com.hexadeventure.application.exceptions.MapSizeException;
 import com.hexadeventure.application.exceptions.UserExistException;
@@ -16,7 +17,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ApplicationExceptionHandlers {
     @ResponseBody
-    @ExceptionHandler(GameStartedException.class)
+    @ExceptionHandler({GameStartedException.class,
+                       GameNotStartedException.class})
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     private String methodNotAllowedExceptionHandler(Exception ex) {
         return ex.getMessage();
