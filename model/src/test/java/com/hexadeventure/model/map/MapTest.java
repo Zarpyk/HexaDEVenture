@@ -17,26 +17,26 @@ public class MapTest {
     @Test
     public void givenASize_whenCreatingAMap_thenCreatesAMapWithCorrectSize() {
         GameMap gameMap = new GameMap(UserFactory.EMAIL, SEED, SIZE);
-        assertThat(gameMap.getMapSize()).isEqualTo(SIZE);
+        assertThat(gameMap.getSize()).isEqualTo(SIZE);
     }
     
     @ParameterizedTest(name = "Given a {0} threshold, then create GROUND")
-    @ValueSource(doubles = {-1, GameMap.EMPTY_THRESHOLD - 0.01})
+    @ValueSource(doubles = {-1, CellData.EMPTY_THRESHOLD - 0.01})
     public void givenAThresholdMoreThanObstacle_whenCreateCell_thenReturnsEmptyCell(double noiseValue) {
         GameMap gameMap = new GameMap(UserFactory.EMAIL, SEED, SIZE);
         Vector2 position = new Vector2(1, 1);
-        gameMap.createCell(noiseValue, position.x, position.y);
+        gameMap.createCell(noiseValue, position);
         
         assertThat(gameMap.getCell(position).getType()).isEqualTo(CellType.GROUND);
     }
     
     @ParameterizedTest(name = "Given a {0} threshold, then create WALL")
-    @ValueSource(doubles = {GameMap.EMPTY_THRESHOLD, 1.0})
-    public void givenAPositionAndLessThanObstacleThresholdNoise_whenCreateCell_thenReturnsObstableCell(
+    @ValueSource(doubles = {CellData.EMPTY_THRESHOLD, 1.0})
+    public void givenAPositionAndLessThanObstacleThresholdNoise_whenCreateCell_thenReturnsObstacleCell(
             double noiseValue) {
         GameMap gameMap = new GameMap(UserFactory.EMAIL, SEED, SIZE);
         Vector2 position = new Vector2(1, 1);
-        gameMap.createCell(noiseValue, position.x, position.y);
+        gameMap.createCell(noiseValue, position);
         
         assertThat(gameMap.getCell(position).getType()).isEqualTo(CellType.WALL);
     }

@@ -1,4 +1,4 @@
-package com.hexadeventure.adapter.out.persistence.game.mongo;
+package com.hexadeventure.adapter.out.persistence.game.mongo.data;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -7,10 +7,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.hexadeventure.adapter.out.persistence.game.mongo.ChunkMongoSDRepository;
 import com.hexadeventure.adapter.utils.Vector2Deserializer;
 import com.hexadeventure.model.enemies.Enemy;
 import com.hexadeventure.model.map.CellData;
-import com.hexadeventure.model.map.GameMap;
+import com.hexadeventure.model.map.Chunk;
 import com.hexadeventure.model.map.Vector2;
 import com.hexadeventure.model.map.resources.Resource;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
@@ -22,7 +23,7 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
-public class GameMapMongoMapper {
+public class ChunkMongoMapper {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     
     static {
@@ -43,32 +44,32 @@ public class GameMapMongoMapper {
         objectMapper.registerModule(simpleModule);
     }
     
-    public static GameMapMongoEntity toEntity(GameMap model, GameMapMongoSDRepository repo,
-                                              GridFsOperations gridFsOperations) {
-        GameMapMongoEntity mongoEntity = new GameMapMongoEntity();
+    public static ChunkMongoEntity toEntity(String mapId, Chunk model, ChunkMongoSDRepository repo,
+                                            GridFsOperations gridFsOperations) {
+        ChunkMongoEntity mongoEntity = new ChunkMongoEntity();
         mongoEntity.setId(model.getId());
-        mongoEntity.setSeed(model.getSeed());
-        mongoEntity.setGridSize(model.getMapSize());
-        mongoEntity.setMainCharacter(MainCharacterMongoMapper.toEntity(model.getMainCharacter()));
+        mongoEntity.setMapId(mapId);
+        mongoEntity.setX(model.getPosition().x);
+        mongoEntity.setY(model.getPosition().y);
         
         try {
-            Optional<GameMapMongoEntity> oldMap = repo.findById(model.getId());
+            Optional<ChunkMongoEntity> oldMap = repo.findById(model.getId());
             
             // Store grid
-            String gridFileId = storeData(model.getGrid(),
-                                          oldMap.map(GameMapMongoEntity::getGridFileId).orElse(null),
+            String gridFileId = storeData(model.getCells(),
+                                          oldMap.map(ChunkMongoEntity::getCellsFileId).orElse(null),
                                           gridFsOperations);
-            mongoEntity.setGridFileId(gridFileId);
+            mongoEntity.setCellsFileId(gridFileId);
             
             // Store resources
             String resourcesFileId = storeData(model.getResources(),
-                                               oldMap.map(GameMapMongoEntity::getResourcesFileId).orElse(null),
+                                               oldMap.map(ChunkMongoEntity::getResourcesFileId).orElse(null),
                                                gridFsOperations);
             mongoEntity.setResourcesFileId(resourcesFileId);
             
             // Store enemies
             String enemiesFileId = storeData(model.getEnemies(),
-                                             oldMap.map(GameMapMongoEntity::getEnemiesFileId).orElse(null),
+                                             oldMap.map(ChunkMongoEntity::getEnemiesFileId).orElse(null),
                                              gridFsOperations);
             mongoEntity.setEnemiesFileId(enemiesFileId);
             
@@ -78,9 +79,9 @@ public class GameMapMongoMapper {
         }
     }
     
-    public static GameMap toModel(GameMapMongoEntity entity, GridFsOperations gridFsOperations) {
+    public static Chunk toModel(ChunkMongoEntity entity, GridFsOperations gridFsOperations) {
         try {
-            GridFsResource gridResource = gridFsOperations.getResource(entity.getGridFileId() + ".json");
+            GridFsResource gridResource = gridFsOperations.getResource(entity.getCellsFileId() + ".json");
             CellData[][] grid = objectMapper.readValue(gridResource.getInputStream(), CellData[][].class);
             
             // From: https://stackoverflow.com/a/3076569/11451105
@@ -92,19 +93,11 @@ public class GameMapMongoMapper {
             HashMap<Vector2, Enemy> enemies = objectMapper.readValue(enemiesResource.getInputStream(),
                                                                      new TypeReference<>() {});
             
-            GameMap gameMap = new GameMap(entity.getId(),
-                                          entity.getUserId(),
-                                          entity.getSeed(),
-                                          grid,
-                                          resources,
-                                          enemies);
-            
-            MainCharacterMongoEntity mainCharacter = entity.getMainCharacter();
-            if(mainCharacter != null) {
-                gameMap.initMainCharacter(new Vector2(mainCharacter.getX(), mainCharacter.getY()));
-            }
-            
-            return gameMap;
+            return new Chunk(entity.getId(),
+                             new Vector2(entity.getX(), entity.getY()),
+                             grid,
+                             resources,
+                             enemies);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

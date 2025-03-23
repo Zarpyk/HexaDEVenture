@@ -1,24 +1,20 @@
 package com.hexadeventure.adapter.out.persistence.game.jpa.data;
 
-import com.hexadeventure.adapter.out.persistence.game.jpa.GameMapJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "cell_data")
+@Table(name = "main_character")
 @Getter
 @Setter
-public class CellDataJpaEntity {
+public class MainCharacterJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    
     private int x;
     private int y;
-    private int type;
-    
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "map_id")
     private GameMapJpaEntity map;
 }

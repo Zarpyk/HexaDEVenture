@@ -1,5 +1,6 @@
 package com.hexadeventure.adapter.out.persistence.game.mongo;
 
+import com.hexadeventure.adapter.out.persistence.game.mongo.data.GameMapMongoEntity;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

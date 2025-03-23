@@ -63,6 +63,11 @@ public class AStarAdapter implements AStarPathfinder {
         return null;
     }
     
+    @Override
+    public Queue<Vector2> generatePath(Vector2 start, Vector2 end, Map<Vector2, Integer> mapCost) {
+        return null;
+    }
+    
     private static class Node implements Comparable<Node> {
         Vector2 position;
         Node parent;

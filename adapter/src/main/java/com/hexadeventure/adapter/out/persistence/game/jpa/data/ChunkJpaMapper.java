@@ -1,11 +1,11 @@
-package com.hexadeventure.adapter.out.persistence.game.jpa;
+package com.hexadeventure.adapter.out.persistence.game.jpa.data;
 
-import com.hexadeventure.adapter.out.persistence.game.jpa.data.CellDataJpaMapper;
-import com.hexadeventure.adapter.out.persistence.game.jpa.data.EnemyJpaMapper;
-import com.hexadeventure.adapter.out.persistence.game.jpa.data.ResourceJpaMapper;
+import com.hexadeventure.adapter.out.persistence.game.jpa.data.chunk.CellDataJpaMapper;
+import com.hexadeventure.adapter.out.persistence.game.jpa.data.chunk.EnemyJpaMapper;
+import com.hexadeventure.adapter.out.persistence.game.jpa.data.chunk.ResourceJpaMapper;
 import com.hexadeventure.model.enemies.Enemy;
 import com.hexadeventure.model.map.CellData;
-import com.hexadeventure.model.map.GameMap;
+import com.hexadeventure.model.map.Chunk;
 import com.hexadeventure.model.map.Vector2;
 import com.hexadeventure.model.map.resources.Resource;
 
@@ -14,14 +14,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GameMapJpaMapper {
-    public static GameMapJpaEntity toEntity(GameMap model) {
-        GameMapJpaEntity entity = new GameMapJpaEntity();
+public class ChunkJpaMapper {
+    public static ChunkJpaEntity toEntity(String mapId, Chunk model) {
+        ChunkJpaEntity entity = new ChunkJpaEntity();
         entity.setId(model.getId());
-        entity.setUserId(model.getUserId());
-        entity.setSeed(model.getSeed());
-        entity.setGridSize(model.getMapSize());
-        entity.setGrid(Arrays.stream(model.getGrid())
+        entity.setMapId(mapId);
+        entity.setX(model.getPosition().x);
+        entity.setY(model.getPosition().y);
+        entity.setGrid(Arrays.stream(model.getCells())
                              .flatMap(Arrays::stream)
                              .map(CellDataJpaMapper::toEntity)
                              .collect(Collectors.toList()));
@@ -31,14 +31,13 @@ public class GameMapJpaMapper {
         entity.setEnemies(model.getEnemies().values().stream()
                                .map(EnemyJpaMapper::toEntity)
                                .collect(Collectors.toList()));
-        entity.setMainCharacter(MainCharacterJpaMapper.toEntity(model.getMainCharacter()));
         return entity;
     }
     
-    public static GameMap toModel(GameMapJpaEntity entity) {
+    public static Chunk toModel(ChunkJpaEntity entity) {
         List<CellData> cellDataStream = entity.getGrid().stream()
                                               .map(CellDataJpaMapper::toModel).toList();
-        CellData[][] grid = new CellData[entity.getGridSize()][entity.getGridSize()];
+        CellData[][] grid = new CellData[Chunk.SIZE][Chunk.SIZE];
         for (CellData cellData : cellDataStream) {
             grid[cellData.getPosition().x][cellData.getPosition().y] = cellData;
         }
@@ -55,14 +54,10 @@ public class GameMapJpaMapper {
             enemyHashMap.put(enemy.getPosition(), enemy);
         }
         
-        GameMap gameMap = new GameMap(entity.getId(), entity.getUserId(), entity.getSeed(), grid,
-                                      resourceHashMap, enemyHashMap);
-        
-        MainCharacterJpaEntity mainCharacter = entity.getMainCharacter();
-        if(mainCharacter != null) {
-            gameMap.initMainCharacter(new Vector2(mainCharacter.getX(), mainCharacter.getY()));
-        }
-        
-        return gameMap;
+        return new Chunk(entity.getId(),
+                         new Vector2(entity.getX(), entity.getY()),
+                         grid,
+                         resourceHashMap,
+                         enemyHashMap);
     }
 }

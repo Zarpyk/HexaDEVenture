@@ -1,4 +1,4 @@
-package com.hexadeventure.adapter.out.persistence.game.mongo;
+package com.hexadeventure.adapter.out.persistence.game.mongo.data;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

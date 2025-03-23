@@ -1,4 +1,4 @@
-package com.hexadeventure.adapter.out.persistence.game.mongo;
+package com.hexadeventure.adapter.out.persistence.game.mongo.data;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,9 +13,6 @@ public class GameMapMongoEntity {
     private String id;
     private String userId;
     private long seed;
-    private int gridSize;
-    private String gridFileId;
-    private String resourcesFileId;
-    private String enemiesFileId;
+    private int mapSize;
     private MainCharacterMongoEntity mainCharacter;
 }

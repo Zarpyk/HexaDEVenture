@@ -1,6 +1,6 @@
-package com.hexadeventure.adapter.out.persistence.game.jpa.data;
+package com.hexadeventure.adapter.out.persistence.game.jpa.data.chunk;
 
-import com.hexadeventure.adapter.out.persistence.game.jpa.GameMapJpaEntity;
+import com.hexadeventure.adapter.out.persistence.game.jpa.data.ChunkJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +21,6 @@ public class ResourceJpaEntity {
     private int count;
     
     @ManyToOne
-    @JoinColumn(name = "map_id")
-    private GameMapJpaEntity map;
+    @JoinColumn(name = "chunk_id")
+    private ChunkJpaEntity chunk;
 }

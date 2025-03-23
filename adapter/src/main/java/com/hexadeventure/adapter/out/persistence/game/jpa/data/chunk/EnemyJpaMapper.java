@@ -1,4 +1,4 @@
-package com.hexadeventure.adapter.out.persistence.game.jpa.data;
+package com.hexadeventure.adapter.out.persistence.game.jpa.data.chunk;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;

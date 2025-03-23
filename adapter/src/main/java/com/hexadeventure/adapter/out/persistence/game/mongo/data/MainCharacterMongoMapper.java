@@ -1,4 +1,4 @@
-package com.hexadeventure.adapter.out.persistence.game.mongo;
+package com.hexadeventure.adapter.out.persistence.game.mongo.data;
 
 import com.hexadeventure.model.characters.MainCharacter;
 import com.hexadeventure.model.map.Vector2;

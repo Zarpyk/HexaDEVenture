@@ -10,14 +10,12 @@ import java.util.*;
 
 @Getter
 public class GameMap {
-    public static final float EMPTY_THRESHOLD = 0.07f;
     
     private final String id;
     private final String userId;
     private final long seed;
-    private final CellData[][] grid;
-    private final Map<Vector2, Resource> resources = new HashMap<>();
-    private final Map<Vector2, Enemy> enemies = new HashMap<>();
+    private final int size;
+    private final Map<Vector2, Chunk> chunks = new HashMap<>();
     private MainCharacter mainCharacter;
     
     @Setter
@@ -27,58 +25,55 @@ public class GameMap {
         this.id = UUID.randomUUID().toString();
         this.userId = userId;
         this.seed = seed;
-        grid = new CellData[size][size];
+        this.size = size;
     }
     
-    public GameMap(String id, String userId, long seed, CellData[][] grid, Map<Vector2, Resource> resources,
-                   Map<Vector2, Enemy> enemies) {
+    public GameMap(String id, String userId, long seed, int size, Map<Vector2, Chunk> chunks) {
         this.id = id;
         this.userId = userId;
         this.seed = seed;
-        this.grid = grid;
-        if(resources != null) this.resources.putAll(resources);
-        if(enemies != null) this.enemies.putAll(enemies);
+        this.size = size;
+        if(chunks != null) this.chunks.putAll(chunks);
     }
     
-    public void createCell(double cellTypeThreshold, int x, int y) {
-        if(cellTypeThreshold < EMPTY_THRESHOLD) {
-            grid[x][y] = new CellData(new Vector2(x, y), CellType.GROUND);
-        } else {
-            grid[x][y] = new CellData(new Vector2(x, y), CellType.WALL);
-        }
+    public void setChunk(Vector2 position, Chunk chunk) {
+        chunks.put(position, chunk);
     }
     
-    public CellData getCell(Vector2 position) {
-        return getCell(position.x, position.y);
-    }
-    
-    public CellData getCell(int x, int y) {
-        return grid[x][y];
-    }
-    
-    public Resource getResource(Vector2 position) {
-        return resources.get(position);
-    }
-    
-    public Enemy getEnemy(Vector2 position) {
-        return enemies.get(position);
+    public void createCell(double cellTypeThreshold, Vector2 position) {
+        Vector2 chunkPosition = Chunk.getChunkPosition(position);
+        chunks.putIfAbsent(chunkPosition, new Chunk(chunkPosition));
+        chunks.get(chunkPosition).createCell(cellTypeThreshold, position);
     }
     
     public void setCell(Vector2 position, CellType type) {
-        grid[position.x][position.y] = new CellData(position, type);
+        Vector2 chunkPosition = Chunk.getChunkPosition(position);
+        chunks.putIfAbsent(chunkPosition, new Chunk(chunkPosition));
+        chunks.get(chunkPosition).setCell(position, type);
+    }
+    
+    public CellData getCell(Vector2 position) {
+        return chunks.get(Chunk.getChunkPosition(position)).getCell(position);
+    }
+    
+    public Resource getResource(Vector2 position) {
+        return chunks.get(Chunk.getChunkPosition(position)).getResource(position);
+    }
+    
+    public Enemy getEnemy(Vector2 position) {
+        return chunks.get(Chunk.getChunkPosition(position)).getEnemy(position);
     }
     
     public void addResource(Vector2 position, double threshold, Random random) {
-        // TODO: Add more resources
-        resources.put(position, new Resource(position, threshold, random));
+        Vector2 chunkPosition = Chunk.getChunkPosition(position);
+        chunks.putIfAbsent(chunkPosition, new Chunk(chunkPosition));
+        chunks.get(chunkPosition).addResource(position, threshold, random);
     }
     
     public void addEnemy(Vector2 position, Enemy enemy) {
-        enemies.put(position, enemy);
-    }
-    
-    public int getMapSize() {
-        return grid.length;
+        Vector2 chunkPosition = Chunk.getChunkPosition(position);
+        chunks.putIfAbsent(chunkPosition, new Chunk(chunkPosition));
+        chunks.get(chunkPosition).addEnemy(position, enemy);
     }
     
     public void initMainCharacter(Vector2 position) {
@@ -97,18 +92,22 @@ public class GameMap {
     }
     
     /**
-     * Returns the cost map of the game map.
+     * Returns the cost map of the given chunks.
      * @param onlyWalkable if true, non-walkable cells will have a cost of -1, otherwise a big number will be used
      * @return the cost map
      */
-    public int[][] getCostMap(boolean onlyWalkable) {
-        int[][] costMap = new int[grid.length][grid.length];
-        for (int x = 0; x < grid.length; x++) {
-            for (int y = 0; y < grid.length; y++) {
-                CellType cellType = getCell(x, y).getType();
-                costMap[x][y] = CellType.getCost(cellType, onlyWalkable);
+    public Map<Vector2, Integer> getCostMap(List<Vector2> positions, boolean onlyWalkable) {
+        Map<Vector2, Integer> costMap = new HashMap<>();
+        
+        for (Vector2 position : positions) {
+            int[][] chunkCostMap = chunks.get(position).getCostMap(onlyWalkable);
+            for (int x = 0; x < Chunk.SIZE; x++) {
+                for (int y = 0; y < Chunk.SIZE; y++) {
+                    costMap.put(new Vector2(x + position.x, y + position.y), chunkCostMap[x][y]);
+                }
             }
         }
+        
         return costMap;
     }
 }

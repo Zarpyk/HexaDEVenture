@@ -1,4 +1,4 @@
-package com.hexadeventure.adapter.out.persistence.game.jpa.data;
+package com.hexadeventure.adapter.out.persistence.game.jpa.data.chunk;
 
 import com.hexadeventure.model.map.Vector2;
 import com.hexadeventure.model.map.resources.Resource;
