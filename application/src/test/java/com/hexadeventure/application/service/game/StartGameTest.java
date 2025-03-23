@@ -7,10 +7,11 @@ import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.service.common.UserFactory;
+import com.hexadeventure.model.map.Chunk;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.Vector2;
 import com.hexadeventure.model.user.User;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -27,17 +28,17 @@ import static org.mockito.Mockito.*;
 public class StartGameTest {
     private static final String TEST_USER_EMAIL = "test@test.com";
     private static final long TEST_SEED = 1234;
-    private static final int TEST_SIZE = 100;
+    private static final int TEST_SIZE = GameService.MIN_MAP_SIZE;
     
-    private static final UserRepository userRepository = mock(UserRepository.class);
-    private static final GameMapRepository gameMapRepository = mock(GameMapRepository.class);
-    private static final NoiseGenerator noiseGenerator = mock(NoiseGenerator.class);
-    private static final AStarPathfinder aStarPathfinder = mock(AStarPathfinder.class);
-    private static final GameService gameService = new GameService(userRepository, gameMapRepository,
-                                                                   noiseGenerator, aStarPathfinder);
+    private final UserRepository userRepository = mock(UserRepository.class);
+    private final GameMapRepository gameMapRepository = mock(GameMapRepository.class);
+    private final NoiseGenerator noiseGenerator = mock(NoiseGenerator.class);
+    private final AStarPathfinder aStarPathfinder = mock(AStarPathfinder.class);
+    private final GameService gameService = new GameService(userRepository, gameMapRepository,
+                                                            noiseGenerator, aStarPathfinder);
     
-    @BeforeAll
-    public static void beforeAll() {
+    @BeforeEach
+    public void beforeEach() {
         when(noiseGenerator.getCircleWithNoisyEdge(anyInt(), anyLong(), anyInt()))
                 .thenAnswer(x -> new double[x.getArgument(0, Integer.class) * 2][x.getArgument(0, Integer.class) * 2]);
         
@@ -96,6 +97,16 @@ public class StartGameTest {
     @ParameterizedTest(name = "Given size {0} when create new map then throw exception")
     @ValueSource(ints = {0, GameService.MIN_MAP_SIZE - 1})
     public void givenSmallSize_whenCreateNewMap_thenThrowException(int size) {
+        UserFactory.createTestUser(userRepository);
+        
+        assertThatExceptionOfType(MapSizeException.class).isThrownBy(() -> {
+            gameService.startGame(TEST_USER_EMAIL, TEST_SEED, size);
+        });
+    }
+    
+    @ParameterizedTest(name = "Given size {0} when create new map then throw exception")
+    @ValueSource(ints = {GameService.MIN_MAP_SIZE + 1, GameService.MIN_MAP_SIZE + Chunk.SIZE - 1})
+    public void givenNotMultipleOfChunkSize_whenCreateNewMap_thenThrowException(int size) {
         UserFactory.createTestUser(userRepository);
         
         assertThatExceptionOfType(MapSizeException.class).isThrownBy(() -> {

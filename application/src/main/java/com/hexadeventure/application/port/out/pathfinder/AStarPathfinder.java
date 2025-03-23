@@ -11,8 +11,8 @@ public interface AStarPathfinder {
      *
      * @param start the start position
      * @param end the end position
-     * @param mapCost the cost of each cell in the map
+     * @param costMap the cost of each cell in the map
      * @return a queue of Vector2 representing the path from start to end
      */
-    Queue<Vector2> generatePath(Vector2 start, Vector2 end, Map<Vector2, Integer> mapCost);
+    Queue<Vector2> generatePath(Vector2 start, Vector2 end, Map<Vector2, Integer> costMap);
 }

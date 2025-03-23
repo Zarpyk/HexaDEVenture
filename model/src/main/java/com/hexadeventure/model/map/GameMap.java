@@ -93,17 +93,19 @@ public class GameMap {
     
     /**
      * Returns the cost map of the given chunks.
+     * @param chunkPositions the chunkPositions of the chunks
      * @param onlyWalkable if true, non-walkable cells will have a cost of -1, otherwise a big number will be used
      * @return the cost map
      */
-    public Map<Vector2, Integer> getCostMap(List<Vector2> positions, boolean onlyWalkable) {
+    public Map<Vector2, Integer> getCostMap(Collection<Vector2> chunkPositions, boolean onlyWalkable) {
         Map<Vector2, Integer> costMap = new HashMap<>();
         
-        for (Vector2 position : positions) {
+        for (Vector2 position : chunkPositions) {
             int[][] chunkCostMap = chunks.get(position).getCostMap(onlyWalkable);
             for (int x = 0; x < Chunk.SIZE; x++) {
                 for (int y = 0; y < Chunk.SIZE; y++) {
-                    costMap.put(new Vector2(x + position.x, y + position.y), chunkCostMap[x][y]);
+                    costMap.put(new Vector2(x + position.x * Chunk.SIZE, y + position.y * Chunk.SIZE),
+                                chunkCostMap[x][y]);
                 }
             }
         }

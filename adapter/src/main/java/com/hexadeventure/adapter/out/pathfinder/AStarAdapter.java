@@ -9,8 +9,9 @@ import java.util.*;
 @Component
 public class AStarAdapter implements AStarPathfinder {
     
-    public Queue<Vector2> generatePath(Vector2 start, Vector2 end, int[][] mapCost) {
-        if(start == null || end == null || mapCost.length == 0) return null;
+    @Override
+    public Queue<Vector2> generatePath(Vector2 start, Vector2 end, Map<Vector2, Integer> costMap) {
+        if(start == null || end == null || costMap.isEmpty()) return null;
         
         PriorityQueue<Node> checklist = new PriorityQueue<>();
         HashSet<Vector2> checkedPosition = new HashSet<>();
@@ -35,12 +36,13 @@ public class AStarAdapter implements AStarPathfinder {
                                                       current.position.y + dir[1]);
                 
                 // If the position has already been checked or is out of bounds, skip it
-                if(checkedPosition.contains(positionToCheck) || !isValidPosition(positionToCheck, mapCost)) continue;
+                if(checkedPosition.contains(positionToCheck) || !isValidPosition(positionToCheck, costMap)) continue;
                 
                 // Check if the position can't be accessed
-                if(mapCost[positionToCheck.x][positionToCheck.y] < 0) continue;
+                Integer cost = costMap.get(positionToCheck);
+                if(cost < 0) continue;
                 
-                int nodeCost = current.actualCost + mapCost[positionToCheck.x][positionToCheck.y];
+                int nodeCost = current.actualCost + cost;
                 
                 Node checkNode = nodeCache.get(positionToCheck);
                 if(checkNode == null) {
@@ -60,11 +62,6 @@ public class AStarAdapter implements AStarPathfinder {
             }
         }
         
-        return null;
-    }
-    
-    @Override
-    public Queue<Vector2> generatePath(Vector2 start, Vector2 end, Map<Vector2, Integer> mapCost) {
         return null;
     }
     
@@ -93,9 +90,8 @@ public class AStarAdapter implements AStarPathfinder {
         return Math.abs(end.x - start.x) + Math.abs(end.y - start.y);
     }
     
-    private boolean isValidPosition(Vector2 pos, int[][] map) {
-        return pos.x >= 0 && pos.x < map.length &&
-               pos.y >= 0 && pos.y < map[0].length;
+    private boolean isValidPosition(Vector2 pos, Map<Vector2, Integer> map) {
+        return map.containsKey(pos);
     }
     
     private Queue<Vector2> getFinalPath(Node end) {

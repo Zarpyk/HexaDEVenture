@@ -10,6 +10,8 @@ import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.movement.MovementAction;
+import com.hexadeventure.model.movement.MovementResponse;
 import com.hexadeventure.model.user.User;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +21,7 @@ import java.util.Optional;
 import java.util.Queue;
 
 public class GameService implements GameUseCase {
-    public static final int MIN_MAP_SIZE = 100;
+    public static final int MIN_MAP_SIZE = 144;
     
     private final UserRepository userRepository;
     private final GameMapRepository gameMapRepository;
@@ -41,35 +43,40 @@ public class GameService implements GameUseCase {
         assert user.isPresent();
         if(user.get().getMapId() != null) throw new GameStartedException();
         if(size < MIN_MAP_SIZE) {
-            throw new MapSizeException(MIN_MAP_SIZE);
+            throw new MapSizeException("Map size must be greater than " + MIN_MAP_SIZE);
         }
-        /*MapGenerator mapGenerator = new MapGenerator(noiseGenerator, aStarPathfinder);
-        GameMap newMap = mapGenerator.generateMap(email, seed, size);*/
-        GameMap newMap = new GameMap(email, seed, size);
+        if(size % 16 != 0) {
+            throw new MapSizeException("Map size must be a multiple of 16");
+        }
+        MapGenerator mapGenerator = new MapGenerator(noiseGenerator, aStarPathfinder);
+        GameMap newMap = mapGenerator.generateMap(email, seed, size);
         gameMapRepository.save(newMap);
         userRepository.updateMapIdByEmail(email, newMap.getId());
     }
     
     @Override
-    public MovementResponseDTO move(String email, Vector2 positionToMove) {
+    public MovementResponse move(String email, Vector2 positionToMove) {
         Optional<User> user = userRepository.findByEmail(email);
         assert user.isPresent();
         if(user.get().getMapId() == null) throw new GameNotStartedException();
         Optional<GameMap> map = gameMapRepository.findById(user.get().getMapId());
         assert map.isPresent();
-        List<MovementActionDTO> actions = new ArrayList<>();
+        List<MovementAction> actions = new ArrayList<>();
         
-        /*Queue<Vector2> path = aStarPathfinder.generatePath(map.get().getMainCharacter().getPosition(),
+        Queue<Vector2> path = aStarPathfinder.generatePath(map.get().getMainCharacter().getPosition(),
                                                            positionToMove,
-                                                           map.get().getCostMap(true));
+                                                           map.get().getCostMap(map.get()
+                                                                                   .getChunks()
+                                                                                   .keySet(),
+                                                                                true));
         
         // TODO US 1.8 & 1.9
         
         while (!path.isEmpty()) {
             Vector2 position = path.poll();
-            actions.add(new MovementActionDTO(position.x, position.y, null, null));
-        }*/
+            actions.add(new MovementAction(position.x, position.y, null, null));
+        }
         
-        return new MovementResponseDTO(actions);
+        return new MovementResponse(actions);
     }
 }
