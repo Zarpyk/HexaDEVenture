@@ -8,6 +8,7 @@ import com.hexadeventure.application.port.out.noise.NoiseGenerator;
 import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
+import com.hexadeventure.model.map.Chunk;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.Vector2;
 import com.hexadeventure.model.movement.MovementAction;
@@ -21,7 +22,9 @@ import java.util.Optional;
 import java.util.Queue;
 
 public class GameService implements GameUseCase {
-    public static final int MIN_MAP_SIZE = 144;
+    // Use only odd numbers
+    public static final int MIN_SQUARE_SIZE = 3;
+    public static final int MIN_MAP_SIZE = Chunk.SIZE * (MIN_SQUARE_SIZE * MIN_SQUARE_SIZE);
     
     private final UserRepository userRepository;
     private final GameMapRepository gameMapRepository;
@@ -49,7 +52,7 @@ public class GameService implements GameUseCase {
             throw new MapSizeException("Map size must be a multiple of 16");
         }
         MapGenerator mapGenerator = new MapGenerator(noiseGenerator, aStarPathfinder);
-        GameMap newMap = mapGenerator.generateMap(email, seed, size);
+        GameMap newMap = mapGenerator.initialMapGeneration(email, seed, size);
         gameMapRepository.save(newMap);
         userRepository.updateMapIdByEmail(email, newMap.getId());
     }

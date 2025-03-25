@@ -10,12 +10,12 @@ import java.util.*;
 
 @Getter
 public class GameMap {
-    
     private final String id;
     private final String userId;
     private final long seed;
     private final int size;
-    private final Map<Vector2, Chunk> chunks = new HashMap<>();
+    @Setter
+    private Map<Vector2C, Chunk> chunks = new HashMap<>();
     private MainCharacter mainCharacter;
     
     @Setter
@@ -28,7 +28,7 @@ public class GameMap {
         this.size = size;
     }
     
-    public GameMap(String id, String userId, long seed, int size, Map<Vector2, Chunk> chunks) {
+    public GameMap(String id, String userId, long seed, int size, Map<Vector2C, Chunk> chunks) {
         this.id = id;
         this.userId = userId;
         this.seed = seed;
@@ -36,18 +36,28 @@ public class GameMap {
         if(chunks != null) this.chunks.putAll(chunks);
     }
     
-    public void setChunk(Vector2 position, Chunk chunk) {
+    public void addChunks(Map<Vector2C, Chunk> chunks, boolean canOverrideChunks) {
+        if(canOverrideChunks) {
+            this.chunks.putAll(chunks);
+        } else {
+            for (Vector2C key : chunks.keySet()) {
+                this.chunks.putIfAbsent(key, chunks.get(key));
+            }
+        }
+    }
+    
+    public void setChunk(Vector2C position, Chunk chunk) {
         chunks.put(position, chunk);
     }
     
     public void createCell(double cellTypeThreshold, Vector2 position) {
-        Vector2 chunkPosition = Chunk.getChunkPosition(position);
+        Vector2C chunkPosition = Chunk.getChunkPosition(position);
         chunks.putIfAbsent(chunkPosition, new Chunk(chunkPosition));
         chunks.get(chunkPosition).createCell(cellTypeThreshold, position);
     }
     
     public void setCell(Vector2 position, CellType type) {
-        Vector2 chunkPosition = Chunk.getChunkPosition(position);
+        Vector2C chunkPosition = Chunk.getChunkPosition(position);
         chunks.putIfAbsent(chunkPosition, new Chunk(chunkPosition));
         chunks.get(chunkPosition).setCell(position, type);
     }
@@ -64,14 +74,14 @@ public class GameMap {
         return chunks.get(Chunk.getChunkPosition(position)).getEnemy(position);
     }
     
-    public void addResource(Vector2 position, double threshold, Random random) {
-        Vector2 chunkPosition = Chunk.getChunkPosition(position);
+    public void addResource(Vector2 position, double threshold, SplittableRandom random) {
+        Vector2C chunkPosition = Chunk.getChunkPosition(position);
         chunks.putIfAbsent(chunkPosition, new Chunk(chunkPosition));
         chunks.get(chunkPosition).addResource(position, threshold, random);
     }
     
     public void addEnemy(Vector2 position, Enemy enemy) {
-        Vector2 chunkPosition = Chunk.getChunkPosition(position);
+        Vector2C chunkPosition = Chunk.getChunkPosition(position);
         chunks.putIfAbsent(chunkPosition, new Chunk(chunkPosition));
         chunks.get(chunkPosition).addEnemy(position, enemy);
     }
@@ -97,15 +107,14 @@ public class GameMap {
      * @param onlyWalkable if true, non-walkable cells will have a cost of -1, otherwise a big number will be used
      * @return the cost map
      */
-    public Map<Vector2, Integer> getCostMap(Collection<Vector2> chunkPositions, boolean onlyWalkable) {
+    public Map<Vector2, Integer> getCostMap(Collection<Vector2C> chunkPositions, boolean onlyWalkable) {
         Map<Vector2, Integer> costMap = new HashMap<>();
         
-        for (Vector2 position : chunkPositions) {
+        for (Vector2C position : chunkPositions) {
             int[][] chunkCostMap = chunks.get(position).getCostMap(onlyWalkable);
-            for (int x = 0; x < Chunk.SIZE; x++) {
-                for (int y = 0; y < Chunk.SIZE; y++) {
-                    costMap.put(new Vector2(x + position.x * Chunk.SIZE, y + position.y * Chunk.SIZE),
-                                chunkCostMap[x][y]);
+            for (int x = position.getRealX(); x < position.getEndX(); x++) {
+                for (int y = position.getRealY(); y < position.getEndY(); y++) {
+                    costMap.put(new Vector2(x, y), chunkCostMap[x - position.getRealX()][y - position.getRealY()]);
                 }
             }
         }

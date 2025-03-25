@@ -4,7 +4,7 @@ import com.hexadeventure.adapter.out.persistence.game.mongo.data.ChunkMongoEntit
 import com.hexadeventure.adapter.out.persistence.game.mongo.data.ChunkMongoMapper;
 import com.hexadeventure.application.port.out.persistence.ChunkRepository;
 import com.hexadeventure.model.map.Chunk;
-import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.map.Vector2C;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.stereotype.Repository;
@@ -26,10 +26,10 @@ public class ChunkMongoRepository implements ChunkRepository {
     }
     
     @Override
-    public List<Chunk> findChunks(String mapId, Collection<Vector2> positions) {
+    public List<Chunk> findChunks(String mapId, Collection<Vector2C> positions) {
         if(!repo.existsByMapId(mapId)) return List.of();
         List<Chunk> chunks = new ArrayList<>();
-        for (Vector2 position : positions) {
+        for (Vector2C position : positions) {
             repo.findByMapIdAndXAndY(mapId, position.x, position.y)
                 .ifPresent(chunk -> chunks.add(ChunkMongoMapper.toModel(chunk, gridFsOperations)));
         }

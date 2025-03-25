@@ -8,11 +8,13 @@ import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.hexadeventure.adapter.out.persistence.game.mongo.ChunkMongoSDRepository;
+import com.hexadeventure.adapter.utils.Vector2CDeserializer;
 import com.hexadeventure.adapter.utils.Vector2Deserializer;
 import com.hexadeventure.model.enemies.Enemy;
 import com.hexadeventure.model.map.CellData;
 import com.hexadeventure.model.map.Chunk;
 import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.map.Vector2C;
 import com.hexadeventure.model.map.resources.Resource;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
@@ -41,6 +43,7 @@ public class ChunkMongoMapper {
         // From: https://stackoverflow.com/a/44210009/11451105
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addKeyDeserializer(Vector2.class, new Vector2Deserializer());
+        simpleModule.addKeyDeserializer(Vector2C.class, new Vector2CDeserializer());
         objectMapper.registerModule(simpleModule);
     }
     
@@ -94,7 +97,7 @@ public class ChunkMongoMapper {
                                                                      new TypeReference<>() {});
             
             return new Chunk(entity.getId(),
-                             new Vector2(entity.getX(), entity.getY()),
+                             new Vector2C(entity.getX(), entity.getY()),
                              grid,
                              resources,
                              enemies);

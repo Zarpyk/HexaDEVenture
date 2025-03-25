@@ -2,6 +2,8 @@ package com.hexadeventure.adapter.out.noise;
 
 import com.hexadeventure.adapter.utils.DoubleMapper;
 import com.hexadeventure.application.port.out.noise.NoiseGenerator;
+import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.map.Vector2C;
 import de.articdive.jnoise.core.api.functions.Interpolation;
 import de.articdive.jnoise.generators.noise_parameters.fade_functions.FadeFunction;
 import de.articdive.jnoise.modules.octavation.fractal_functions.FractalFunction;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 public class JNoiseAdapter implements NoiseGenerator {
@@ -48,9 +51,10 @@ public class JNoiseAdapter implements NoiseGenerator {
         jNoise.remove(id);
     }
     
-    public double[][] getCircleWithNoisyEdge(int radius, long seed, int variation) {
-        double[][] circleGradient = getCircleGradient(radius, false);
-        double[][] circle = new double[radius * 2][radius * 2];
+    public Map<Vector2, Double> getCircleWithNoisyEdge(int radius, Vector2 center, long seed, int variation,
+                                                       Set<Vector2C> chunksToGenerate) {
+        Map<Vector2, Double> circleGradient = getCircleGradient(radius, center, false, chunksToGenerate);
+        Map<Vector2, Double> circle = new HashMap<>();
         
         double maxGrad = 0.0;
         String noiseId = CIRCLE_NOISE_ID + variation;
@@ -58,88 +62,113 @@ public class JNoiseAdapter implements NoiseGenerator {
                   4, 0.2, 1.5,
                   NoiseGenerator.FRACTAL_FBM, true,
                   true);
-        for (int y = 0; y < circle.length; y++) {
-            for (int x = 0; x < circle.length; x++) {
-                double distX = Math.abs(x - radius);
-                double distY = Math.abs(y - radius);
-                double dist = Math.sqrt(distX * distX + distY * distY);
-                if(dist > radius) circle[y][x] = 1;
-                else circle[y][x] = circleGradient[y][x] * getPerlinNoise(x, y, noiseId, true);
-                circle[y][x] *= 20;
-                if(circle[y][x] > maxGrad) {
-                    maxGrad = circle[y][x];
+        for (Vector2 position : circleGradient.keySet()) {
+            double distX = Math.abs(position.x - center.x);
+            double distY = Math.abs(position.y - center.y);
+            double dist = Math.sqrt(distX * distX + distY * distY);
+            
+            double value;
+            if(dist > radius) value = 1;
+            else value = circleGradient.get(position) * getPerlinNoise(position.x, position.y, noiseId, true);
+            
+            value *= 20;
+            if(value > maxGrad) {
+                maxGrad = value;
+            }
+            circle.put(position, value);
+        }
+        /*for (Vector2C chunk : chunksToGenerate) {
+            for (int x = chunk.getRealX(); x < chunk.getEndX(); x++) {
+                for (int y = chunk.getRealY(); y < chunk.getEndY(); y++) {
+                    Vector2 position = new Vector2(x, y);
+                    
+                    double distX = Math.abs(x - center.x);
+                    double distY = Math.abs(y - center.y);
+                    double dist = Math.sqrt(distX * distX + distY * distY);
+                    
+                    double value;
+                    if(dist > radius) value = 1;
+                    else value = circleGradient.get(position) * getPerlinNoise(x, y, noiseId, true);
+                    
+                    value *= 20;
+                    if(value > maxGrad) {
+                        maxGrad = value;
+                    }
+                    circle.put(position, value);
                 }
             }
-        }
+        }*/
         
-        return Normalize(circle, maxGrad);
+        normalize(circle, maxGrad);
+        return circle;
     }
     
     // Modified from python code:
     // https://medium.com/@yvanscher/playing-with-perlin-noise-generating-realistic-archipelagos-b59f004d8401
-    private double[][] getCircleGradient(int radius, boolean invert) {
-        double[][] circleGrad = new double[radius * 2][radius * 2];
+    private Map<Vector2, Double> getCircleGradient(int radius, Vector2 center,
+                                                   boolean invert, Set<Vector2C> chunksToGenerate) {
+        Map<Vector2, Double> circleGrad = new HashMap<>();
         
-        double maxGrad = 0.0;
+        int maxX = radius * 2;
+        int maxY = radius * 2;
+        double maxGrad = Math.sqrt(maxX * maxX + maxY * maxY);
         double finalMaxGrad = 0.0;
         
-        for (int y = 0; y < circleGrad.length; y++) {
-            for (int x = 0; x < circleGrad.length; x++) {
-                // (x - a)^2 + (y - b)^2 = r^2
-                double distX = Math.abs(x - radius);
-                double distY = Math.abs(y - radius);
-                double dist = Math.sqrt(distX * distX + distY * distY);
-                circleGrad[y][x] = dist;
-                
-                if(dist > maxGrad) maxGrad = dist;
-            }
-        }
-        
-        for (int y = 0; y < circleGrad.length; y++) {
-            for (int x = 0; x < circleGrad.length; x++) {
-                // Get it between -1 and 1
-                circleGrad[y][x] /= maxGrad;
-                circleGrad[y][x] -= 0.5;
-                circleGrad[y][x] *= 2.0;
-                if(invert) circleGrad[y][x] = -circleGrad[y][x];
-                
-                // Shrink gradient
-                if(circleGrad[y][x] > 0) {
-                    circleGrad[y][x] *= 20;
-                }
-                
-                // Get it between 0 and 1
-                if(circleGrad[y][x] > finalMaxGrad) {
-                    finalMaxGrad = circleGrad[y][x];
+        for (Vector2C chunk : chunksToGenerate) {
+            for (int x = chunk.getRealX(); x < chunk.getEndX(); x++) {
+                for (int y = chunk.getRealY(); y < chunk.getEndY(); y++) {
+                    // (y - a)^2 + (x - b)^2 = r^2
+                    double distX = Math.abs(x - center.x);
+                    double distY = Math.abs(y - center.y);
+                    double dist = Math.sqrt(distX * distX + distY * distY);
+                    circleGrad.put(new Vector2(x, y), dist);
+                    
+                    if(dist > maxGrad) maxGrad = dist;
                 }
             }
         }
         
-        for (int y = 0; y < circleGrad.length; y++) {
-            for (int x = 0; x < circleGrad.length; x++) {
-                double distX = Math.abs(x - radius);
-                double distY = Math.abs(y - radius);
-                double dist = Math.sqrt(distX * distX + distY * distY);
-                if(dist > radius) {
-                    circleGrad[y][x] = finalMaxGrad;
-                }
+        for (Vector2 position : circleGrad.keySet()) {
+            double value = circleGrad.get(position);
+            // Get it between -1 and 1
+            value /= maxGrad;
+            value -= 0.5;
+            value *= 2.0;
+            if(invert) value = -value;
+            
+            // Shrink gradient
+            if(value > 0) {
+                value *= 20;
             }
+            
+            // Get it between 0 and 1
+            if(value > finalMaxGrad) {
+                finalMaxGrad = value;
+            }
+            circleGrad.put(position, value);
         }
         
-        return Normalize(circleGrad, finalMaxGrad);
+        /*for (Vector2 position : circleGrad.keySet()) {
+            double distX = Math.abs(position.x - center.x);
+            double distY = Math.abs(position.y - center.y);
+            double dist = Math.sqrt(distX * distX + distY * distY);
+            if(dist > radius) {
+                circleGrad.put(position, finalMaxGrad);
+            }
+        }*/
+        
+        normalize(circleGrad, finalMaxGrad);
+        return circleGrad;
     }
     
-    private double[][] Normalize(double[][] circle, double maxGrad) {
-        for (int y = 0; y < circle.length; y++) {
-            for (int x = 0; x < circle.length; x++) {
-                if(circle[y][x] <= 0) {
-                    circle[y][x] = 0;
-                } else {
-                    circle[y][x] /= maxGrad;
-                }
+    private void normalize(Map<Vector2, Double> circle, double maxGrad) {
+        for (Vector2 position : circle.keySet()) {
+            double value = circle.get(position);
+            if(value <= 0) {
+                circle.put(position, 0d);
+            } else {
+                circle.put(position, value / maxGrad);
             }
         }
-        
-        return circle;
     }
 }

@@ -38,8 +38,16 @@ public class Vector2 {
         return new Vector2(x + vector2.x, y + vector2.y);
     }
     
+    public Vector2 add(int x, int y) {
+        return new Vector2(this.x + x, this.y + y);
+    }
+    
     public Vector2 subtract(Vector2 vector2) {
         return new Vector2(x - vector2.x, y - vector2.y);
+    }
+    
+    public Vector2 subtract(int x, int y) {
+        return new Vector2(this.x - x, this.y - y);
     }
     
     public Vector2 multiply(int scalar) {
@@ -70,6 +78,10 @@ public class Vector2 {
     @Override
     public int hashCode() {
         return Objects.hash(x, y);
+    }
+    
+    public int getRandomSeed(long seed, int variation) {
+        return Objects.hash(x, y, seed, variation);
     }
     
     @Override

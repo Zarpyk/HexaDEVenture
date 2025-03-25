@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class CellData {
-    public static final float EMPTY_THRESHOLD = 0.07f;
+    public static final float EMPTY_THRESHOLD = -0.07f;
+    public static final float EMPTY2_THRESHOLD = 0.07f;
     
     private Vector2 position;
     private CellType type;
@@ -15,6 +16,8 @@ public class CellData {
         this.position = position;
         if(threshold < EMPTY_THRESHOLD) {
             type = CellType.GROUND;
+        } else if(threshold < EMPTY2_THRESHOLD) {
+            type = CellType.GROUND2;
         } else {
             type = CellType.WALL;
         }

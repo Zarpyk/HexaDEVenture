@@ -3,7 +3,7 @@ package com.hexadeventure.model.map.resources;
 import com.hexadeventure.model.map.Vector2;
 import lombok.Getter;
 
-import java.util.Random;
+import java.util.SplittableRandom;
 
 @Getter
 public class Resource {
@@ -14,7 +14,7 @@ public class Resource {
     private final ResourceType type;
     private final int count;
     
-    public Resource(Vector2 position, double threshold, Random random) {
+    public Resource(Vector2 position, double threshold, SplittableRandom random) {
         // TODO Add more resources
         this.position = position;
         this.type = ResourceType.WOOD;

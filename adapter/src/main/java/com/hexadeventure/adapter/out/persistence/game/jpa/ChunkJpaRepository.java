@@ -4,7 +4,7 @@ import com.hexadeventure.adapter.out.persistence.game.jpa.data.ChunkJpaEntity;
 import com.hexadeventure.adapter.out.persistence.game.jpa.data.ChunkJpaMapper;
 import com.hexadeventure.application.port.out.persistence.ChunkRepository;
 import com.hexadeventure.model.map.Chunk;
-import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.map.Vector2C;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ConditionalOnProperty(name = "persistence", havingValue = "jpa")
 @Repository
@@ -24,10 +25,10 @@ public class ChunkJpaRepository implements ChunkRepository {
     }
     
     @Override
-    public List<Chunk> findChunks(String mapId, Collection<Vector2> positions) {
+    public List<Chunk> findChunks(String mapId, Collection<Vector2C> positions) {
         if(!repo.existsByMapId(mapId)) return List.of();
         List<Chunk> chunks = new ArrayList<>();
-        for (Vector2 position : positions) {
+        for (Vector2C position : positions) {
             repo.findByMapIdAndXAndY(mapId, position.x, position.y)
                 .ifPresent(chunk -> chunks.add(ChunkJpaMapper.toModel(chunk)));
         }
@@ -37,9 +38,11 @@ public class ChunkJpaRepository implements ChunkRepository {
     @Override
     @Transactional
     public void saveChunks(String mapId, Collection<Chunk> chunks) {
-        List<ChunkJpaEntity> chunkEntities = chunks.stream()
+        // Parallelize this
+        List<ChunkJpaEntity> chunkEntities = chunks.parallelStream()
                                                    .map(chunk -> ChunkJpaMapper.toEntity(mapId, chunk))
-                                                   .toList();
+                                                   .collect(Collectors.toCollection(
+                                                           () -> new ArrayList<>(chunks.size())));
         repo.saveAll(chunkEntities);
     }
     

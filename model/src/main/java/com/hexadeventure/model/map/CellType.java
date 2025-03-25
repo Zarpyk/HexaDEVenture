@@ -2,6 +2,7 @@ package com.hexadeventure.model.map;
 
 public enum CellType {
     GROUND,
+    GROUND2,
     PATH,
     WALL;
     
@@ -12,7 +13,8 @@ public enum CellType {
     public static int getCost(CellType cellType, boolean onlyWalkable) {
         return switch (cellType) {
             case PATH -> 1;
-            case GROUND -> 2;
+            case GROUND -> 5;
+            case GROUND2 -> 10;
             case WALL -> onlyWalkable ? -1 : 200;
         };
     }

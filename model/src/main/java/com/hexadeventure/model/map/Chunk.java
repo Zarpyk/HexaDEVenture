@@ -7,7 +7,7 @@ import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
+import java.util.SplittableRandom;
 import java.util.UUID;
 
 @Getter
@@ -16,13 +16,13 @@ public class Chunk {
     public static final int SIZE = 16;
     
     private final String id;
-    private final Vector2 position;
+    private final Vector2C position;
     
     private final CellData[][] cells;
     private final Map<Vector2, Resource> resources;
     private final Map<Vector2, Enemy> enemies;
     
-    public Chunk(Vector2 position) {
+    public Chunk(Vector2C position) {
         this.id = UUID.randomUUID().toString();
         this.position = position;
         this.cells = new CellData[SIZE][SIZE];
@@ -30,12 +30,12 @@ public class Chunk {
         this.enemies = new HashMap<>();
     }
     
-    public static Vector2 getChunkPosition(Vector2 position) {
+    public static Vector2C getChunkPosition(Vector2 position) {
         return getChunkPosition(position.x, position.y);
     }
     
-    public static Vector2 getChunkPosition(int x, int y) {
-        return new Vector2(x / SIZE, y / SIZE);
+    public static Vector2C getChunkPosition(int x, int y) {
+        return new Vector2C(x / SIZE, y / SIZE);
     }
     
     public void createCell(double cellTypeThreshold, Vector2 position) {
@@ -64,7 +64,7 @@ public class Chunk {
         return enemies.get(position);
     }
     
-    public void addResource(Vector2 position, double threshold, Random random) {
+    public void addResource(Vector2 position, double threshold, SplittableRandom random) {
         resources.put(position, new Resource(position, threshold, random));
     }
     

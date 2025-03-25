@@ -1,7 +1,7 @@
 package com.hexadeventure.application.port.out.persistence;
 
 import com.hexadeventure.model.map.Chunk;
-import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.map.Vector2C;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,7 +14,7 @@ public interface ChunkRepository {
      * @param positions List of vector positions where chunks should be found
      * @return List of chunks at the specified positions, or null if no chunks are found with the given mapId
      */
-    List<Chunk> findChunks(String mapId, Collection<Vector2> positions);
+    List<Chunk> findChunks(String mapId, Collection<Vector2C> positions);
     
     /**
      * Saves a list of chunks for a specific map. <br>

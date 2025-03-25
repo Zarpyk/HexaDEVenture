@@ -1,5 +1,11 @@
 package com.hexadeventure.application.port.out.noise;
 
+import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.map.Vector2C;
+
+import java.util.Map;
+import java.util.Set;
+
 public interface NoiseGenerator {
     int FRACTAL_FBM = 0;
     int FRACTAL_RIDGED = 1;
@@ -45,7 +51,10 @@ public interface NoiseGenerator {
      *
      * @param radius the radius of the circle
      * @param seed the seed value for noise generation
+     * @param chunksToGenerate the set of chunks to generate
+     *
      * @return the generated circle with a noisy edge
      */
-    double[][] getCircleWithNoisyEdge(int radius, long seed, int variation);
+    Map<Vector2, Double> getCircleWithNoisyEdge(int radius, Vector2 center, long seed, int variation,
+                                                Set<Vector2C> chunksToGenerate);
 }

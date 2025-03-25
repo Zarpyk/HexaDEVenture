@@ -1,13 +1,9 @@
 package com.hexadeventure.adapter.out.persistence.game.jpa.data;
 
-import com.hexadeventure.adapter.out.persistence.game.jpa.data.chunk.CellDataJpaEntity;
-import com.hexadeventure.adapter.out.persistence.game.jpa.data.chunk.EnemyJpaEntity;
-import com.hexadeventure.adapter.out.persistence.game.jpa.data.chunk.ResourceJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
+import org.hibernate.annotations.ColumnTransformer;
 
 @Entity
 @Table(name = "chunk", indexes = {
@@ -22,12 +18,30 @@ public class ChunkJpaEntity {
     private int x;
     private int y;
     
-    @OneToMany(mappedBy = "chunk", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Column(columnDefinition = "json")
+    // From: https://stackoverflow.com/a/77150431/11451105
+    // Probably only for PostgreSQL
+    @ColumnTransformer(write = "?::json")
+    private String cellsJson;
+    
+    @Column(columnDefinition = "json")
+    // From: https://stackoverflow.com/a/77150431/11451105
+    // Probably only for PostgreSQL
+    @ColumnTransformer(write = "?::json")
+    private String resourcesJson;
+    
+    @Column(columnDefinition = "json")
+    // From: https://stackoverflow.com/a/77150431/11451105
+    // Probably only for PostgreSQL
+    @ColumnTransformer(write = "?::json")
+    private String enemiesJson;
+    
+    /*@OneToMany(mappedBy = "chunk", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<CellDataJpaEntity> grid;
     
     @OneToMany(mappedBy = "chunk", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ResourceJpaEntity> resources;
     
     @OneToMany(mappedBy = "chunk", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<EnemyJpaEntity> enemies;
+    private List<EnemyJpaEntity> enemies;*/
 }

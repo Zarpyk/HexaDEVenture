@@ -10,6 +10,7 @@ import com.hexadeventure.application.service.common.UserFactory;
 import com.hexadeventure.model.map.Chunk;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.map.Vector2C;
 import com.hexadeventure.model.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,8 +18,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 
-import java.util.LinkedList;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -29,6 +29,7 @@ public class StartGameTest {
     private static final String TEST_USER_EMAIL = "test@test.com";
     private static final long TEST_SEED = 1234;
     private static final int TEST_SIZE = GameService.MIN_MAP_SIZE;
+    private static final Set<Vector2C> chunksToGenerate = new HashSet<>();
     
     private final UserRepository userRepository = mock(UserRepository.class);
     private final GameMapRepository gameMapRepository = mock(GameMapRepository.class);
@@ -37,10 +38,20 @@ public class StartGameTest {
     private final GameService gameService = new GameService(userRepository, gameMapRepository,
                                                             noiseGenerator, aStarPathfinder);
     
+    static {
+        int center = TEST_SIZE / 2;
+        Vector2C centerChunk = Chunk.getChunkPosition(center, center);
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                chunksToGenerate.add(centerChunk.add(i, j));
+            }
+        }
+    }
+    
     @BeforeEach
     public void beforeEach() {
-        when(noiseGenerator.getCircleWithNoisyEdge(anyInt(), anyLong(), anyInt()))
-                .thenAnswer(x -> new double[x.getArgument(0, Integer.class) * 2][x.getArgument(0, Integer.class) * 2]);
+        when(noiseGenerator.getCircleWithNoisyEdge(anyInt(), any(), anyLong(), anyInt(), eq(chunksToGenerate)))
+                .thenAnswer(_ -> new HashMap<>());
         
         when(aStarPathfinder.generatePath(any(), any(), any())).thenReturn(new LinkedList<>());
     }
@@ -51,12 +62,12 @@ public class StartGameTest {
         
         gameService.startGame(TEST_USER_EMAIL, TEST_SEED, TEST_SIZE);
         
-        verify(noiseGenerator, times(1))
+        verify(noiseGenerator, atLeast(1))
                 .initNoise(any(), eq(TEST_SEED), anyDouble(),
                            anyInt(), anyDouble(), anyDouble(), anyInt(), anyBoolean(), anyBoolean());
-        verify(noiseGenerator, times(TEST_SIZE * TEST_SIZE))
-                .getPerlinNoise(anyDouble(), anyDouble(), any(), anyBoolean());
-        verify(noiseGenerator, times(1)).releaseNoise(any());
+        
+        verify(noiseGenerator, atLeast(1)).getPerlinNoise(anyDouble(), anyDouble(), any(), anyBoolean());
+        verify(noiseGenerator, atLeast(1)).releaseNoise(any());
         
         verify(userRepository, times(1)).updateMapIdByEmail(eq(UserFactory.EMAIL), any());
         verify(gameMapRepository, times(1)).save(any());

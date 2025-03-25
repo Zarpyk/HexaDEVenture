@@ -4,10 +4,7 @@ import com.hexadeventure.application.port.out.noise.NoiseGenerator;
 import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.model.enemies.Boss;
 import com.hexadeventure.model.enemies.Enemy;
-import com.hexadeventure.model.map.CellType;
-import com.hexadeventure.model.map.Chunk;
-import com.hexadeventure.model.map.GameMap;
-import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.map.*;
 import com.hexadeventure.model.map.resources.Resource;
 import com.hexadeventure.utils.DoubleMapper;
 
@@ -16,9 +13,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+import java.util.*;
 import java.util.Queue;
-import java.util.Random;
 
 public class MapGenerator {
     private static final int CLEAR_RADIUS_AROUND_PLAYER = 10;
@@ -27,22 +23,25 @@ public class MapGenerator {
     
     private static final int BORDER_OFFSET = 2;
     private static final double BORDER_THRESHOLD = 0.2;
-    private static final int GENERATE_BORDER_CIRCLE_VARIATION = 1;
     private static final CellType BORDER_OBSTACLE_TYPE = CellType.WALL;
+    private static final int GENERATE_BORDER_CIRCLE_VARIATION = 1;
     
     private static final int GENERATE_RESOURCE_PROBABILITY = 5;
     private static final int GENERATE_RESOURCE_CENTER_RADIUS = 5;
+    private static final int GENERATE_RESOURCE_VARIATION = 2;
     
-    private static final int BOSS_BORDER_OFFSET = 10;
+    private static final int BOSS_BORDER_OFFSET = BORDER_OFFSET + 10;
     private static final int BOSS_CLEAR_RADIUS = 5;
     private static final double BOSS_CLEAR_CIRCLE_THRESHOLD = 0.15;
-    private static final int BOSS_CLEAR_CIRCLE_VARIATION = 0;
     private static final int BOSS_PATH_EXTRA_WIDTH = 1;
+    private static final int BOSS_PATHFINDING_GENERATE_CHUNKS_WIDTH = 1;
+    private static final int BOSS_CLEAR_CIRCLE_VARIATION = 3;
     
     private static final double GENERATE_ENEMY_PROBABILITY = 0.5;
     private static final double GENERATE_ENEMY_PROBABILITY_MAX_INCREMENT = 5;
     private static final int GENERATE_ENEMY_CENTER_RADIUS = 5;
     private static final int GENERATE_ENEMY_BOSS_RADIUS = 2;
+    private static final int GENERATE_ENEMY_VARIATION = 4;
     
     private final NoiseGenerator noiseGenerator;
     private final AStarPathfinder aStarPathfinder;
@@ -52,17 +51,36 @@ public class MapGenerator {
         this.aStarPathfinder = aStarPathfinder;
     }
     
-    public GameMap generateMap(String email, long seed, int size) {
-        Random random = new Random(seed);
+    public GameMap initialMapGeneration(String email, long seed, int size) {
+        Set<Vector2C> chunksToGenerate = new HashSet<>();
+        
+        int center = size / 2;
+        Vector2C centerChunk = Chunk.getChunkPosition(new Vector2(center, center));
+        
+        int distance = (GameService.MIN_SQUARE_SIZE - 1) / 2;
+        
+        for (int x = -distance; x <= distance; x++) {
+            for (int y = -distance; y <= distance; y++) {
+                chunksToGenerate.add(new Vector2C(centerChunk.x + x, centerChunk.y + y));
+            }
+        }
+        
         GameMap map = new GameMap(email, seed, size);
-        generateCells(email, seed, size, map);
-        generatePlayer(map);
-        generateBorder(map);
-        generateResources(map, random);
-        generateFinalBoss(map, random);
-        generateEnemies(map, random);
+        generateCells(map, chunksToGenerate, true);
+        generatePlayer(map, chunksToGenerate);
+        generateBorder(map, chunksToGenerate);
+        generateResources(map, chunksToGenerate);
+        generateFinalBoss(map);
+        generateEnemies(map, chunksToGenerate);
         printMap(map);
         return map;
+    }
+    
+    public void generateSelectedChunks(GameMap map, Set<Vector2C> chunksToGenerate) {
+        generateCells(map, chunksToGenerate, false);
+        generateBorder(map, chunksToGenerate);
+        generateResources(map, chunksToGenerate);
+        generateEnemies(map, chunksToGenerate);
     }
     
     /**
@@ -72,7 +90,7 @@ public class MapGenerator {
     @Deprecated(forRemoval = true)
     private void printMap(GameMap map) {
         int size = map.getSize();
-        int cellSize = 10; // Each cell will be 10x10 pixels
+        int cellSize = 10;
         int gridThickness = 1;
         int imageSize = size * cellSize;
         
@@ -89,7 +107,14 @@ public class MapGenerator {
                 int pixelX = x * cellSize;
                 int pixelY = y * cellSize;
                 
-                switch (map.getCell(new Vector2(x, y)).getType()) {
+                if(!map.getChunks().containsKey(Chunk.getChunkPosition(new Vector2(x, y)))) {
+                    continue;
+                }
+                
+                CellData cell = map.getCell(new Vector2(x, y));
+                if(cell == null) continue;
+                
+                switch (cell.getType()) {
                     case WALL -> {
                         // Draw obstacle cells in black
                         g2d.setColor(Color.BLACK);
@@ -97,7 +122,12 @@ public class MapGenerator {
                     }
                     case PATH -> {
                         // Draw path cells in gray
-                        g2d.setColor(Color.GRAY);
+                        g2d.setColor(Color.DARK_GRAY);
+                        g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
+                    }
+                    case GROUND2 -> {
+                        // Draw ground2 cells in light gray
+                        g2d.setColor(Color.LIGHT_GRAY);
                         g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
                     }
                     case null, default -> {
@@ -158,20 +188,34 @@ public class MapGenerator {
         }
     }
     
-    private void generateCells(String email, long seed, int size, GameMap map) {
-        noiseGenerator.initNoise(email, seed, 0.1,
+    private void generateCells(GameMap map, Set<Vector2C> chunksToGenerate, boolean canOverrideChunks) {
+        noiseGenerator.initNoise(map.getUserId(), map.getSeed(), 0.1,
                                  4, 0.5, 1.5, NoiseGenerator.FRACTAL_FBM, true,
                                  true);
-        for (int x = 0; x < size; x++) {
-            for (int y = 0; y < size; y++) {
-                double noise = noiseGenerator.getPerlinNoise(x, y, email, false);
-                map.createCell(noise, new Vector2(x, y));
-            }
+        // Parallel method from: https://stackoverflow.com/a/54448037
+        HashMap<Vector2C, Chunk> chunks = new HashMap<>();
+        for (Vector2C chunkPosition : chunksToGenerate) {
+            chunks.put(chunkPosition, new Chunk(chunkPosition));
         }
-        noiseGenerator.releaseNoise(email);
+        chunks.entrySet().stream().parallel().forEach(e -> {
+            Chunk chunk = e.getValue();
+            Vector2C position = chunk.getPosition();
+            for (int x = position.getRealX(); x < position.getEndX(); x++) {
+                for (int y = position.getRealY(); y < position.getEndY(); y++) {
+                    double noise = noiseGenerator.getPerlinNoise(x, y, map.getUserId(), false);
+                    chunk.createCell(noise, new Vector2(x, y));
+                    e.setValue(chunk);
+                }
+            }
+        });
+        
+        if(map.getChunks() == null) map.setChunks(chunks);
+        else map.addChunks(chunks, canOverrideChunks);
+        
+        noiseGenerator.releaseNoise(map.getUserId());
     }
     
-    private void generatePlayer(GameMap map) {
+    private void generatePlayer(GameMap map, Set<Vector2C> chunksToGenerate) {
         int mapSize = map.getSize();
         Vector2 center = new Vector2(mapSize / 2, mapSize / 2);
         map.initMainCharacter(center);
@@ -179,24 +223,26 @@ public class MapGenerator {
                       CLEAR_RADIUS_AROUND_PLAYER,
                       PLAYER_CIRCLE_CLEAR_THRESHOLD,
                       CLEAR_AROUND_PLAYER_CIRCLE_VARIATION,
-                      true);
+                      true,
+                      chunksToGenerate);
     }
     
-    private void generateBorder(GameMap map) {
-        double[][] circle = noiseGenerator.getCircleWithNoisyEdge(map.getSize() / 2 - BORDER_OFFSET,
-                                                                  map.getSeed(),
-                                                                  GENERATE_BORDER_CIRCLE_VARIATION);
+    private void generateBorder(GameMap map, Set<Vector2C> chunksToGenerate) {
+        Map<Vector2, Double> circle = noiseGenerator.getCircleWithNoisyEdge(map.getSize() / 2 - BORDER_OFFSET,
+                                                                            new Vector2(map.getSize() / 2,
+                                                                                        map.getSize() / 2),
+                                                                            map.getSeed(),
+                                                                            GENERATE_BORDER_CIRCLE_VARIATION,
+                                                                            chunksToGenerate);
         
-        for (int x = 0; x < map.getSize(); x++) {
-            for (int y = 0; y < map.getSize(); y++) {
-                Vector2 position = new Vector2(x, y);
-                if(x < BORDER_OFFSET || y < BORDER_OFFSET || x >= map.getSize() - BORDER_OFFSET ||
-                   y >= map.getSize() - BORDER_OFFSET) {
-                    map.setCell(position, BORDER_OBSTACLE_TYPE);
-                } else {
-                    int circleX = x - BORDER_OFFSET;
-                    int circleY = y - BORDER_OFFSET;
-                    if(circle[circleX][circleY] > BORDER_THRESHOLD) {
+        for (Vector2C chunk : chunksToGenerate) {
+            for (int x = chunk.getRealX(); x < chunk.getEndX(); x++) {
+                for (int y = chunk.getRealY(); y < chunk.getEndY(); y++) {
+                    Vector2 position = new Vector2(x, y);
+                    if(x < BORDER_OFFSET || y < BORDER_OFFSET ||
+                       x > map.getSize() - BORDER_OFFSET || y > map.getSize() - BORDER_OFFSET) {
+                        map.setCell(position, BORDER_OBSTACLE_TYPE);
+                    } else if(circle.getOrDefault(position, 0d) > BORDER_THRESHOLD) {
                         map.setCell(position, BORDER_OBSTACLE_TYPE);
                     }
                 }
@@ -205,42 +251,52 @@ public class MapGenerator {
     }
     
     
-    private void generateResources(GameMap map, Random random) {
+    private void generateResources(GameMap map, Set<Vector2C> chunksToGenerate) {
         double probability = GENERATE_RESOURCE_PROBABILITY / 100.0;
         
-        for (int x = 0; x < map.getSize(); x++) {
-            for (int y = 0; y < map.getSize(); y++) {
-                Vector2 position = new Vector2(x, y);
-                if(map.getCell(position).getType() == CellType.GROUND) {
-                    if(Math.abs(x - map.getMainCharacter().getPosition().x) <= GENERATE_RESOURCE_CENTER_RADIUS &&
-                       Math.abs(y - map.getMainCharacter().getPosition().y) <= GENERATE_RESOURCE_CENTER_RADIUS) {
-                        continue;
-                    }
-                    double randomValue = random.nextDouble();
-                    if(randomValue < probability) {
-                        double threshold = DoubleMapper.map(randomValue, 0, probability, -1, 1);
-                        map.addResource(position, threshold, random);
+        for (Vector2C chunk : chunksToGenerate) {
+            for (int x = chunk.getRealX(); x < chunk.getEndX(); x++) {
+                for (int y = chunk.getRealY(); y < chunk.getEndY(); y++) {
+                    Vector2 position = new Vector2(x, y);
+                    if(map.getCell(position).getType() == CellType.GROUND) {
+                        if(Math.abs(x - map.getMainCharacter().getPosition().x) <= GENERATE_RESOURCE_CENTER_RADIUS &&
+                           Math.abs(y - map.getMainCharacter().getPosition().y) <= GENERATE_RESOURCE_CENTER_RADIUS) {
+                            continue;
+                        }
+                        SplittableRandom random = new SplittableRandom(position.getRandomSeed(map.getSeed(),
+                                                                                              GENERATE_RESOURCE_VARIATION));
+                        double randomValue = random.nextDouble();
+                        if(randomValue < probability) {
+                            double threshold = DoubleMapper.map(randomValue, 0, probability, -1, 1);
+                            map.addResource(position, threshold, random);
+                        }
                     }
                 }
             }
         }
     }
     
-    private void generateFinalBoss(GameMap map, Random random) {
-        Vector2 bossPosition = getBossPosition(map, random);
-        
+    private void generateFinalBoss(GameMap map) {
+        Vector2 bossPosition = getBossPosition(map);
         map.setBossPosition(bossPosition);
-        map.addEnemy(bossPosition, new Boss(bossPosition));
+        
+        Set<Vector2C> chunksToGenerate = getBossRoadChunks(map);
+        generateSelectedChunks(map, chunksToGenerate);
+        
         clearPosition(map,
                       bossPosition,
                       BOSS_CLEAR_RADIUS,
                       BOSS_CLEAR_CIRCLE_THRESHOLD,
                       BOSS_CLEAR_CIRCLE_VARIATION,
-                      false);
-        generateRoadToBoss(map);
+                      false, chunksToGenerate);
+        
+        generateRoadToBoss(map, chunksToGenerate);
+        
+        map.addEnemy(bossPosition, new Boss(bossPosition));
     }
     
-    private static Vector2 getBossPosition(GameMap map, Random random) {
+    private static Vector2 getBossPosition(GameMap map) {
+        SplittableRandom random = new SplittableRandom(Objects.hash(map.getSeed(), BOSS_CLEAR_CIRCLE_VARIATION));
         int randomDirection = random.nextInt(4);
         Vector2 direction = switch (randomDirection) {
             case 0 -> Vector2.UP;
@@ -256,10 +312,30 @@ public class MapGenerator {
                            center + distance * direction.y);
     }
     
-    private void generateRoadToBoss(GameMap map) {
+    private static Set<Vector2C> getBossRoadChunks(GameMap map) {
+        Set<Vector2C> chunksToGenerate = new HashSet<>();
+        Vector2C bossChunk = Chunk.getChunkPosition(map.getBossPosition());
+        Vector2C playerChunk = Chunk.getChunkPosition(map.getMainCharacter().getPosition());
+        double distance = Vector2C.getDistance(bossChunk, playerChunk);
+        Vector2C direction = bossChunk.subtract(playerChunk);
+        direction.normalize();
+        Vector2C position = playerChunk;
+        for (int i = 0; i <= distance; i++) {
+            chunksToGenerate.add(position);
+            for (int j = -BOSS_PATHFINDING_GENERATE_CHUNKS_WIDTH; j < BOSS_PATHFINDING_GENERATE_CHUNKS_WIDTH * 2; j++) {
+                if(j == 0) continue;
+                chunksToGenerate.add(position.getLeft(direction, j));
+                chunksToGenerate.add(position.getRight(direction, j));
+            }
+            position = position.add(direction);
+        }
+        return chunksToGenerate;
+    }
+    
+    private void generateRoadToBoss(GameMap map, Set<Vector2C> chunksToGenerate) {
         Queue<Vector2> path = aStarPathfinder.generatePath(map.getMainCharacter().getPosition(),
                                                            map.getBossPosition(),
-                                                           map.getCostMap(map.getChunks().keySet(), false));
+                                                           map.getCostMap(chunksToGenerate, false));
         if(path == null) throw new RuntimeException("Fail creating path to boss");
         
         Vector2 direction = Vector2.UP;
@@ -269,8 +345,7 @@ public class MapGenerator {
             if(nextPosition != null) direction = position.subtract(nextPosition);
             direction.normalize();
             
-            // Set the center path cell to empty cell
-            if(!position.equals(map.getBossPosition())) map.setCell(position, CellType.PATH);
+            map.setCell(position, CellType.PATH);
             
             //noinspection NonStrictComparisonCanBeEquality
             for (int i = 1; i <= BOSS_PATH_EXTRA_WIDTH; i++) {
@@ -284,61 +359,66 @@ public class MapGenerator {
     }
     
     
-    private void generateEnemies(GameMap map, Random random) {
+    private void generateEnemies(GameMap map, Set<Vector2C> chunksToGenerate) {
         Vector2 center = new Vector2(map.getSize() / 2, map.getSize() / 2);
         
-        for (int x = BORDER_OFFSET; x < map.getSize() - BORDER_OFFSET * 2; x++) {
-            for (int y = BORDER_OFFSET; y < map.getSize() - BORDER_OFFSET * 2; y++) {
-                Vector2 position = new Vector2(x, y);
-                
-                if(!CellType.isWalkable(map.getCell(position).getType()) || map.getResource(position) != null) {
-                    continue;
-                }
-                
-                // Don't spawn enemies on the center
-                if(Math.abs(x - center.x) <= GENERATE_ENEMY_CENTER_RADIUS &&
-                   Math.abs(y - center.y) <= GENERATE_ENEMY_CENTER_RADIUS) {
-                    continue;
-                }
-                
-                // Don't spawn enemies on the boss position
-                if(Math.abs(x - map.getBossPosition().x) <= GENERATE_ENEMY_BOSS_RADIUS &&
-                   Math.abs(y - map.getBossPosition().y) <= GENERATE_ENEMY_BOSS_RADIUS) {
-                    continue;
-                }
-                
-                double distance = Vector2.getDistance(position, center);
-                double maxDistance = (map.getSize() / 2.0) - BORDER_OFFSET;
-                double normalizedDistance = Math.clamp(distance / maxDistance, 0, 1);
-                
-                // Increase enemy spawn chance based on distance from center
-                double spawnRate = GENERATE_ENEMY_PROBABILITY / 100.0;
-                spawnRate += normalizedDistance * (GENERATE_ENEMY_PROBABILITY_MAX_INCREMENT / 100.0);
-                
-                if(random.nextDouble() < spawnRate) {
-                    map.addEnemy(position, new Enemy(position, normalizedDistance));
+        for (Vector2C chunk : chunksToGenerate) {
+            for (int x = chunk.getRealX(); x < chunk.getEndX(); x++) {
+                for (int y = chunk.getRealY(); y < chunk.getEndY(); y++) {
+                    // Don't spawn enemies on the border
+                    if(x < BORDER_OFFSET || y < BORDER_OFFSET ||
+                       x > map.getSize() - BORDER_OFFSET || y > map.getSize() - BORDER_OFFSET) {
+                        continue;
+                    }
+                    
+                    Vector2 position = new Vector2(x, y);
+                    
+                    // Don't spawn enemies on obstacles or resources
+                    if(!CellType.isWalkable(map.getCell(position).getType()) || map.getResource(position) != null) {
+                        continue;
+                    }
+                    
+                    // Don't spawn enemies on the center
+                    if(Math.abs(x - center.x) <= GENERATE_ENEMY_CENTER_RADIUS &&
+                       Math.abs(y - center.y) <= GENERATE_ENEMY_CENTER_RADIUS) {
+                        continue;
+                    }
+                    
+                    // Don't spawn enemies on the boss position
+                    if(Math.abs(x - map.getBossPosition().x) <= GENERATE_ENEMY_BOSS_RADIUS &&
+                       Math.abs(y - map.getBossPosition().y) <= GENERATE_ENEMY_BOSS_RADIUS) {
+                        continue;
+                    }
+                    
+                    double distance = Vector2.getDistance(position, center);
+                    double maxDistance = (map.getSize() / 2.0) - BORDER_OFFSET;
+                    double normalizedDistance = Math.clamp(distance / maxDistance, 0, 1);
+                    
+                    // Increase enemy spawn chance based on distance from center
+                    double spawnRate = GENERATE_ENEMY_PROBABILITY / 100.0;
+                    spawnRate += normalizedDistance * (GENERATE_ENEMY_PROBABILITY_MAX_INCREMENT / 100.0);
+                    
+                    SplittableRandom random = new SplittableRandom(position.getRandomSeed(map.getSeed(),
+                                                                                          GENERATE_ENEMY_VARIATION));
+                    if(random.nextDouble() < spawnRate) {
+                        map.addEnemy(position, new Enemy(position, normalizedDistance));
+                    }
                 }
             }
         }
     }
     
     private void clearPosition(GameMap map, Vector2 center, int radius, double threshold, int circleVariation,
-                               boolean clearCenter) {
-        double[][] circle = noiseGenerator.getCircleWithNoisyEdge(radius,
-                                                                  map.getSeed(),
-                                                                  circleVariation);
-        
-        for (int x = 0; x < circle.length; x++) {
-            for (int y = 0; y < circle[x].length; y++) {
-                if(!clearCenter && x == radius && y == radius) {
-                    continue;
-                }
-                
-                if(circle[x][y] < threshold) {
-                    Vector2 position = new Vector2(center.x - radius + x,
-                                                   center.y - radius + y);
-                    map.setCell(position, CellType.GROUND);
-                }
+                               boolean clearCenter, Set<Vector2C> chunksToGenerate) {
+        Map<Vector2, Double> circle = noiseGenerator.getCircleWithNoisyEdge(radius, center,
+                                                                            map.getSeed(),
+                                                                            circleVariation, chunksToGenerate);
+        for (Vector2 circlePosition : circle.keySet()) {
+            if(!clearCenter && circlePosition == center) {
+                continue;
+            }
+            if(circle.get(circlePosition) < threshold) {
+                map.setCell(circlePosition, CellType.GROUND);
             }
         }
     }

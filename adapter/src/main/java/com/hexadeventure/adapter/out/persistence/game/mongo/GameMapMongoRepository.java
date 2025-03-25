@@ -6,7 +6,7 @@ import com.hexadeventure.application.port.out.persistence.ChunkRepository;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.model.map.Chunk;
 import com.hexadeventure.model.map.GameMap;
-import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.map.Vector2C;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
@@ -35,7 +35,7 @@ public class GameMapMongoRepository implements GameMapRepository {
     
     @Override
     @SuppressWarnings("DuplicatedCode")
-    public Optional<GameMap> findByIdAndGetChunks(String id, Collection<Vector2> positions) {
+    public Optional<GameMap> findByIdAndGetChunks(String id, Collection<Vector2C> positions) {
         Optional<GameMapMongoEntity> map = repo.findById(id);
         List<Chunk> chunks = map.isPresent() ? chunkRepository.findChunks(id, positions) : List.of();
         Optional<GameMap> gameMap = map.map(GameMapMongoMapper::toModel);

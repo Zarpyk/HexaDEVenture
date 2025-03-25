@@ -1,9 +1,6 @@
 package com.hexadeventure.adapter.out.persistence.map;
 
-import com.hexadeventure.model.map.CellType;
-import com.hexadeventure.model.map.Chunk;
-import com.hexadeventure.model.map.GameMap;
-import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.map.*;
 
 import java.util.Map;
 import java.util.UUID;
@@ -13,10 +10,10 @@ public class MapFactory {
     public static final long TEST_SEED = 12345L;
     public static final int TEST_SIZE = Chunk.SIZE * 4;
     
-    public static final Chunk CHUNK1 = new Chunk(new Vector2(0, 0));
-    public static final Chunk CHUNK2 = new Chunk(new Vector2(1, 0));
-    public static final Chunk CHUNK3 = new Chunk(new Vector2(0, 1));
-    public static final Chunk CHUNK4 = new Chunk(new Vector2(1, 1));
+    public static final Chunk CHUNK1 = new Chunk(new Vector2C(0, 0));
+    public static final Chunk CHUNK2 = new Chunk(new Vector2C(1, 0));
+    public static final Chunk CHUNK3 = new Chunk(new Vector2C(0, 1));
+    public static final Chunk CHUNK4 = new Chunk(new Vector2C(1, 1));
     
     public static final GameMap GAME_MAP;
     public static final GameMap GAME_MAP_WITH_2_CHUNKS;
@@ -35,7 +32,7 @@ public class MapFactory {
         GAME_MAP = new GameMap(TEST_USER_ID, TEST_SEED, TEST_SIZE);
         GAME_MAP.initMainCharacter(new Vector2(TEST_SIZE / 2, TEST_SIZE / 2));
         
-        Map<Vector2, Chunk> chunks = Map.of(
+        Map<Vector2C, Chunk> chunks = Map.of(
                 CHUNK1.getPosition(), CHUNK1,
                 CHUNK2.getPosition(), CHUNK2
         );
