@@ -7,7 +7,7 @@ public class GameMapJpaMapper {
     public static GameMapJpaEntity toEntity(GameMap model) {
         GameMapJpaEntity entity = new GameMapJpaEntity();
         entity.setId(model.getId());
-        entity.setUserId(model.getUserId());
+        entity.setUserId(model.getUserEmail());
         entity.setSeed(model.getSeed());
         entity.setMapSize(model.getSize());
         /*TODO check this entity.setChunks(model.getChunks().values().stream()

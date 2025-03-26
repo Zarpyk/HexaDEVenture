@@ -11,9 +11,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @ConditionalOnProperty(name = "persistence", havingValue = "jpa")
 @Repository
@@ -41,6 +39,14 @@ public class GameMapJpaRepository implements GameMapRepository {
         Optional<GameMap> gameMap = map.map(GameMapJpaMapper::toModel);
         gameMap.ifPresent(value -> chunks.forEach(chunk -> value.setChunk(chunk.getPosition(), chunk)));
         return gameMap;
+    }
+    
+    @Override
+    public Map<Vector2C, Chunk> findMapChunks(String id, Collection<Vector2C> positions) {
+        List<Chunk> chunks = chunkRepository.findChunks(id, positions);
+        Map<Vector2C, Chunk> chunkMap = new HashMap<>();
+        chunks.forEach(chunk -> chunkMap.put(chunk.getPosition(), chunk));
+        return chunkMap;
     }
     
     @Override

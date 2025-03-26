@@ -7,7 +7,7 @@ public class GameMapMongoMapper {
     public static GameMapMongoEntity toEntity(GameMap model) {
         GameMapMongoEntity mongoEntity = new GameMapMongoEntity();
         mongoEntity.setId(model.getId());
-        mongoEntity.setUserId(model.getUserId());
+        mongoEntity.setUserId(model.getUserEmail());
         mongoEntity.setSeed(model.getSeed());
         mongoEntity.setMapSize(model.getSize());
         // TODO store chunk?

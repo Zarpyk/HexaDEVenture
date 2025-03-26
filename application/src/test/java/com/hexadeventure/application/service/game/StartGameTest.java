@@ -51,7 +51,7 @@ public class StartGameTest {
     @BeforeEach
     public void beforeEach() {
         when(noiseGenerator.getCircleWithNoisyEdge(anyInt(), any(), anyLong(), anyInt(), eq(chunksToGenerate)))
-                .thenAnswer(_ -> new HashMap<>());
+                .thenReturn(new HashMap<>());
         
         when(aStarPathfinder.generatePath(any(), any(), any())).thenReturn(new LinkedList<>());
     }

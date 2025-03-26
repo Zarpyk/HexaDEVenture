@@ -3,7 +3,9 @@ package com.hexadeventure.model.map;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Chunk 2D vector
@@ -11,13 +13,6 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Vector2C {
-    public static final Vector2C ZERO = new Vector2C(0, 0);
-    public static final Vector2C ONE = new Vector2C(1, 1);
-    public static final Vector2C UP = new Vector2C(0, 1);
-    public static final Vector2C DOWN = new Vector2C(0, -1);
-    public static final Vector2C LEFT = new Vector2C(-1, 0);
-    public static final Vector2C RIGHT = new Vector2C(1, 0);
-    
     public int x;
     public int y;
     
@@ -51,6 +46,17 @@ public class Vector2C {
         // If the direction is (-1, 0), the right is (0, 1)
         // If the direction is (0, -1), the right is (-1, 0)
         return new Vector2C(x + direction.y * distance, y - direction.x * distance);
+    }
+    
+    public Set<Vector2C> getArroundPositions(int distance, boolean includeCenter) {
+        Set<Vector2C> aroundPossitions = new HashSet<>();
+        if(includeCenter) aroundPossitions.add(this);
+        for (int x = -distance; x <= distance; x++) {
+            for (int y = -distance; y <= distance; y++) {
+                aroundPossitions.add(new Vector2C(this.x + x, this.y + y));
+            }
+        }
+        return aroundPossitions;
     }
     
     public Vector2C add(Vector2C vector2) {

@@ -1,9 +1,11 @@
 package com.hexadeventure.application.port.out.persistence;
 
+import com.hexadeventure.model.map.Chunk;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.Vector2C;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 public interface GameMapRepository {
@@ -24,6 +26,15 @@ public interface GameMapRepository {
      * @return an Optional containing the found GameMap with the specified chunks, or an empty Optional if not found
      */
     Optional<GameMap> findByIdAndGetChunks(String id, Collection<Vector2C> positions);
+    
+    /**
+     * Retrieves the specified chunks of a GameMap.
+     *
+     * @param id the ID of the GameMap
+     * @param positions the positions of the chunks to retrieve
+     * @return a HashMap containing the specified chunks
+     */
+    Map<Vector2C, Chunk> findMapChunks(String id, Collection<Vector2C> positions);
     
     /**
      * Saves a new GameMap.

@@ -11,7 +11,7 @@ import java.util.*;
 @Getter
 public class GameMap {
     private final String id;
-    private final String userId;
+    private final String userEmail;
     private final long seed;
     private final int size;
     @Setter
@@ -21,16 +21,16 @@ public class GameMap {
     @Setter
     private Vector2 bossPosition;
     
-    public GameMap(String userId, long seed, int size) {
+    public GameMap(String userEmail, long seed, int size) {
         this.id = UUID.randomUUID().toString();
-        this.userId = userId;
+        this.userEmail = userEmail;
         this.seed = seed;
         this.size = size;
     }
     
-    public GameMap(String id, String userId, long seed, int size, Map<Vector2C, Chunk> chunks) {
+    public GameMap(String id, String userEmail, long seed, int size, Map<Vector2C, Chunk> chunks) {
         this.id = id;
-        this.userId = userId;
+        this.userEmail = userEmail;
         this.seed = seed;
         this.size = size;
         if(chunks != null) this.chunks.putAll(chunks);

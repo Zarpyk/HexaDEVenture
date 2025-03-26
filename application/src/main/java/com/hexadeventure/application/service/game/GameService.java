@@ -8,23 +8,24 @@ import com.hexadeventure.application.port.out.noise.NoiseGenerator;
 import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
-import com.hexadeventure.model.map.Chunk;
-import com.hexadeventure.model.map.GameMap;
-import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.characters.MainCharacter;
+import com.hexadeventure.model.map.*;
 import com.hexadeventure.model.movement.MovementAction;
 import com.hexadeventure.model.movement.MovementResponse;
 import com.hexadeventure.model.user.User;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Queue;
+import java.util.*;
 
 public class GameService implements GameUseCase {
     // Use only odd numbers
     public static final int MIN_SQUARE_SIZE = 3;
     public static final int MIN_MAP_SIZE = Chunk.SIZE * (MIN_SQUARE_SIZE * MIN_SQUARE_SIZE);
+    
+    /**
+     * The distance in chunks from the player chunk to render
+     */
+    public static final int RENDER_DISTANCE = 1;
     
     private final UserRepository userRepository;
     private final GameMapRepository gameMapRepository;
@@ -64,19 +65,33 @@ public class GameService implements GameUseCase {
         if(user.get().getMapId() == null) throw new GameNotStartedException();
         Optional<GameMap> map = gameMapRepository.findById(user.get().getMapId());
         assert map.isPresent();
+        GameMap gameMap = map.get();
         List<MovementAction> actions = new ArrayList<>();
         
-        Queue<Vector2> path = aStarPathfinder.generatePath(map.get().getMainCharacter().getPosition(),
-                                                           positionToMove,
-                                                           map.get().getCostMap(map.get()
-                                                                                   .getChunks()
-                                                                                   .keySet(),
-                                                                                true));
+        MainCharacter mainCharacter = map.get().getMainCharacter();
+        Vector2C currentChunk = Chunk.getChunkPosition(mainCharacter.getPosition());
         
-        // TODO US 1.8 & 1.9
+        // Check the position to move is not a wall
+        Map<Vector2C, Chunk> mapChunks = gameMapRepository.findMapChunks(gameMap.getId(), Set.of(currentChunk));
+        gameMap.addChunks(mapChunks, false);
+        CellData cell = gameMap.getCell(positionToMove);
+        if(cell.getType() == CellType.WALL) {
+            return new MovementResponse(actions);
+        }
+        
+        // Get chunks around the player
+        Set<Vector2C> chunkArroundPlayer = currentChunk.getArroundPositions(RENDER_DISTANCE, false);
+        mapChunks = gameMapRepository.findMapChunks(gameMap.getId(), chunkArroundPlayer);
+        gameMap.addChunks(mapChunks, false);
+        
+        // Generate the path
+        Queue<Vector2> path = aStarPathfinder.generatePath(mainCharacter.getPosition(),
+                                                           positionToMove,
+                                                           gameMap.getCostMap(chunkArroundPlayer, true));
         
         while (!path.isEmpty()) {
             Vector2 position = path.poll();
+            // TODO US 1.8 & 1.9
             actions.add(new MovementAction(position.x, position.y, null, null));
         }
         

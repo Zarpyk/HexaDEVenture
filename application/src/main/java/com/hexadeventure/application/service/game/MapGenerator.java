@@ -52,18 +52,12 @@ public class MapGenerator {
     }
     
     public GameMap initialMapGeneration(String email, long seed, int size) {
-        Set<Vector2C> chunksToGenerate = new HashSet<>();
-        
         int center = size / 2;
         Vector2C centerChunk = Chunk.getChunkPosition(new Vector2(center, center));
         
         int distance = (GameService.MIN_SQUARE_SIZE - 1) / 2;
         
-        for (int x = -distance; x <= distance; x++) {
-            for (int y = -distance; y <= distance; y++) {
-                chunksToGenerate.add(new Vector2C(centerChunk.x + x, centerChunk.y + y));
-            }
-        }
+        Set<Vector2C> chunksToGenerate = new HashSet<>(centerChunk.getArroundPositions(distance, true));
         
         GameMap map = new GameMap(email, seed, size);
         generateCells(map, chunksToGenerate, true);
@@ -189,7 +183,7 @@ public class MapGenerator {
     }
     
     private void generateCells(GameMap map, Set<Vector2C> chunksToGenerate, boolean canOverrideChunks) {
-        noiseGenerator.initNoise(map.getUserId(), map.getSeed(), 0.1,
+        noiseGenerator.initNoise(map.getUserEmail(), map.getSeed(), 0.1,
                                  4, 0.5, 1.5, NoiseGenerator.FRACTAL_FBM, true,
                                  true);
         // Parallel method from: https://stackoverflow.com/a/54448037
@@ -202,7 +196,7 @@ public class MapGenerator {
             Vector2C position = chunk.getPosition();
             for (int x = position.getRealX(); x < position.getEndX(); x++) {
                 for (int y = position.getRealY(); y < position.getEndY(); y++) {
-                    double noise = noiseGenerator.getPerlinNoise(x, y, map.getUserId(), false);
+                    double noise = noiseGenerator.getPerlinNoise(x, y, map.getUserEmail(), false);
                     chunk.createCell(noise, new Vector2(x, y));
                     e.setValue(chunk);
                 }
@@ -212,7 +206,7 @@ public class MapGenerator {
         if(map.getChunks() == null) map.setChunks(chunks);
         else map.addChunks(chunks, canOverrideChunks);
         
-        noiseGenerator.releaseNoise(map.getUserId());
+        noiseGenerator.releaseNoise(map.getUserEmail());
     }
     
     private void generatePlayer(GameMap map, Set<Vector2C> chunksToGenerate) {
