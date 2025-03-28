@@ -12,6 +12,7 @@ import com.hexadeventure.model.inventory.Item;
 import com.hexadeventure.model.inventory.ItemType;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.map.resources.Resource;
 import com.hexadeventure.model.movement.MovementAction;
 import com.hexadeventure.model.movement.MovementResponse;
 import com.hexadeventure.model.user.User;
@@ -113,5 +114,15 @@ public class MovementTest {
         Optional<Item> item = items.values().stream().findFirst();
         assertThat(item).isNotEmpty();
         assertThat(item.get().getType()).isEqualTo(ItemType.MATERIAL);
+        
+        GameMap checkMap = MapFactory.createResourceGameMap(gameMapRepository, chunkRepository, aStarPathfinder);
+        int resourceCount = 0;
+        for (int i = 1; i < actions.size(); i++) {
+            MovementAction action = actions.get(i);
+            Resource resource = checkMap.getResource(new Vector2(action.x(), action.y()));
+            resourceCount += resource.getCount();
+        }
+        
+        assertThat(item.get().getCount()).isEqualTo(resourceCount);
     }
 }
