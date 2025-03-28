@@ -69,7 +69,7 @@ public class InventoryTest {
     @Test
     public void givenMaterial_whenAddItemToInventory_thenItemIsAdded() {
         Inventory inventory = new Inventory();
-        Material material = new Material(TEST_MATERIAL_NAME, ResourceType.WOOD, 1);
+        Material material = new Material(TEST_MATERIAL_NAME, ResourceType.WOOD);
         assertThat(material.getType()).isEqualTo(ItemType.MATERIAL);
         
         inventory.addItem(material);

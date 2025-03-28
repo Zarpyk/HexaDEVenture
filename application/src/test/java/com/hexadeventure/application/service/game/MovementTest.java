@@ -8,9 +8,18 @@ import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.service.common.MapFactory;
 import com.hexadeventure.application.service.common.UserFactory;
+import com.hexadeventure.model.inventory.Item;
+import com.hexadeventure.model.inventory.ItemType;
+import com.hexadeventure.model.map.GameMap;
+import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.movement.MovementAction;
 import com.hexadeventure.model.movement.MovementResponse;
 import com.hexadeventure.model.user.User;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -66,5 +75,43 @@ public class MovementTest {
         MovementResponse move = gameService.move(TEST_USER_EMAIL, MapFactory.OBSTACLE_END_POSITION);
         
         assertThat(move.actions()).hasSize(0);
+    }
+    
+    @Test
+    public void givenPositionWithPathWithResource_whenMove_thenCollectResource() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.RESOURCE_MAP_ID);
+        when(userRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(java.util.Optional.of(testUser));
+        
+        GameMap gameMap = MapFactory.createResourceGameMap(gameMapRepository, chunkRepository, aStarPathfinder);
+        
+        MovementResponse move = gameService.move(TEST_USER_EMAIL, MapFactory.RESOURCE_END_POSITION);
+        
+        List<MovementAction> actions = move.actions();
+        
+        assertThat(actions).hasSize(MapFactory.RESOURCE_MAP_PATH_LENGTH);
+        MovementAction first = actions.getFirst();
+        assertThat(first.x()).isEqualTo(MapFactory.RESOURCE_START_POSITION.x);
+        assertThat(first.y()).isEqualTo(MapFactory.RESOURCE_START_POSITION.y);
+        assertThat(first.resourceAction()).isNull();
+        assertThat(gameMap.getResource(new Vector2(first.x(), first.y()))).isNull();
+        
+        for (int i = 1; i < actions.size() - 1; i++) {
+            MovementAction action = actions.get(i);
+            assertThat(action.resourceAction()).isNotNull();
+            assertThat(gameMap.getResource(new Vector2(action.x(), action.y()))).isNull();
+        }
+        
+        MovementAction last = actions.getLast();
+        assertThat(last.x()).isEqualTo(MapFactory.RESOURCE_END_POSITION.x);
+        assertThat(last.y()).isEqualTo(MapFactory.RESOURCE_END_POSITION.y);
+        assertThat(last.resourceAction()).isNotNull();
+        assertThat(gameMap.getResource(new Vector2(last.x(), last.y()))).isNull();
+        
+        Map<String, Item> items = gameMap.getInventory().getItems();
+        assertThat(items.size()).isEqualTo(1);
+        Optional<Item> item = items.values().stream().findFirst();
+        assertThat(item).isNotEmpty();
+        assertThat(item.get().getType()).isEqualTo(ItemType.MATERIAL);
     }
 }

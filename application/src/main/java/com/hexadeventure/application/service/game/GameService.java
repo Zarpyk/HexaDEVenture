@@ -8,10 +8,12 @@ import com.hexadeventure.application.port.out.noise.NoiseGenerator;
 import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
-import com.hexadeventure.model.map.MainCharacter;
+import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.map.*;
+import com.hexadeventure.model.map.resources.Resource;
 import com.hexadeventure.model.movement.MovementAction;
 import com.hexadeventure.model.movement.MovementResponse;
+import com.hexadeventure.model.movement.ResourceAction;
 import com.hexadeventure.model.user.User;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -91,8 +93,21 @@ public class GameService implements GameUseCase {
         
         while (!path.isEmpty()) {
             Vector2 position = path.poll();
-            // TODO US 1.8 & 1.9
-            actions.add(new MovementAction(position.x, position.y, null, null));
+            
+            Chunk chunk = gameMap.getChunkOfCell(position);
+            Resource resource = chunk.getResource(position);
+            ResourceAction resourceAction = null;
+            if(resource != null) {
+                resourceAction = new ResourceAction(resource.getType().ordinal(), resource.getCount());
+                gameMap.getInventory().addItem(new Material(resource.getType().name(),
+                                                            resource.getType()), resource.getCount());
+                chunk.removeResource(position);
+            }
+            
+            // TODO US 1.9
+            
+            MovementAction movementAction = new MovementAction(position.x, position.y, resourceAction, null);
+            actions.add(movementAction);
         }
         
         return new MovementResponse(actions);

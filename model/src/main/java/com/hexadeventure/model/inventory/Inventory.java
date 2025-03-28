@@ -23,11 +23,15 @@ public class Inventory {
     }
     
     public void addItem(Item item) {
+        addItem(item, 1);
+    }
+    
+    public void addItem(Item item, int count) {
         Item itemObj = items.get(item.getId());
         if(itemObj != null) {
-            itemObj.setCount(itemObj.getCount() + 1);
+            itemObj.setCount(itemObj.getCount() + count);
         } else {
-            item.setCount(1);
+            item.setCount(count);
             items.put(item.getId(), item);
         }
     }

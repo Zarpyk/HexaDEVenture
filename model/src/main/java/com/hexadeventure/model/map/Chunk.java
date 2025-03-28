@@ -72,6 +72,10 @@ public class Chunk {
         enemies.put(position, enemy);
     }
     
+    public void removeResource(Vector2 position) {
+        resources.remove(position);
+    }
+    
     /**
      * Returns the cost map of the chunk.
      * @param onlyWalkable if true, non-walkable cells will have a cost of -1, otherwise a big number will be used

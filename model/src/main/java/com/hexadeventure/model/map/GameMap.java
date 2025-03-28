@@ -68,16 +68,26 @@ public class GameMap {
         chunks.get(chunkPosition).setCell(position, type);
     }
     
+    
+    /**
+     * Returns the chunk of the given cell position.
+     * @param position the position of the cell
+     * @return the chunk that contains the cell
+     */
+    public Chunk getChunkOfCell(Vector2 position) {
+        return chunks.get(Chunk.getChunkPosition(position));
+    }
+    
     public CellData getCell(Vector2 position) {
-        return chunks.get(Chunk.getChunkPosition(position)).getCell(position);
+        return getChunkOfCell((position)).getCell(position);
     }
     
     public Resource getResource(Vector2 position) {
-        return chunks.get(Chunk.getChunkPosition(position)).getResource(position);
+        return getChunkOfCell((position)).getResource(position);
     }
     
     public Enemy getEnemy(Vector2 position) {
-        return chunks.get(Chunk.getChunkPosition(position)).getEnemy(position);
+        return getChunkOfCell((position)).getEnemy(position);
     }
     
     public void addResource(Vector2 position, double threshold, SplittableRandom random) {
