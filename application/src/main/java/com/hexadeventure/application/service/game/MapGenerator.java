@@ -61,7 +61,7 @@ public class MapGenerator {
         
         GameMap map = new GameMap(email, seed, size);
         generateCells(map, chunksToGenerate, true);
-        generatePlayer(map, chunksToGenerate);
+        clearPlayerPosition(map, chunksToGenerate);
         generateBorder(map, chunksToGenerate);
         generateResources(map, chunksToGenerate);
         generateFinalBoss(map);
@@ -209,11 +209,8 @@ public class MapGenerator {
         noiseGenerator.releaseNoise(map.getUserEmail());
     }
     
-    private void generatePlayer(GameMap map, Set<Vector2C> chunksToGenerate) {
-        int mapSize = map.getSize();
-        Vector2 center = new Vector2(mapSize / 2, mapSize / 2);
-        map.initMainCharacter(center);
-        clearPosition(map, center,
+    private void clearPlayerPosition(GameMap map, Set<Vector2C> chunksToGenerate) {
+        clearPosition(map, map.getMainCharacter().getPosition(),
                       CLEAR_RADIUS_AROUND_PLAYER,
                       PLAYER_CIRCLE_CLEAR_THRESHOLD,
                       CLEAR_AROUND_PLAYER_CIRCLE_VARIATION,

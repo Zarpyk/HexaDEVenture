@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.hexadeventure.adapter.out.persistence.common.GridFs;
 import com.hexadeventure.adapter.out.persistence.game.mongo.ChunkMongoSDRepository;
 import com.hexadeventure.adapter.utils.Vector2CDeserializer;
 import com.hexadeventure.adapter.utils.Vector2Deserializer;
@@ -17,13 +18,10 @@ import com.hexadeventure.model.map.Vector2;
 import com.hexadeventure.model.map.Vector2C;
 import com.hexadeventure.model.map.resources.Resource;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
-import org.springframework.data.mongodb.gridfs.GridFsResource;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.UUID;
 
 public class ChunkMongoMapper {
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -56,24 +54,23 @@ public class ChunkMongoMapper {
         mongoEntity.setY(model.getPosition().y);
         
         try {
-            Optional<ChunkMongoEntity> oldMap = repo.findById(model.getId());
+            Optional<ChunkMongoEntity> chunk = repo.findById(model.getId());
             
-            // Store grid
-            String gridFileId = storeData(model.getCells(),
-                                          oldMap.map(ChunkMongoEntity::getCellsFileId).orElse(null),
-                                          gridFsOperations);
-            mongoEntity.setCellsFileId(gridFileId);
+            GridFs gridFs = new GridFs(objectMapper, gridFsOperations);
+            
+            // Store cells
+            String cellsFileId = gridFs.storeData(model.getCells(),
+                                                  chunk.map(ChunkMongoEntity::getCellsFileId).orElse(null));
+            mongoEntity.setCellsFileId(cellsFileId);
             
             // Store resources
-            String resourcesFileId = storeData(model.getResources(),
-                                               oldMap.map(ChunkMongoEntity::getResourcesFileId).orElse(null),
-                                               gridFsOperations);
+            String resourcesFileId = gridFs.storeData(model.getResources(),
+                                                      chunk.map(ChunkMongoEntity::getResourcesFileId).orElse(null));
             mongoEntity.setResourcesFileId(resourcesFileId);
             
             // Store enemies
-            String enemiesFileId = storeData(model.getEnemies(),
-                                             oldMap.map(ChunkMongoEntity::getEnemiesFileId).orElse(null),
-                                             gridFsOperations);
+            String enemiesFileId = gridFs.storeData(model.getEnemies(),
+                                                    chunk.map(ChunkMongoEntity::getEnemiesFileId).orElse(null));
             mongoEntity.setEnemiesFileId(enemiesFileId);
             
             return mongoEntity;
@@ -84,17 +81,13 @@ public class ChunkMongoMapper {
     
     public static Chunk toModel(ChunkMongoEntity entity, GridFsOperations gridFsOperations) {
         try {
-            GridFsResource gridResource = gridFsOperations.getResource(entity.getCellsFileId() + ".json");
-            CellData[][] grid = objectMapper.readValue(gridResource.getInputStream(), CellData[][].class);
+            GridFs gridFs = new GridFs(objectMapper, gridFsOperations);
             
-            // From: https://stackoverflow.com/a/3076569/11451105
-            GridFsResource resourceResource = gridFsOperations.getResource(entity.getResourcesFileId() + ".json");
-            HashMap<Vector2, Resource> resources = objectMapper.readValue(resourceResource.getInputStream(),
-                                                                          new TypeReference<>() {});
-            
-            GridFsResource enemiesResource = gridFsOperations.getResource(entity.getEnemiesFileId() + ".json");
-            HashMap<Vector2, Enemy> enemies = objectMapper.readValue(enemiesResource.getInputStream(),
-                                                                     new TypeReference<>() {});
+            CellData[][] grid = gridFs.readData(entity.getCellsFileId(), CellData[][].class);
+            HashMap<Vector2, Resource> resources = gridFs.readData(entity.getResourcesFileId(),
+                                                                   new TypeReference<>() {});
+            HashMap<Vector2, Enemy> enemies = gridFs.readData(entity.getEnemiesFileId(),
+                                                              new TypeReference<>() {});
             
             return new Chunk(entity.getId(),
                              new Vector2C(entity.getX(), entity.getY()),
@@ -104,19 +97,5 @@ public class ChunkMongoMapper {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-    
-    private static String storeData(Object data, String existingFileId,
-                                    GridFsOperations gridFsOperations) throws JsonProcessingException {
-        byte[] jsonData = objectMapper.writeValueAsBytes(data);
-        String fileId = (existingFileId != null) ? existingFileId : UUID.randomUUID().toString();
-        
-        gridFsOperations.store(
-                new ByteArrayInputStream(jsonData),
-                fileId + ".json",
-                "application/json"
-        );
-        
-        return fileId;
     }
 }

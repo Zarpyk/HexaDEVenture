@@ -4,6 +4,8 @@ import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.ChunkRepository;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.service.game.GameService;
+import com.hexadeventure.model.characters.MainCharacter;
+import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.map.*;
 
 import java.util.*;
@@ -50,8 +52,13 @@ public class MapFactory {
         });
         mockChunk(chunkRepository, EMPTY_MAP_ID, chunks);
         
-        GameMap gameMap = new GameMap(EMPTY_MAP_ID, TEST_USER_EMAIL, TEST_SEED, EMPTY_MAP_SIZE, chunks);
-        gameMap.initMainCharacter(new Vector2(EMPTY_MAP_SIZE / 2, EMPTY_MAP_SIZE / 2));
+        GameMap gameMap = new GameMap(EMPTY_MAP_ID,
+                                      TEST_USER_EMAIL,
+                                      TEST_SEED,
+                                      EMPTY_MAP_SIZE,
+                                      chunks,
+                                      new MainCharacter(new Vector2(EMPTY_MAP_SIZE / 2, EMPTY_MAP_SIZE / 2)),
+                                      new Inventory());
         
         Map<Vector2, Integer> costMap = gameMap.getCostMap(centerChunk.getArroundPositions(1, true),
                                                            true);
@@ -83,8 +90,13 @@ public class MapFactory {
         });
         mockChunk(chunkRepository, OBSTACLE_MAP_ID, chunks);
         
-        GameMap gameMap = new GameMap(OBSTACLE_MAP_ID, TEST_USER_EMAIL, TEST_SEED, OBSTACLE_MAP_SIZE, chunks);
-        gameMap.initMainCharacter(new Vector2(OBSTACLE_MAP_SIZE / 2, OBSTACLE_MAP_SIZE / 2));
+        GameMap gameMap = new GameMap(OBSTACLE_MAP_ID,
+                                      TEST_USER_EMAIL,
+                                      TEST_SEED,
+                                      OBSTACLE_MAP_SIZE,
+                                      chunks,
+                                      new MainCharacter(new Vector2(EMPTY_MAP_SIZE / 2, EMPTY_MAP_SIZE / 2)),
+                                      new Inventory());
         
         when(gameMapRepository.findById(eq(OBSTACLE_MAP_ID))).thenReturn(java.util.Optional.of(gameMap));
     }

@@ -2,6 +2,7 @@ package com.hexadeventure.model.map;
 
 import com.hexadeventure.model.characters.MainCharacter;
 import com.hexadeventure.model.enemies.Enemy;
+import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.map.resources.Resource;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +17,8 @@ public class GameMap {
     private final int size;
     @Setter
     private Map<Vector2C, Chunk> chunks = new HashMap<>();
-    private MainCharacter mainCharacter;
+    private final MainCharacter mainCharacter;
+    private final Inventory inventory;
     
     @Setter
     private Vector2 bossPosition;
@@ -26,14 +28,19 @@ public class GameMap {
         this.userEmail = userEmail;
         this.seed = seed;
         this.size = size;
+        mainCharacter = new MainCharacter(new Vector2(size / 2, size / 2));
+        inventory = new Inventory();
     }
     
-    public GameMap(String id, String userEmail, long seed, int size, Map<Vector2C, Chunk> chunks) {
+    public GameMap(String id, String userEmail, long seed, int size, Map<Vector2C, Chunk> chunks,
+                   MainCharacter mainCharacter, Inventory inventory) {
         this.id = id;
         this.userEmail = userEmail;
         this.seed = seed;
         this.size = size;
         if(chunks != null) this.chunks.putAll(chunks);
+        this.mainCharacter = mainCharacter;
+        this.inventory = inventory;
     }
     
     public void addChunks(Map<Vector2C, Chunk> chunks, boolean canOverrideChunks) {
@@ -84,10 +91,6 @@ public class GameMap {
         Vector2C chunkPosition = Chunk.getChunkPosition(position);
         chunks.putIfAbsent(chunkPosition, new Chunk(chunkPosition));
         chunks.get(chunkPosition).addEnemy(position, enemy);
-    }
-    
-    public void initMainCharacter(Vector2 position) {
-        mainCharacter = new MainCharacter(position);
     }
     
     @Override

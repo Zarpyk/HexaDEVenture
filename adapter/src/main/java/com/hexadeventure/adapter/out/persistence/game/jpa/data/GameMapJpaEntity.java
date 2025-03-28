@@ -1,10 +1,9 @@
 package com.hexadeventure.adapter.out.persistence.game.jpa.data;
 
+import com.hexadeventure.adapter.out.persistence.game.jpa.data.inventory.InventoryJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Table(name = "game_map")
@@ -20,4 +19,8 @@ public class GameMapJpaEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "main_character_id")
     private MainCharacterJpaEntity mainCharacter;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "inventory_id")
+    private InventoryJpaEntity inventory;
 }

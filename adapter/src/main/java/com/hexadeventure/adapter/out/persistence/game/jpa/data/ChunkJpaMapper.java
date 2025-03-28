@@ -58,39 +58,10 @@ public class ChunkJpaMapper {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        /*entity.setGrid(Arrays.stream(model.getCells())
-                             .flatMap(Arrays::stream)
-                             .map(CellDataJpaMapper::toEntity)
-                             .collect(Collectors.toList()));
-        entity.setResources(model.getResources().values().stream()
-                                 .map(ResourceJpaMapper::toEntity)
-                                 .collect(Collectors.toList()));
-        entity.setEnemies(model.getEnemies().values().stream()
-                               .map(EnemyJpaMapper::toEntity)
-                               .collect(Collectors.toList()));*/
         return entity;
     }
     
     public static Chunk toModel(ChunkJpaEntity entity) {
-        /*List<CellData> cellDataStream = entity.getGrid().stream()
-                                              .map(CellDataJpaMapper::toModel).toList();
-        CellData[][] grid = new CellData[Chunk.SIZE][Chunk.SIZE];
-        for (CellData cellData : cellDataStream) {
-            grid[cellData.getPosition().x][cellData.getPosition().y] = cellData;
-        }
-        
-        HashMap<Vector2, Resource> resourceHashMap = new HashMap<>();
-        for (Resource resource : entity.getResources().stream()
-                                       .map(ResourceJpaMapper::toModel).toList()) {
-            resourceHashMap.put(resource.getPosition(), resource);
-        }
-        
-        HashMap<Vector2, Enemy> enemyHashMap = new HashMap<>();
-        for (Enemy enemy : entity.getEnemies().stream()
-                                 .map(EnemyJpaMapper::toModel).toList()) {
-            enemyHashMap.put(enemy.getPosition(), enemy);
-        }*/
-        
         try {
             CellData[][] grid = objectMapper.readValue(entity.getCellsJson(), CellData[][].class);
             Map<Vector2, Resource> resourceHashMap = objectMapper.readValue(entity.getResourcesJson(),

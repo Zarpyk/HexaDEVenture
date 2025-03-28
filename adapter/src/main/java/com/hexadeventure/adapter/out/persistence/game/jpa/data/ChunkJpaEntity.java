@@ -25,23 +25,10 @@ public class ChunkJpaEntity {
     private String cellsJson;
     
     @Column(columnDefinition = "json")
-    // From: https://stackoverflow.com/a/77150431/11451105
-    // Probably only for PostgreSQL
     @ColumnTransformer(write = "?::json")
     private String resourcesJson;
     
     @Column(columnDefinition = "json")
-    // From: https://stackoverflow.com/a/77150431/11451105
-    // Probably only for PostgreSQL
     @ColumnTransformer(write = "?::json")
     private String enemiesJson;
-    
-    /*@OneToMany(mappedBy = "chunk", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<CellDataJpaEntity> grid;
-    
-    @OneToMany(mappedBy = "chunk", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<ResourceJpaEntity> resources;
-    
-    @OneToMany(mappedBy = "chunk", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<EnemyJpaEntity> enemies;*/
 }

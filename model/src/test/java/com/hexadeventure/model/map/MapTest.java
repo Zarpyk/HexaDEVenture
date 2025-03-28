@@ -103,7 +103,7 @@ public class MapTest {
         GameMap gameMap = GameMapFactory.createGameMap();
         Vector2 position = new Vector2(1, 1);
         
-        gameMap.initMainCharacter(position);
+        gameMap.getMainCharacter().setPosition(position);
         
         assertThat(gameMap.getMainCharacter()).isNotNull();
         assertThat(gameMap.getMainCharacter().getPosition()).isEqualTo(position);

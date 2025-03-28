@@ -114,7 +114,8 @@ public abstract class AbstractGameMapRepositoryTest {
         assertThat(map).isNotNull();
         assertThat(map.getMainCharacter().getPosition()).isNotEqualTo(newPos);
         
-        MapFactory.GAME_MAP.initMainCharacter(newPos);
+        Vector2 oldPos = map.getMainCharacter().getPosition();
+        MapFactory.GAME_MAP.getMainCharacter().setPosition(newPos);
         gameMapRepository.save(MapFactory.GAME_MAP);
         
         Optional<GameMap> updatedMap = gameMapRepository.findById(MapFactory.GAME_MAP.getId());
@@ -122,7 +123,7 @@ public abstract class AbstractGameMapRepositoryTest {
         GameMap mapObject = updatedMap.get();
         assertThat(mapObject.getMainCharacter().getPosition()).isEqualTo(newPos);
         
-        MapFactory.GAME_MAP.initMainCharacter(new Vector2(MapFactory.TEST_SIZE / 2, MapFactory.TEST_SIZE / 2));
+        MapFactory.GAME_MAP.getMainCharacter().setPosition(oldPos);
     }
     
     @Test
@@ -134,6 +135,15 @@ public abstract class AbstractGameMapRepositoryTest {
                                                                 MapFactory.CHUNK3.getPosition(),
                                                                 MapFactory.CHUNK4.getPosition()));
         assertThat(chunks.size()).isEqualTo(4);
+    }
+    
+    @Test
+    public void givenGameMap_whenSave_thenInventoryIsSaved() {
+        gameMapRepository.save(MapFactory.GAME_MAP);
+        
+        Optional<GameMap> map = gameMapRepository.findById(MapFactory.GAME_MAP.getId());
+        assertThat(map).isPresent();
+        assertThat(map.get().getInventory()).isEqualTo(MapFactory.GAME_MAP.getInventory());
     }
     
     @Test

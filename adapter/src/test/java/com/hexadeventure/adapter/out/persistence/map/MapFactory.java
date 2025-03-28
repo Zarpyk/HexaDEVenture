@@ -1,5 +1,7 @@
 package com.hexadeventure.adapter.out.persistence.map;
 
+import com.hexadeventure.model.characters.MainCharacter;
+import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.map.*;
 
 import java.util.Map;
@@ -30,7 +32,6 @@ public class MapFactory {
         }
         
         GAME_MAP = new GameMap(TEST_USER_EMAIL, TEST_SEED, TEST_SIZE);
-        GAME_MAP.initMainCharacter(new Vector2(TEST_SIZE / 2, TEST_SIZE / 2));
         
         Map<Vector2C, Chunk> chunks = Map.of(
                 CHUNK1.getPosition(), CHUNK1,
@@ -40,8 +41,9 @@ public class MapFactory {
                                              TEST_USER_EMAIL,
                                              TEST_SEED,
                                              TEST_SIZE,
-                                             chunks);
-        GAME_MAP_WITH_2_CHUNKS.initMainCharacter(new Vector2(TEST_SIZE / 2, TEST_SIZE / 2));
+                                             chunks,
+                                             new MainCharacter(new Vector2(TEST_SIZE / 2, TEST_SIZE / 2)),
+                                             new Inventory());
         
         chunks = Map.of(
                 CHUNK1.getPosition(), CHUNK1,
@@ -49,7 +51,12 @@ public class MapFactory {
                 CHUNK3.getPosition(), CHUNK3,
                 CHUNK4.getPosition(), CHUNK4
         );
-        GAME_MAP_WITH_CHUNKS = new GameMap(UUID.randomUUID().toString(), TEST_USER_EMAIL, TEST_SEED, TEST_SIZE, chunks);
-        GAME_MAP_WITH_CHUNKS.initMainCharacter(new Vector2(TEST_SIZE / 2, TEST_SIZE / 2));
+        GAME_MAP_WITH_CHUNKS = new GameMap(UUID.randomUUID().toString(),
+                                           TEST_USER_EMAIL,
+                                           TEST_SEED,
+                                           TEST_SIZE,
+                                           chunks,
+                                           new MainCharacter(new Vector2(TEST_SIZE / 2, TEST_SIZE / 2)),
+                                           new Inventory());
     }
 }

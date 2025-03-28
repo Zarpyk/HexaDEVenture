@@ -15,4 +15,6 @@ public class GameMapMongoEntity {
     private long seed;
     private int mapSize;
     private MainCharacterMongoEntity mainCharacter;
+    
+    private String inventoryFileId;
 }

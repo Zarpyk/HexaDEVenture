@@ -1,7 +1,7 @@
 package com.hexadeventure.adapter.out.persistence.game.jpa.data;
 
+import com.hexadeventure.adapter.out.persistence.game.jpa.data.inventory.InventoryJpaMapper;
 import com.hexadeventure.model.map.GameMap;
-import com.hexadeventure.model.map.Vector2;
 
 public class GameMapJpaMapper {
     public static GameMapJpaEntity toEntity(GameMap model) {
@@ -10,31 +10,18 @@ public class GameMapJpaMapper {
         entity.setUserId(model.getUserEmail());
         entity.setSeed(model.getSeed());
         entity.setMapSize(model.getSize());
-        /*TODO check this entity.setChunks(model.getChunks().values().stream()
-                              .map(ChunkJpaMapper::toEntity)
-                              .collect(Collectors.toList()));*/
         entity.setMainCharacter(MainCharacterJpaMapper.toEntity(model.getMainCharacter()));
+        entity.setInventory(InventoryJpaMapper.toEntity(model.getInventory()));
         return entity;
     }
     
     public static GameMap toModel(GameMapJpaEntity entity) {
-        /*TODO check this HashMap<Vector2, Chunk> chunks = new HashMap<>();
-        for (Chunk chunk : entity.getChunks().stream()
-                                 .map(ChunkJpaMapper::toModel).toList()) {
-            chunks.put(chunk.getPosition(), chunk);
-        }*/
-        
-        GameMap gameMap = new GameMap(entity.getId(),
-                                      entity.getUserId(),
-                                      entity.getSeed(),
-                                      entity.getMapSize(),
-                                      null);
-        
-        MainCharacterJpaEntity mainCharacter = entity.getMainCharacter();
-        if(mainCharacter != null) {
-            gameMap.initMainCharacter(new Vector2(mainCharacter.getX(), mainCharacter.getY()));
-        }
-        
-        return gameMap;
+        return new GameMap(entity.getId(),
+                           entity.getUserId(),
+                           entity.getSeed(),
+                           entity.getMapSize(),
+                           null,
+                           MainCharacterJpaMapper.toModel(entity.getMainCharacter()),
+                           InventoryJpaMapper.toModel(entity.getInventory()));
     }
 }
