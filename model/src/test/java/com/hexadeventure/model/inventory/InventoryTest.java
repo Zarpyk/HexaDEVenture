@@ -1,5 +1,6 @@
 package com.hexadeventure.model.inventory;
 
+import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
@@ -98,5 +99,27 @@ public class InventoryTest {
         inventory.removeItem(weapon);
         
         assertThat(inventory.getItems().get(weapon.getId()).getCount()).isEqualTo(1);
+    }
+    
+    @Test
+    public void givenCharacter_whenAddCharacterToInventory_thenCharacterIsAdded() {
+        Inventory inventory = new Inventory();
+        PlayableCharacter character = new PlayableCharacter("Warrior", 100, 10);
+        
+        inventory.addCharacter(character);
+        
+        assertThat(inventory.getCharacters()).hasSize(1);
+        assertThat(inventory.getCharacters()).containsKey(character.getId());
+    }
+    
+    @Test
+    public void givenCharacter_whenRemoveCharacterFromInventory_thenCharacterIsRemoved() {
+        Inventory inventory = new Inventory();
+        PlayableCharacter character = new PlayableCharacter("Warrior", 100, 10);
+        
+        inventory.addCharacter(character);
+        inventory.removeCharacter(character);
+        
+        assertThat(inventory.getCharacters()).isEmpty();
     }
 }

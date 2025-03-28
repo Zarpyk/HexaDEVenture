@@ -1,5 +1,6 @@
 package com.hexadeventure.model.inventory;
 
+import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,10 +14,12 @@ import java.util.UUID;
 public class Inventory {
     private String id;
     private final Map<String, Item> items;
+    private final Map<String, PlayableCharacter> characters;
     
     public Inventory() {
         id = UUID.randomUUID().toString();
         this.items = new HashMap<>();
+        this.characters = new HashMap<>();
     }
     
     public void addItem(Item item) {
@@ -36,6 +39,14 @@ public class Inventory {
             if(count <= 0) items.remove(item.getId());
             else itemObj.setCount(count);
         }
+    }
+    
+    public void addCharacter(PlayableCharacter character) {
+        characters.put(character.getId(), character);
+    }
+    
+    public void removeCharacter(PlayableCharacter playableCharacter) {
+        characters.remove(playableCharacter.getId());
     }
     
     @Override

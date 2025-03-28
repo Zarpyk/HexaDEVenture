@@ -1,6 +1,6 @@
 package com.hexadeventure.adapter.out.persistence.map;
 
-import com.hexadeventure.model.characters.MainCharacter;
+import com.hexadeventure.model.map.MainCharacter;
 import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.map.*;
 

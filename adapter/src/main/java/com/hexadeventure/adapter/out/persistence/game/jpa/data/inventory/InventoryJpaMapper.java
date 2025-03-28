@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.inventory.Item;
+import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 
 import java.util.HashMap;
 
@@ -29,9 +30,15 @@ public class InventoryJpaMapper {
     public static InventoryJpaEntity toEntity(Inventory model) {
         try {
             InventoryJpaEntity entity = new InventoryJpaEntity();
-            String json = objectMapper.writeValueAsString(model.getItems());
+            
+            String itemsJson = objectMapper.writeValueAsString(model.getItems());
             entity.setId(model.getId());
-            entity.setItemsJson(json);
+            entity.setItemsJson(itemsJson);
+            
+            String charactersJson = objectMapper.writeValueAsString(model.getCharacters());
+            entity.setId(model.getId());
+            entity.setCharactersJson(charactersJson);
+            
             return entity;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -42,7 +49,9 @@ public class InventoryJpaMapper {
         try {
             HashMap<String, Item> items = objectMapper.readValue(entity.getItemsJson(),
                                                                  new TypeReference<>() {});
-            return new Inventory(entity.getId(), items);
+            HashMap<String, PlayableCharacter> characters = objectMapper.readValue(entity.getCharactersJson(),
+                                                                                   new TypeReference<>() {});
+            return new Inventory(entity.getId(), items, characters);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

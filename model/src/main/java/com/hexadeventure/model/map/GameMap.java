@@ -1,6 +1,5 @@
 package com.hexadeventure.model.map;
 
-import com.hexadeventure.model.characters.MainCharacter;
 import com.hexadeventure.model.enemies.Enemy;
 import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.map.resources.Resource;

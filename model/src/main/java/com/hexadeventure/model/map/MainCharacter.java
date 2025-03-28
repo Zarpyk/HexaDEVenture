@@ -1,8 +1,7 @@
-package com.hexadeventure.model.characters;
+package com.hexadeventure.model.map;
 
 import lombok.Getter;
 import lombok.Setter;
-import com.hexadeventure.model.map.Vector2;
 
 @Getter
 @Setter

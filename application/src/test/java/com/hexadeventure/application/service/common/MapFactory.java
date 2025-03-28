@@ -4,7 +4,7 @@ import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.ChunkRepository;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.service.game.GameService;
-import com.hexadeventure.model.characters.MainCharacter;
+import com.hexadeventure.model.map.MainCharacter;
 import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.map.*;
 
