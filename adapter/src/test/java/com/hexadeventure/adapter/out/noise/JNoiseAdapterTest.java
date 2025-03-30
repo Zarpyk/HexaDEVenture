@@ -1,26 +1,23 @@
 package com.hexadeventure.adapter.out.noise;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
 public class JNoiseAdapterTest {
     private final JNoiseAdapter noiseAdapter = new JNoiseAdapter();
     
-    @Before
-    public void before() {
+    @BeforeEach
+    public void beforeEach() {
         noiseAdapter.initNoise("test", 1, 0.1,
                                4, 0.2, 1.5, 0,
                                true, true);
     }
     
-    @After
-    public void after() {
+    @AfterEach
+    public void afterEach() {
         noiseAdapter.releaseNoise("test");
     }
     

@@ -1,9 +1,7 @@
 package com.hexadeventure.adapter.out.pathfinder;
 
 import com.hexadeventure.model.map.Vector2;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +9,6 @@ import java.util.Queue;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
 public class AStarAdapterTest {
     private final static Vector2 start = new Vector2(0, 0);
     private final static Vector2 end = new Vector2(4, 4);
@@ -46,7 +43,6 @@ public class AStarAdapterTest {
             {1, 1, 1, 1, 1},
             };
     private final static Map<Vector2, Integer> noSolutionCostMap = new HashMap<>();
-    
     
     private final AStarAdapter aStarAdapter = new AStarAdapter();
     

@@ -4,31 +4,24 @@ import com.hexadeventure.adapter.in.rest.common.RestCommon;
 import com.hexadeventure.adapter.in.rest.common.UserFactory;
 import com.hexadeventure.application.exceptions.GameNotStartedException;
 import com.hexadeventure.application.port.in.game.GameUseCase;
-import com.hexadeventure.model.movement.MovementResponse;
 import com.hexadeventure.model.map.Vector2;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import com.hexadeventure.model.movement.MovementResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-
-@RunWith(SpringRunner.class)
 public class MovementTest {
     private static final Vector2 movePosition = new Vector2(10, 10);
     private static final MovementResponse MOVEMENT_RESPONSE = new MovementResponse(new ArrayList<>());
     
-    @Mock
-    private GameUseCase gameUseCase;
+    private final GameUseCase gameUseCase = mock(GameUseCase.class);
     
-    @Before
-    public void initialiseRestAssuredMockMvcStandalone() {
+    @BeforeEach
+    public void beforeEach() {
         RestCommon.Setup(new GameController(gameUseCase));
     }
     
