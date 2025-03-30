@@ -9,14 +9,17 @@ import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
+import com.hexadeventure.model.inventory.potions.PotionType;
+import com.hexadeventure.model.inventory.weapons.AggroGenType;
 import com.hexadeventure.model.inventory.weapons.WeaponData;
+import com.hexadeventure.model.inventory.weapons.WeaponType;
 import com.hexadeventure.model.map.*;
+import com.hexadeventure.model.map.resources.ResourceType;
 
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class MapFactory {
@@ -233,13 +236,30 @@ public class MapFactory {
     }
     
     private static void mockSettingsImporter(SettingsImporter settingsImporter) {
-        WeaponData weaponData = mock(WeaponData.class);
+        WeaponData weaponData = new WeaponData("test",
+                                               1,
+                                               WeaponType.MELEE,
+                                               1,
+                                               1,
+                                               1,
+                                               1,
+                                               1,
+                                               1,
+                                               1,
+                                               1,
+                                               AggroGenType.ATTACK,
+                                               1,
+                                               1,
+                                               1,
+                                               1,
+                                               1,
+                                               1);
         when(settingsImporter.importWeapons()).thenReturn(Map.of(weaponData.name(), weaponData));
-        Food food = mock(Food.class);
+        Food food = new Food("test", 1, 1);
         when(settingsImporter.importFoods()).thenReturn(Map.of(food.getName(), food));
-        Potion potion = mock(Potion.class);
+        Potion potion = new Potion("test", 1, PotionType.HEALING);
         when(settingsImporter.importPotions()).thenReturn(Map.of(potion.getName(), potion));
-        Material material = mock(Material.class);
+        Material material = new Material("test", 1, ResourceType.WOOD);
         when(settingsImporter.importMaterials()).thenReturn(Map.of(material.getMaterialType(), material));
     }
 }
