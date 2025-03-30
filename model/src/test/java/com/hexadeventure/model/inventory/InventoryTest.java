@@ -18,6 +18,7 @@ public class InventoryTest {
     public static final String TEST_POTION_NAME = "Health Potion";
     public static final String TEST_MATERIAL_NAME = "Wood";
     
+    
     @Test
     public void givenWeapon_whenAddItemToInventory_thenItemIsAdded() {
         Inventory inventory = new Inventory();
@@ -69,7 +70,6 @@ public class InventoryTest {
     @Test
     public void givenMaterial_whenAddItemToInventory_thenItemIsAdded() {
         Inventory inventory = new Inventory();
-        // TODO Replace with SettingsImporter
         Material material = new Material(TEST_MATERIAL_NAME, 1, ResourceType.WOOD);
         assertThat(material.getType()).isEqualTo(ItemType.MATERIAL);
         

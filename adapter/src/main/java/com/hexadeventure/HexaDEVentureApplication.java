@@ -6,6 +6,7 @@ import com.hexadeventure.application.port.out.noise.NoiseGenerator;
 import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
+import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.application.service.game.GameService;
 import com.hexadeventure.application.service.register.RegisterService;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,13 +19,16 @@ public class HexaDEVentureApplication {
     
     private final NoiseGenerator noiseGenerator;
     private final AStarPathfinder aStarAdapter;
+    private final SettingsImporter settingsImporter;
     
     public HexaDEVentureApplication(UserRepository userRepository, GameMapRepository gameMapRepository,
-                                    NoiseGenerator noiseGenerator, AStarPathfinder aStarAdapter) {
+                                    NoiseGenerator noiseGenerator, AStarPathfinder aStarAdapter,
+                                    SettingsImporter settingsImporter) {
         this.userRepository = userRepository;
         this.gameMapRepository = gameMapRepository;
         this.noiseGenerator = noiseGenerator;
         this.aStarAdapter = aStarAdapter;
+        this.settingsImporter = settingsImporter;
     }
     
     
@@ -35,6 +39,6 @@ public class HexaDEVentureApplication {
     
     @Bean
     public GameUseCase gameUseCase() {
-        return new GameService(userRepository, gameMapRepository, noiseGenerator, aStarAdapter);
+        return new GameService(userRepository, gameMapRepository, noiseGenerator, aStarAdapter, settingsImporter);
     }
 }

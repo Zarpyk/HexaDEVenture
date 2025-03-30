@@ -1,6 +1,6 @@
 package com.hexadeventure.adapter.out.settings.json.material;
 
-public enum ResourceJsonType {
+public enum MaterialJsonType {
     WOOD,
     STONE,
     IRON,

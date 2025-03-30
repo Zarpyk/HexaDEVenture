@@ -11,6 +11,7 @@ import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
 import com.hexadeventure.model.inventory.weapons.WeaponData;
+import com.hexadeventure.model.map.resources.ResourceType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
@@ -18,8 +19,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 @Component
 public class SettingsImporterAdapter implements SettingsImporter {
@@ -30,41 +32,44 @@ public class SettingsImporterAdapter implements SettingsImporter {
     
     private static final ObjectMapper objectMapper = new ObjectMapper();
     
-    private static final Set<WeaponData> weaponsCache = new HashSet<>();
-    private static final Set<Food> foodsCache = new HashSet<>();
-    private static final Set<Potion> potionsCache = new HashSet<>();
-    private static final Set<Material> materialsCache = new HashSet<>();
+    private static final Map<String, WeaponData> weaponsCache = new HashMap<>();
+    private static final Map<String, Food> foodsCache = new HashMap<>();
+    private static final Map<String, Potion> potionsCache = new HashMap<>();
+    private static final Map<ResourceType, Material> materialsCache = new HashMap<>();
     
     @Override
-    public Set<WeaponData> importWeapons() {
-        return importJson(weaponsCache, WEAPONS_JSON, WeaponDataJson.class);
+    public Map<String, WeaponData> importWeapons() {
+        return importJson(weaponsCache, WEAPONS_JSON, WeaponDataJson::getID, WeaponDataJson.class);
     }
     
     @Override
-    public Set<Food> importFoods() {
-        return importJson(foodsCache, FOODS_JSON, FoodJson.class);
+    public Map<String, Food> importFoods() {
+        return importJson(foodsCache, FOODS_JSON, FoodJson::getID, FoodJson.class);
     }
     
     @Override
-    public Set<Potion> importPotions() {
-        return importJson(potionsCache, POTIONS_JSON, PotionJson.class);
+    public Map<String, Potion> importPotions() {
+        return importJson(potionsCache, POTIONS_JSON, PotionJson::getID, PotionJson.class);
     }
     
     @Override
-    public Set<Material> importMaterials() {
-        return importJson(materialsCache, MATERIALS_JSON, MaterialJson.class);
+    public Map<ResourceType, Material> importMaterials() {
+        return importJson(materialsCache, MATERIALS_JSON, MaterialJson::getID, MaterialJson.class);
     }
     
-    private <T, T2 extends ItemJson<T>> Set<T> importJson(Set<T> cache, String jsonFile, Class<T2> clazz) {
+    private <T, ID, JSON_T extends ItemJson<T>> Map<ID, T> importJson(Map<ID, T> cache, String jsonFile,
+                                                                      Function<JSON_T, ID> idExtractor,
+                                                                      Class<JSON_T> clazz) {
         if(!cache.isEmpty()) return cache;
         try {
             // From: https://stackoverflow.com/a/49468282/11451105
             File file = ResourceUtils.getFile("classpath:" + jsonFile);
             InputStream inputStream = new FileInputStream(file);
             
-            T2[] foods = objectMapper.readValue(inputStream, objectMapper.getTypeFactory().constructArrayType(clazz));
-            for (T2 food : foods) {
-                cache.add(food.toModel());
+            JSON_T[] json = objectMapper.readValue(inputStream,
+                                                   objectMapper.getTypeFactory().constructArrayType(clazz));
+            for (JSON_T jsonObject : json) {
+                cache.put(idExtractor.apply(jsonObject), jsonObject.toModel());
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

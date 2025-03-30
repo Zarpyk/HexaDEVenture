@@ -9,7 +9,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MaterialJson extends ItemJson<Material> {
-    private ResourceJsonType materialType;
+    private MaterialJsonType materialType;
+    
+    public static ResourceType getID(MaterialJson materialJson) {
+        return ResourceType.values()[materialJson.getMaterialType().ordinal()];
+    }
     
     public Material toModel() {
         return new Material(getName(), getSkin(), ResourceType.values()[materialType.ordinal()]);

@@ -6,6 +6,7 @@ import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.ChunkRepository;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
+import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.application.service.common.MapFactory;
 import com.hexadeventure.application.service.common.UserFactory;
 import com.hexadeventure.model.inventory.Item;
@@ -36,8 +37,10 @@ public class MovementTest {
     private static final ChunkRepository chunkRepository = mock(ChunkRepository.class);
     private static final NoiseGenerator noiseGenerator = mock(NoiseGenerator.class);
     private static final AStarPathfinder aStarPathfinder = mock(AStarPathfinder.class);
+    private static final SettingsImporter settingsImporter = mock(SettingsImporter.class);
     private static final GameService gameService = new GameService(userRepository, gameMapRepository,
-                                                                   noiseGenerator, aStarPathfinder);
+                                                                   noiseGenerator, aStarPathfinder,
+                                                                   settingsImporter);
     
     @Test
     public void givenNoStartGameUser_whenMove_thenThrowAnException() {
@@ -54,7 +57,7 @@ public class MovementTest {
         testUser.setMapId(MapFactory.EMPTY_MAP_ID);
         when(userRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(java.util.Optional.of(testUser));
         
-        MapFactory.createEmptyGameMap(gameMapRepository, chunkRepository, aStarPathfinder);
+        MapFactory.createEmptyGameMap(gameMapRepository, chunkRepository, aStarPathfinder, settingsImporter);
         
         MovementResponse move = gameService.move(TEST_USER_EMAIL, MapFactory.EMPTY_END_POSITION);
         
@@ -71,7 +74,7 @@ public class MovementTest {
         testUser.setMapId(MapFactory.OBSTACLE_MAP_ID);
         when(userRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(java.util.Optional.of(testUser));
         
-        MapFactory.createObstacleGameMap(gameMapRepository, chunkRepository, aStarPathfinder);
+        MapFactory.createObstacleGameMap(gameMapRepository, chunkRepository, aStarPathfinder, settingsImporter);
         
         MovementResponse move = gameService.move(TEST_USER_EMAIL, MapFactory.OBSTACLE_END_POSITION);
         
@@ -84,7 +87,10 @@ public class MovementTest {
         testUser.setMapId(MapFactory.RESOURCE_MAP_ID);
         when(userRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(java.util.Optional.of(testUser));
         
-        GameMap gameMap = MapFactory.createResourceGameMap(gameMapRepository, chunkRepository, aStarPathfinder);
+        GameMap gameMap = MapFactory.createResourceGameMap(gameMapRepository,
+                                                           chunkRepository,
+                                                           aStarPathfinder,
+                                                           settingsImporter);
         
         MovementResponse move = gameService.move(TEST_USER_EMAIL, MapFactory.RESOURCE_END_POSITION);
         
@@ -115,7 +121,10 @@ public class MovementTest {
         assertThat(item).isNotEmpty();
         assertThat(item.get().getType()).isEqualTo(ItemType.MATERIAL);
         
-        GameMap checkMap = MapFactory.createResourceGameMap(gameMapRepository, chunkRepository, aStarPathfinder);
+        GameMap checkMap = MapFactory.createResourceGameMap(gameMapRepository,
+                                                            chunkRepository,
+                                                            aStarPathfinder,
+                                                            settingsImporter);
         int resourceCount = 0;
         for (int i = 1; i < actions.size(); i++) {
             MovementAction action = actions.get(i);

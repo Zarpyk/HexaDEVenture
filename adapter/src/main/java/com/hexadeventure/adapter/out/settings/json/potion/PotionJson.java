@@ -12,6 +12,10 @@ public class PotionJson extends ItemJson<Potion> {
     private double potionPower;
     private PotionJsonType potionType;
     
+    public static String getID(PotionJson potionJson) {
+        return potionJson.getName();
+    }
+    
     public Potion toModel() {
         return new Potion(getName(), getSkin(), potionPower, PotionType.values()[potionType.ordinal()]);
     }

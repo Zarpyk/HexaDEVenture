@@ -6,6 +6,7 @@ import com.hexadeventure.application.port.out.noise.NoiseGenerator;
 import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
+import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.application.service.common.UserFactory;
 import com.hexadeventure.model.map.Chunk;
 import com.hexadeventure.model.map.GameMap;
@@ -35,8 +36,10 @@ public class StartGameTest {
     private final GameMapRepository gameMapRepository = mock(GameMapRepository.class);
     private final NoiseGenerator noiseGenerator = mock(NoiseGenerator.class);
     private final AStarPathfinder aStarPathfinder = mock(AStarPathfinder.class);
+    private final SettingsImporter settingsImporter = mock(SettingsImporter.class);
     private final GameService gameService = new GameService(userRepository, gameMapRepository,
-                                                            noiseGenerator, aStarPathfinder);
+                                                            noiseGenerator, aStarPathfinder,
+                                                            settingsImporter);
     
     static {
         int center = TEST_SIZE / 2;

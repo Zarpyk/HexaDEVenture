@@ -35,6 +35,10 @@ public class WeaponDataJson extends ItemJson<WeaponData> {
     private double healingPower;
     private double hipnotizationPower;
     
+    public static String getID(WeaponDataJson weaponDataJson) {
+        return weaponDataJson.getName();
+    }
+    
     public WeaponData toModel() {
         return new WeaponData(getName(),
                               getSkin(),

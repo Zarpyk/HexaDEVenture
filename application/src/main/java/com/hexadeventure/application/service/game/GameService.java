@@ -8,6 +8,7 @@ import com.hexadeventure.application.port.out.noise.NoiseGenerator;
 import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
+import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.map.*;
 import com.hexadeventure.model.map.resources.Resource;
@@ -33,13 +34,16 @@ public class GameService implements GameUseCase {
     private final GameMapRepository gameMapRepository;
     private final NoiseGenerator noiseGenerator;
     private final AStarPathfinder aStarPathfinder;
+    private final SettingsImporter settingsImporter;
     
     public GameService(UserRepository userRepository, GameMapRepository gameMapRepository,
-                       NoiseGenerator noiseGenerator, AStarPathfinder aStarPathfinder) {
+                       NoiseGenerator noiseGenerator, AStarPathfinder aStarPathfinder,
+                       SettingsImporter settingsImporter) {
         this.userRepository = userRepository;
         this.gameMapRepository = gameMapRepository;
         this.noiseGenerator = noiseGenerator;
         this.aStarPathfinder = aStarPathfinder;
+        this.settingsImporter = settingsImporter;
     }
     
     @Override
@@ -99,9 +103,8 @@ public class GameService implements GameUseCase {
             ResourceAction resourceAction = null;
             if(resource != null) {
                 resourceAction = new ResourceAction(resource.getType().ordinal(), resource.getCount());
-                // TODO Replace with SettingsImporter
-                gameMap.getInventory().addItem(new Material(resource.getType().name(), 1, resource.getType()),
-                                               resource.getCount());
+                Material material = settingsImporter.importMaterials().get(resource.getType());
+                gameMap.getInventory().addItem(material, resource.getCount());
                 chunk.removeResource(position);
             }
             

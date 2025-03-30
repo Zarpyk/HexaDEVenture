@@ -3,14 +3,20 @@ package com.hexadeventure.application.service.common;
 import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.ChunkRepository;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
+import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.application.service.game.GameService;
 import com.hexadeventure.model.inventory.Inventory;
+import com.hexadeventure.model.inventory.foods.Food;
+import com.hexadeventure.model.inventory.materials.Material;
+import com.hexadeventure.model.inventory.potions.Potion;
+import com.hexadeventure.model.inventory.weapons.WeaponData;
 import com.hexadeventure.model.map.*;
 
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class MapFactory {
@@ -36,16 +42,25 @@ public class MapFactory {
     
     public static final String RESOURCE_MAP_ID = UUID.randomUUID().toString();
     public static final int RESOURCE_MAP_SIZE_MULTIPLIER = 2;
-    public static final int RESOURCE_MAP_SIZE = GameService.MIN_MAP_SIZE * EMPTY_MAP_SIZE_MULTIPLIER;
-    public static final Vector2 RESOURCE_START_POSITION = new Vector2(EMPTY_MAP_SIZE / 2, EMPTY_MAP_SIZE / 2);
+    public static final int RESOURCE_MAP_SIZE = GameService.MIN_MAP_SIZE * RESOURCE_MAP_SIZE_MULTIPLIER;
+    public static final Vector2 RESOURCE_START_POSITION = new Vector2(RESOURCE_MAP_SIZE / 2, RESOURCE_MAP_SIZE / 2);
     private static final int RESOURCE_MAP_MOVE_COUNT = 16;
-    public static final Vector2 RESOURCE_END_POSITION = new Vector2(EMPTY_MAP_SIZE / 2 + RESOURCE_MAP_MOVE_COUNT,
-                                                                    EMPTY_MAP_SIZE / 2 + RESOURCE_MAP_MOVE_COUNT);
+    public static final Vector2 RESOURCE_END_POSITION = new Vector2(RESOURCE_MAP_SIZE / 2 + RESOURCE_MAP_MOVE_COUNT,
+                                                                    RESOURCE_MAP_SIZE / 2 + RESOURCE_MAP_MOVE_COUNT);
     public static final int RESOURCE_MAP_PATH_LENGTH = RESOURCE_MAP_MOVE_COUNT + RESOURCE_MAP_MOVE_COUNT - 1;
+    
+    public static final String ENEMY_MAP_ID = UUID.randomUUID().toString();
+    public static final int ENEMY_MAP_SIZE_MULTIPLIER = 2;
+    public static final int ENEMY_MAP_SIZE = GameService.MIN_MAP_SIZE * ENEMY_MAP_SIZE_MULTIPLIER;
+    public static final Vector2 ENEMY_START_POSITION = new Vector2(ENEMY_MAP_SIZE / 2, ENEMY_MAP_SIZE / 2);
+    private static final int ENEMY_MAP_MOVE_COUNT = 16;
+    public static final Vector2 ENEMY_END_POSITION = new Vector2(ENEMY_MAP_SIZE / 2 + ENEMY_MAP_MOVE_COUNT,
+                                                                 ENEMY_MAP_SIZE / 2 + ENEMY_MAP_MOVE_COUNT);
+    public static final int ENEMY_MAP_PATH_LENGTH = ENEMY_MAP_MOVE_COUNT + ENEMY_MAP_MOVE_COUNT - 1;
     
     
     public static void createEmptyGameMap(GameMapRepository gameMapRepository, ChunkRepository chunkRepository,
-                                          AStarPathfinder aStarPathfinder) {
+                                          AStarPathfinder aStarPathfinder, SettingsImporter settingsImporter) {
         Map<Vector2C, Chunk> chunks = new HashMap<>();
         int center = EMPTY_MAP_SIZE / 2;
         Vector2C centerChunk = Chunk.getChunkPosition(center, center);
@@ -75,10 +90,11 @@ public class MapFactory {
         
         when(gameMapRepository.findById(eq(EMPTY_MAP_ID))).thenReturn(java.util.Optional.of(gameMap));
         when(aStarPathfinder.generatePath(any(), any(), eq(costMap))).thenReturn(path);
+        mockSettingsImporter(settingsImporter);
     }
     
     public static void createObstacleGameMap(GameMapRepository gameMapRepository, ChunkRepository chunkRepository,
-                                             AStarPathfinder aStarPathfinder) {
+                                             AStarPathfinder aStarPathfinder, SettingsImporter settingsImporter) {
         Map<Vector2C, Chunk> chunks = new HashMap<>();
         int center = OBSTACLE_MAP_SIZE / 2;
         Vector2C centerChunk = Chunk.getChunkPosition(center, center);
@@ -102,10 +118,11 @@ public class MapFactory {
                                       new Inventory());
         
         when(gameMapRepository.findById(eq(OBSTACLE_MAP_ID))).thenReturn(java.util.Optional.of(gameMap));
+        mockSettingsImporter(settingsImporter);
     }
     
     public static GameMap createResourceGameMap(GameMapRepository gameMapRepository, ChunkRepository chunkRepository,
-                                                AStarPathfinder aStarPathfinder) {
+                                                AStarPathfinder aStarPathfinder, SettingsImporter settingsImporter) {
         Map<Vector2C, Chunk> chunks = new HashMap<>();
         int center = RESOURCE_MAP_SIZE / 2;
         Vector2C centerChunk = Chunk.getChunkPosition(center, center);
@@ -143,6 +160,43 @@ public class MapFactory {
         
         when(gameMapRepository.findById(eq(RESOURCE_MAP_ID))).thenReturn(java.util.Optional.of(gameMap));
         when(aStarPathfinder.generatePath(any(), any(), eq(costMap))).thenReturn(path);
+        mockSettingsImporter(settingsImporter);
+        return gameMap;
+    }
+    
+    public static GameMap createEnemyGameMap(GameMapRepository gameMapRepository, ChunkRepository chunkRepository,
+                                             AStarPathfinder aStarPathfinder, SettingsImporter settingsImporter) {
+        Map<Vector2C, Chunk> chunks = new HashMap<>();
+        int center = ENEMY_MAP_SIZE / 2;
+        Vector2C centerChunk = Chunk.getChunkPosition(center, center);
+        centerChunk.getArroundPositions(ENEMY_MAP_SIZE_MULTIPLIER, true).forEach(chunkPosition -> {
+            chunks.put(chunkPosition, new Chunk(chunkPosition));
+            Chunk chunk = chunks.get(chunkPosition);
+            for (int x = 0; x < Chunk.SIZE; x++) {
+                for (int y = 0; y < Chunk.SIZE; y++) {
+                    Vector2 position = new Vector2(x, y);
+                    chunk.setCell(position, CellType.GROUND);
+                }
+            }
+        });
+        mockChunk(chunkRepository, ENEMY_MAP_ID, chunks);
+        
+        GameMap gameMap = new GameMap(ENEMY_MAP_ID,
+                                      TEST_USER_EMAIL,
+                                      TEST_SEED,
+                                      ENEMY_MAP_SIZE,
+                                      chunks,
+                                      new MainCharacter(new Vector2(ENEMY_MAP_SIZE / 2, ENEMY_MAP_SIZE / 2)),
+                                      new Inventory());
+        
+        Map<Vector2, Integer> costMap = gameMap.getCostMap(centerChunk.getArroundPositions(1, true),
+                                                           true);
+        
+        Queue<Vector2> path = generatePath(ENEMY_START_POSITION, ENEMY_MAP_PATH_LENGTH, ENEMY_END_POSITION);
+        
+        when(gameMapRepository.findById(eq(ENEMY_MAP_ID))).thenReturn(java.util.Optional.of(gameMap));
+        when(aStarPathfinder.generatePath(any(), any(), eq(costMap))).thenReturn(path);
+        mockSettingsImporter(settingsImporter);
         return gameMap;
     }
     
@@ -176,5 +230,16 @@ public class MapFactory {
             positions.forEach(position -> result.put(position, chunks.get(position)));
             return result;
         });
+    }
+    
+    private static void mockSettingsImporter(SettingsImporter settingsImporter) {
+        WeaponData weaponData = mock(WeaponData.class);
+        when(settingsImporter.importWeapons()).thenReturn(Map.of(weaponData.name(), weaponData));
+        Food food = mock(Food.class);
+        when(settingsImporter.importFoods()).thenReturn(Map.of(food.getName(), food));
+        Potion potion = mock(Potion.class);
+        when(settingsImporter.importPotions()).thenReturn(Map.of(potion.getName(), potion));
+        Material material = mock(Material.class);
+        when(settingsImporter.importMaterials()).thenReturn(Map.of(material.getMaterialType(), material));
     }
 }

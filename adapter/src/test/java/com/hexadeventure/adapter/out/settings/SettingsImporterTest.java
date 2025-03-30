@@ -4,10 +4,11 @@ import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
 import com.hexadeventure.model.inventory.weapons.WeaponData;
+import com.hexadeventure.model.map.resources.ResourceType;
 import org.junit.Test;
 
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,10 +21,10 @@ public class SettingsImporterTest {
     
     @Test
     public void givenJson_whenImportWeapons_thenReturnWeaponDataList() {
-        Set<WeaponData> weaponsData = settingsImporter.importWeapons();
+        Map<String, WeaponData> weaponsData = settingsImporter.importWeapons();
         
         assertThat(weaponsData.size()).isEqualTo(2);
-        Optional<WeaponData> weapon = weaponsData.stream().findFirst();
+        Optional<WeaponData> weapon = weaponsData.values().stream().findFirst();
         assertThat(weapon).isPresent();
         
         WeaponData weaponData = weapon.get();
@@ -49,10 +50,10 @@ public class SettingsImporterTest {
     
     @Test
     public void givenJson_whenImportFoods_thenReturnFoodsList() {
-        Set<Food> foods = settingsImporter.importFoods();
+        Map<String, Food> foods = settingsImporter.importFoods();
         
         assertThat(foods.size()).isEqualTo(2);
-        Optional<Food> food = foods.stream().findFirst();
+        Optional<Food> food = foods.values().stream().findFirst();
         assertThat(food).isPresent();
         
         Food foodObj = food.get();
@@ -63,10 +64,10 @@ public class SettingsImporterTest {
     
     @Test
     public void givenJson_whenImportPotions_thenReturnPotionsList() {
-        Set<Potion> potions = settingsImporter.importPotions();
+        Map<String, Potion> potions = settingsImporter.importPotions();
         
         assertThat(potions.size()).isEqualTo(2);
-        Optional<Potion> potion = potions.stream().findFirst();
+        Optional<Potion> potion = potions.values().stream().findFirst();
         assertThat(potion).isPresent();
         
         Potion potionObj = potion.get();
@@ -78,10 +79,10 @@ public class SettingsImporterTest {
     
     @Test
     public void givenJson_whenImportMaterials_thenReturnMaterialsList() {
-        Set<Material> materials = settingsImporter.importMaterials();
+        Map<ResourceType, Material> materials = settingsImporter.importMaterials();
         
         assertThat(materials.size()).isEqualTo(2);
-        Optional<Material> material = materials.stream().findFirst();
+        Optional<Material> material = materials.values().stream().findFirst();
         assertThat(material).isPresent();
         
         Material materialObj = material.get();
