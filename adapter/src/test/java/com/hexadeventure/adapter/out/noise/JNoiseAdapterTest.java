@@ -10,11 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 public class JNoiseAdapterTest {
-    private final JNoiseAdapter noiseAdapter;
-    
-    public JNoiseAdapterTest() {
-        noiseAdapter = new JNoiseAdapter();
-    }
+    private final JNoiseAdapter noiseAdapter = new JNoiseAdapter();
     
     @BeforeEach
     public void beforeEach() {
