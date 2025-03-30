@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Sword",
+    "skin": 1,
+    "weaponType": "MELEE",
+    "minDamage": 1.0,
+    "maxDamage": 2.0,
+    "minMeleeDefense": 1.0,
+    "maxMeleeDefense": 2.0,
+    "minRangedDefense": 1.0,
+    "maxRangedDefense": 2.0,
+    "minCooldown": 1,
+    "maxCooldown": 2,
+    "aggroGenType": "ATTACK",
+    "extraAggroGeneration": 1.0,
+    "minAggroGeneration": 1.0,
+    "maxAggroGeneration": 1.0,
+    "initialAggro": 1,
+    "healingPower": 1.0,
+    "hipnotizationPower": 1.0
+  },
+  {
+    "name": "Sword 2",
+    "skin": 2,
+    "weaponType": "MELEE",
+    "minDamage": 1.0,
+    "maxDamage": 2.0,
+    "minMeleeDefense": 1.0,
+    "maxMeleeDefense": 2.0,
+    "minRangedDefense": 1.0,
+    "maxRangedDefense": 2.0,
+    "minCooldown": 1,
+    "maxCooldown": 2,
+    "aggroGenType": "ATTACK",
+    "extraAggroGeneration": 1.0,
+    "minAggroGeneration": 1.0,
+    "maxAggroGeneration": 1.0,
+    "initialAggro": 1,
+    "healingPower": 1.0,
+    "hipnotizationPower": 1.0
+  }
+]

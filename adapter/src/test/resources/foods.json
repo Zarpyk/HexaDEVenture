@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Apple",
+    "skin": 1,
+    "healthPoints": 1.0
+  },
+  {
+    "name": "Bread",
+    "skin": 2,
+    "healthPoints": 1.0
+  }
+]

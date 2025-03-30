@@ -57,7 +57,7 @@ public class InventoryTest {
     @Test
     public void givenPotion_whenAddItemToInventory_thenItemIsAdded() {
         Inventory inventory = new Inventory();
-        Potion potion = new Potion(TEST_POTION_NAME, PotionType.HEALING, 1);
+        Potion potion = new Potion(TEST_POTION_NAME, 1, PotionType.HEALING);
         assertThat(potion.getType()).isEqualTo(ItemType.POTION);
         
         inventory.addItem(potion);
@@ -69,7 +69,8 @@ public class InventoryTest {
     @Test
     public void givenMaterial_whenAddItemToInventory_thenItemIsAdded() {
         Inventory inventory = new Inventory();
-        Material material = new Material(TEST_MATERIAL_NAME, ResourceType.WOOD);
+        // TODO Replace with SettingsImporter
+        Material material = new Material(TEST_MATERIAL_NAME, 1, ResourceType.WOOD);
         assertThat(material.getType()).isEqualTo(ItemType.MATERIAL);
         
         inventory.addItem(material);

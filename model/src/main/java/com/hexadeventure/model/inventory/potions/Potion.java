@@ -13,13 +13,13 @@ public class Potion extends Item {
     private double potionPower;
     private PotionType potionType;
     
-    public Potion(String name, PotionType potionType, int skin) {
+    public Potion(String name, int skin, PotionType potionType) {
         super(name, ItemType.POTION, skin);
         this.potionType = potionType;
         setId(Integer.toString(hashCode()));
     }
     
-    public Potion(String name, PotionType potionType, int skin, double potionPower) {
+    public Potion(String name, int skin, double potionPower, PotionType potionType) {
         super(name, ItemType.POTION, skin);
         this.potionType = potionType;
         this.potionPower = potionPower;

@@ -99,8 +99,9 @@ public class GameService implements GameUseCase {
             ResourceAction resourceAction = null;
             if(resource != null) {
                 resourceAction = new ResourceAction(resource.getType().ordinal(), resource.getCount());
-                gameMap.getInventory().addItem(new Material(resource.getType().name(),
-                                                            resource.getType()), resource.getCount());
+                // TODO Replace with SettingsImporter
+                gameMap.getInventory().addItem(new Material(resource.getType().name(), 1, resource.getType()),
+                                               resource.getCount());
                 chunk.removeResource(position);
             }
             

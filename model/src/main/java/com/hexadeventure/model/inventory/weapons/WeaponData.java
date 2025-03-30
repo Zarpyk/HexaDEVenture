@@ -1,0 +1,20 @@
+package com.hexadeventure.model.inventory.weapons;
+
+public record WeaponData(String name,
+                         int skin,
+                         WeaponType weaponType,
+                         double minDamage,
+                         double maxDamage,
+                         double minMeleeDefense,
+                         double maxMeleeDefense,
+                         double minRangedDefense,
+                         double maxRangedDefense,
+                         int minCooldown,
+                         int maxCooldown,
+                         AggroGenType aggroGenType,
+                         double extraAggroGeneration,
+                         double minAggroGeneration,
+                         double maxAggroGeneration,
+                         int initialAggro,
+                         double healingPower,
+                         double hipnotizationPower) {}

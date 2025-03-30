@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Healing Potion",
+    "skin": 1,
+    "potionPower": 1.0,
+    "potionType": "HEALING"
+  },
+  {
+    "name": "Strength Potion",
+    "skin": 2,
+    "potionPower": 1.0,
+    "potionType": "STRENGTH"
+  }
+]

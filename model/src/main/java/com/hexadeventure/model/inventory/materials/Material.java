@@ -13,8 +13,8 @@ import java.util.Objects;
 public class Material extends Item {
     private ResourceType materialType;
     
-    public Material(String name, ResourceType materialType) {
-        super(name, ItemType.MATERIAL, 1);
+    public Material(String name, int skin, ResourceType materialType) {
+        super(name, ItemType.MATERIAL, skin);
         this.materialType = materialType;
         setId(Integer.toString(hashCode()));
     }

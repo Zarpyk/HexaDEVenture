@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Wood",
+    "skin": 1,
+    "materialType": "WOOD"
+  },
+  {
+    "name": "Stone",
+    "skin": 2,
+    "materialType": "STONE"
+  }
+]
