@@ -44,8 +44,10 @@ public class SettingsImporterTest {
         assertThat(weaponData.minAggroGeneration()).isPositive();
         assertThat(weaponData.maxAggroGeneration()).isPositive();
         assertThat(weaponData.initialAggro()).isPositive();
-        assertThat(weaponData.healingPower()).isPositive();
-        assertThat(weaponData.hipnotizationPower()).isPositive();
+        assertThat(weaponData.minHealingPower()).isPositive();
+        assertThat(weaponData.maxHealingPower()).isPositive();
+        assertThat(weaponData.minHipnotizationPower()).isPositive();
+        assertThat(weaponData.maxHipnotizationPower()).isPositive();
     }
     
     @Test

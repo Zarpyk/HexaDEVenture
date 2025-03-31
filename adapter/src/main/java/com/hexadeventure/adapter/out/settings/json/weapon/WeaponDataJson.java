@@ -32,8 +32,11 @@ public class WeaponDataJson extends ItemJson<WeaponData> {
     private double maxAggroGeneration;
     
     private int initialAggro;
-    private double healingPower;
-    private double hipnotizationPower;
+    
+    private double minHealingPower;
+    private double maxHealingPower;
+    private double minHipnotizationPower;
+    private double maxHipnotizationPower;
     
     public static String getID(WeaponDataJson weaponDataJson) {
         return weaponDataJson.getName();
@@ -56,7 +59,9 @@ public class WeaponDataJson extends ItemJson<WeaponData> {
                               minAggroGeneration,
                               maxAggroGeneration,
                               initialAggro,
-                              healingPower,
-                              hipnotizationPower);
+                              minHealingPower,
+                              maxHealingPower,
+                              minHipnotizationPower,
+                              maxHipnotizationPower);
     }
 }

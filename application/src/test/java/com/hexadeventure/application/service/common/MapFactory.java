@@ -253,6 +253,8 @@ public class MapFactory {
                                                1,
                                                1,
                                                1,
+                                               1,
+                                               1,
                                                1);
         when(settingsImporter.importWeapons()).thenReturn(Map.of(weaponData.name(), weaponData));
         Food food = new Food("test", 1, 1);

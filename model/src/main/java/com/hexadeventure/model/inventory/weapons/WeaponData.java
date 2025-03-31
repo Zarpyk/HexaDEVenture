@@ -16,5 +16,7 @@ public record WeaponData(String name,
                          double minAggroGeneration,
                          double maxAggroGeneration,
                          int initialAggro,
-                         double healingPower,
-                         double hipnotizationPower) {}
+                         double minHealingPower,
+                         double maxHealingPower,
+                         double minHipnotizationPower,
+                         double maxHipnotizationPower) {}

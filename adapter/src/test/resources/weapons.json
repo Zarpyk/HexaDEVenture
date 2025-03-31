@@ -16,8 +16,10 @@
     "minAggroGeneration": 1.0,
     "maxAggroGeneration": 1.0,
     "initialAggro": 1,
-    "healingPower": 1.0,
-    "hipnotizationPower": 1.0
+    "minHealingPower": 1.0,
+    "maxHealingPower": 1.0,
+    "minHipnotizationPower": 1.0,
+    "maxHipnotizationPower": 1.0
   },
   {
     "name": "Sword 2",
@@ -36,7 +38,9 @@
     "minAggroGeneration": 1.0,
     "maxAggroGeneration": 1.0,
     "initialAggro": 1,
-    "healingPower": 1.0,
-    "hipnotizationPower": 1.0
+    "minHealingPower": 1.0,
+    "maxHealingPower": 1.0,
+    "minHipnotizationPower": 1.0,
+    "maxHipnotizationPower": 1.0
   }
 ]
