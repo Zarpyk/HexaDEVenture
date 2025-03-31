@@ -69,11 +69,16 @@ public class Chunk {
     }
     
     public void addEnemy(Vector2 position, Enemy enemy) {
+        enemy.setPosition(position);
         enemies.put(position, enemy);
     }
     
     public void removeResource(Vector2 position) {
         resources.remove(position);
+    }
+    
+    public void removeEnemy(Vector2 position) {
+        enemies.remove(position);
     }
     
     /**

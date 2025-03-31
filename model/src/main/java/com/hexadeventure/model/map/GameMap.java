@@ -21,6 +21,8 @@ public class GameMap {
     
     @Setter
     private Vector2 bossPosition;
+    @Setter
+    private boolean isInCombat;
     
     public GameMap(String userEmail, long seed, int size) {
         this.id = UUID.randomUUID().toString();
@@ -100,6 +102,14 @@ public class GameMap {
         Vector2C chunkPosition = Chunk.getChunkPosition(position);
         chunks.putIfAbsent(chunkPosition, new Chunk(chunkPosition));
         chunks.get(chunkPosition).addEnemy(position, enemy);
+    }
+    
+    public void moveEnemy(Vector2 position, Vector2 newPosition) {
+        Vector2C chunkPosition = Chunk.getChunkPosition(position);
+        Vector2C newChunkPosition = Chunk.getChunkPosition(newPosition);
+        Enemy enemy = chunks.get(chunkPosition).getEnemy(position);
+        chunks.get(newChunkPosition).addEnemy(newPosition, enemy);
+        chunks.get(chunkPosition).removeEnemy(position);
     }
     
     @Override

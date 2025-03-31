@@ -1,5 +1,6 @@
 package com.hexadeventure.application.service.game;
 
+import com.hexadeventure.application.exceptions.GameInCombatException;
 import com.hexadeventure.application.exceptions.GameNotStartedException;
 import com.hexadeventure.application.exceptions.GameStartedException;
 import com.hexadeventure.application.exceptions.MapSizeException;
@@ -9,6 +10,7 @@ import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.port.out.settings.SettingsImporter;
+import com.hexadeventure.model.enemies.Enemy;
 import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.initial.InitialResourceTypeIdResourceData;
 import com.hexadeventure.model.inventory.initial.InitialResources;
@@ -20,6 +22,7 @@ import com.hexadeventure.model.inventory.weapons.WeaponData;
 import com.hexadeventure.model.map.*;
 import com.hexadeventure.model.map.resources.Resource;
 import com.hexadeventure.model.map.resources.ResourceType;
+import com.hexadeventure.model.movement.EnemyMovement;
 import com.hexadeventure.model.movement.MovementAction;
 import com.hexadeventure.model.movement.MovementResponse;
 import com.hexadeventure.model.movement.ResourceAction;
@@ -105,36 +108,43 @@ public class GameService implements GameUseCase {
     public MovementResponse move(String email, Vector2 positionToMove) {
         Optional<User> user = userRepository.findByEmail(email);
         assert user.isPresent();
+        
+        // Check if the game has started
         if(user.get().getMapId() == null) throw new GameNotStartedException();
+        
         Optional<GameMap> map = gameMapRepository.findById(user.get().getMapId());
         assert map.isPresent();
         GameMap gameMap = map.get();
+        
+        // Check if the game is in combat
+        if(gameMap.isInCombat()) throw new GameInCombatException();
+        
         List<MovementAction> actions = new ArrayList<>();
         
-        MainCharacter mainCharacter = map.get().getMainCharacter();
+        MainCharacter mainCharacter = gameMap.getMainCharacter();
         Vector2C currentChunk = Chunk.getChunkPosition(mainCharacter.getPosition());
         
-        // Check the position to move is not a wall
-        Map<Vector2C, Chunk> mapChunks = gameMapRepository.findMapChunks(gameMap.getId(), Set.of(currentChunk));
+        // Get chunks around the player
+        Set<Vector2C> chunkArroundPlayer = currentChunk.getArroundPositions(RENDER_DISTANCE, false);
+        Map<Vector2C, Chunk> mapChunks = gameMapRepository.findMapChunks(gameMap.getId(), chunkArroundPlayer);
         gameMap.addChunks(mapChunks, false);
+        
+        // Check the position to move is not a wall
         CellData cell = gameMap.getCell(positionToMove);
         if(cell.getType() == CellType.WALL) {
             return new MovementResponse(actions);
         }
         
-        // Get chunks around the player
-        Set<Vector2C> chunkArroundPlayer = currentChunk.getArroundPositions(RENDER_DISTANCE, false);
-        mapChunks = gameMapRepository.findMapChunks(gameMap.getId(), chunkArroundPlayer);
-        gameMap.addChunks(mapChunks, false);
-        
         // Generate the path
         Queue<Vector2> path = aStarPathfinder.generatePath(mainCharacter.getPosition(),
                                                            positionToMove,
                                                            gameMap.getCostMap(chunkArroundPlayer, true));
-        
-        while (!path.isEmpty()) {
-            Vector2 position = path.poll();
+        Vector2 position = mainCharacter.getPosition();
+        boolean startCombat = false;
+        while (!path.isEmpty() && !startCombat) {
+            position = path.poll();
             
+            // Check resource on the position
             Chunk chunk = gameMap.getChunkOfCell(position);
             Resource resource = chunk.getResource(position);
             ResourceAction resourceAction = null;
@@ -145,12 +155,52 @@ public class GameService implements GameUseCase {
                 chunk.removeResource(position);
             }
             
-            // TODO US 1.9
+            // Update enemies around the player
+            List<EnemyMovement> enemyMovements = new ArrayList<>();
+            Set<Vector2C> newChunkPositions = currentChunk.getArroundPositions(RENDER_DISTANCE, false);
+            if(!newChunkPositions.equals(chunkArroundPlayer)) {
+                chunkArroundPlayer = newChunkPositions;
+                mapChunks = gameMapRepository.findMapChunks(gameMap.getId(), chunkArroundPlayer);
+                gameMap.addChunks(mapChunks, false);
+            }
+            for (Chunk arroundChunk : mapChunks.values()) {
+                for (Enemy enemy : arroundChunk.getEnemies().values()) {
+                    Queue<Vector2> enemyPath = aStarPathfinder.generatePath(enemy.getPosition(),
+                                                                            position,
+                                                                            gameMap.getCostMap(chunkArroundPlayer,
+                                                                                               true));
+                    // Ignore first position
+                    enemyPath.poll();
+                    
+                    EnemyMovement enemyMovement;
+                    if(enemyPath.size() <= Enemy.MOVEMENT_SPEED) {
+                        // If the player in on the enemy range, start combat
+                        gameMap.moveEnemy(enemy.getPosition(), position);
+                        enemyMovement = new EnemyMovement(position.x, position.y);
+                        startCombat = true;
+                        gameMap.setInCombat(true);
+                    } else {
+                        Vector2 enemyPosition = null;
+                        for (int i = 0; i < Enemy.MOVEMENT_SPEED; i++) {
+                            if(enemyPath.isEmpty()) break;
+                            enemyPosition = enemyPath.poll();
+                        }
+                        if(enemyPosition == null) throw new IllegalStateException("Enemy position is null");
+                        gameMap.moveEnemy(enemy.getPosition(), enemyPosition);
+                        enemyMovement = new EnemyMovement(enemyPosition.x, enemyPosition.y);
+                    }
+                    enemyMovements.add(enemyMovement);
+                    if(startCombat) break;
+                }
+                if(startCombat) break;
+            }
             
-            MovementAction movementAction = new MovementAction(position.x, position.y, resourceAction, null);
+            MovementAction movementAction = new MovementAction(position.x, position.y, resourceAction, enemyMovements);
             actions.add(movementAction);
         }
+        mainCharacter.setPosition(position);
         
+        gameMapRepository.save(gameMap);
         return new MovementResponse(actions);
     }
 }

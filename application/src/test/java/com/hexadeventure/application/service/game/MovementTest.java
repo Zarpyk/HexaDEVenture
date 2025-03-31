@@ -1,5 +1,6 @@
 package com.hexadeventure.application.service.game;
 
+import com.hexadeventure.application.exceptions.GameInCombatException;
 import com.hexadeventure.application.exceptions.GameNotStartedException;
 import com.hexadeventure.application.port.out.noise.NoiseGenerator;
 import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
@@ -14,6 +15,7 @@ import com.hexadeventure.model.inventory.ItemType;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.Vector2;
 import com.hexadeventure.model.map.resources.Resource;
+import com.hexadeventure.model.movement.EnemyMovement;
 import com.hexadeventure.model.movement.MovementAction;
 import com.hexadeventure.model.movement.MovementResponse;
 import com.hexadeventure.model.user.User;
@@ -23,10 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 
 public class MovementTest {
@@ -57,7 +57,7 @@ public class MovementTest {
         testUser.setMapId(MapFactory.EMPTY_MAP_ID);
         when(userRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(java.util.Optional.of(testUser));
         
-        MapFactory.createEmptyGameMap(gameMapRepository, chunkRepository, aStarPathfinder, settingsImporter);
+        GameMap gameMap = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
         
         MovementResponse move = gameService.move(TEST_USER_EMAIL, MapFactory.EMPTY_END_POSITION);
         
@@ -66,6 +66,10 @@ public class MovementTest {
         assertThat(move.actions().getFirst().y()).isEqualTo(MapFactory.EMPTY_START_POSITION.y);
         assertThat(move.actions().getLast().x()).isEqualTo(MapFactory.EMPTY_END_POSITION.x);
         assertThat(move.actions().getLast().y()).isEqualTo(MapFactory.EMPTY_END_POSITION.y);
+        
+        assertThat(gameMap.getMainCharacter().getPosition()).isEqualTo(MapFactory.EMPTY_END_POSITION);
+        
+        verify(gameMapRepository, times(1)).save(gameMap);
     }
     
     @Test
@@ -74,7 +78,7 @@ public class MovementTest {
         testUser.setMapId(MapFactory.OBSTACLE_MAP_ID);
         when(userRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(java.util.Optional.of(testUser));
         
-        MapFactory.createObstacleGameMap(gameMapRepository, chunkRepository, aStarPathfinder, settingsImporter);
+        MapFactory.createObstacleGameMap(gameMapRepository, settingsImporter);
         
         MovementResponse move = gameService.move(TEST_USER_EMAIL, MapFactory.OBSTACLE_END_POSITION);
         
@@ -88,9 +92,9 @@ public class MovementTest {
         when(userRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(java.util.Optional.of(testUser));
         
         GameMap gameMap = MapFactory.createResourceGameMap(gameMapRepository,
-                                                           chunkRepository,
                                                            aStarPathfinder,
-                                                           settingsImporter);
+                                                           settingsImporter,
+                                                           false);
         
         MovementResponse move = gameService.move(TEST_USER_EMAIL, MapFactory.RESOURCE_END_POSITION);
         
@@ -122,9 +126,9 @@ public class MovementTest {
         assertThat(item.get().getType()).isEqualTo(ItemType.MATERIAL);
         
         GameMap checkMap = MapFactory.createResourceGameMap(gameMapRepository,
-                                                            chunkRepository,
                                                             aStarPathfinder,
-                                                            settingsImporter);
+                                                            settingsImporter,
+                                                            true);
         int resourceCount = 0;
         for (int i = 1; i < actions.size(); i++) {
             MovementAction action = actions.get(i);
@@ -133,5 +137,55 @@ public class MovementTest {
         }
         
         assertThat(item.get().getCount()).isEqualTo(resourceCount);
+    }
+    
+    @Test
+    public void givenPositionWithPathWithEnemy_whenMove_thenTheEnemyMoveToPlayer() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.ENEMY_MAP_ID);
+        when(userRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(java.util.Optional.of(testUser));
+        
+        GameMap gameMap = MapFactory.createEnemyGameMap(gameMapRepository,
+                                                        aStarPathfinder,
+                                                        settingsImporter);
+        
+        MovementResponse move = gameService.move(TEST_USER_EMAIL, MapFactory.ENEMY_END_POSITION);
+        
+        List<MovementAction> actions = move.actions();
+        
+        assertThat(actions).hasSize(MapFactory.ENEMY_MAP_ENEMY_OFFSET - 1);
+        MovementAction first = actions.getFirst();
+        assertThat(first.x()).isEqualTo(MapFactory.ENEMY_START_POSITION.x);
+        assertThat(first.y()).isEqualTo(MapFactory.ENEMY_START_POSITION.y);
+        assertThat(first.enemyMovements()).hasSize(1);
+        
+        for (int i = 1; i < actions.size() - 1; i++) {
+            MovementAction action = actions.get(i);
+            assertThat(action.enemyMovements()).hasSize(1);
+        }
+        
+        MovementAction last = actions.getLast();
+        EnemyMovement enemyMovement = last.enemyMovements().stream().findFirst().orElse(null);
+        assertThat(enemyMovement).isNotNull();
+        assertThat(last.x()).isEqualTo(enemyMovement.x());
+        assertThat(last.y()).isEqualTo(enemyMovement.y());
+        
+        assertThat(gameMap.getEnemy(new Vector2(last.x(), last.y()))).isNotNull();
+        assertThat(gameMap.isInCombat()).isTrue();
+    }
+    
+    @Test
+    public void givenMapInCombat_whenMove_thenThrowAnException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.ENEMY_MAP_ID);
+        when(userRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(java.util.Optional.of(testUser));
+        
+        GameMap gameMap = MapFactory.createEnemyGameMap(gameMapRepository,
+                                                        aStarPathfinder,
+                                                        settingsImporter);
+        gameMap.setInCombat(true);
+        
+        assertThatThrownBy(() -> gameService.move(TEST_USER_EMAIL, MapFactory.ENEMY_END_POSITION))
+                .isInstanceOf(GameInCombatException.class);
     }
 }
