@@ -3,11 +3,13 @@ package com.hexadeventure.adapter.out.settings;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hexadeventure.adapter.out.settings.json.ItemJson;
 import com.hexadeventure.adapter.out.settings.json.food.FoodJson;
+import com.hexadeventure.adapter.out.settings.json.initial.InitialResourcesJson;
 import com.hexadeventure.adapter.out.settings.json.material.MaterialJson;
 import com.hexadeventure.adapter.out.settings.json.potion.PotionJson;
 import com.hexadeventure.adapter.out.settings.json.weapon.WeaponDataJson;
 import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.model.inventory.foods.Food;
+import com.hexadeventure.model.inventory.initial.InitialResources;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
 import com.hexadeventure.model.inventory.weapons.WeaponData;
@@ -30,12 +32,15 @@ public class SettingsImporterAdapter implements SettingsImporter {
     private static final String POTIONS_JSON = "potions.json";
     private static final String MATERIALS_JSON = "materials.json";
     
+    private static final String INITIAL_RESOURCES_JSON = "initial_resources.json";
+    
     private static final ObjectMapper objectMapper = new ObjectMapper();
     
     private static final Map<String, WeaponData> weaponsCache = new HashMap<>();
     private static final Map<String, Food> foodsCache = new HashMap<>();
     private static final Map<String, Potion> potionsCache = new HashMap<>();
     private static final Map<ResourceType, Material> materialsCache = new HashMap<>();
+    private static final InitialResources initialResources = new InitialResources();
     
     @Override
     public Map<String, WeaponData> importWeapons() {
@@ -57,6 +62,26 @@ public class SettingsImporterAdapter implements SettingsImporter {
         return importJson(materialsCache, MATERIALS_JSON, MaterialJson::getID, MaterialJson.class);
     }
     
+    @Override
+    public InitialResources importInitialResources() {
+        if(initialResources.getInitialWeapons() != null) return initialResources;
+        try {
+            // From: https://stackoverflow.com/a/49468282/11451105
+            File file = ResourceUtils.getFile("classpath:" + INITIAL_RESOURCES_JSON);
+            InputStream inputStream = new FileInputStream(file);
+            
+            InitialResourcesJson json = objectMapper.readValue(inputStream, InitialResourcesJson.class);
+            InitialResources model = json.toModel();
+            initialResources.setInitialWeapons(model.getInitialWeapons());
+            initialResources.setInitialFoods(model.getInitialFoods());
+            initialResources.setInitialPotions(model.getInitialPotions());
+            initialResources.setInitialMaterials(model.getInitialMaterials());
+            return initialResources;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     private <T, ID, JSON_T extends ItemJson<T>> Map<ID, T> importJson(Map<ID, T> cache, String jsonFile,
                                                                       Function<JSON_T, ID> idExtractor,
                                                                       Class<JSON_T> clazz) {
@@ -71,9 +96,9 @@ public class SettingsImporterAdapter implements SettingsImporter {
             for (JSON_T jsonObject : json) {
                 cache.put(idExtractor.apply(jsonObject), jsonObject.toModel());
             }
+            return cache;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return cache;
     }
 }

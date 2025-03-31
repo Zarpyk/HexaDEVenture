@@ -1,0 +1,26 @@
+{
+  "initialWeapons": [
+    {
+      "id": "Sword",
+      "count": 1
+    }
+  ],
+  "initialFood": [
+    {
+      "id": "Apple",
+      "count": 1
+    }
+  ],
+  "initialPotions": [
+    {
+      "id": "Healing Potion",
+      "count": 1
+    }
+  ],
+  "initialMaterials": [
+    {
+      "id": "WOOD",
+      "count": 1
+    }
+  ]
+}

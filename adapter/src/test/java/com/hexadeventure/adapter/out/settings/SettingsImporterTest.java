@@ -1,6 +1,7 @@
 package com.hexadeventure.adapter.out.settings;
 
 import com.hexadeventure.model.inventory.foods.Food;
+import com.hexadeventure.model.inventory.initial.InitialResources;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
 import com.hexadeventure.model.inventory.weapons.WeaponData;
@@ -91,5 +92,16 @@ public class SettingsImporterTest {
         assertThat(materialObj.getName()).isNotBlank();
         assertThat(materialObj.getSkin()).isPositive();
         assertThat(materialObj.getMaterialType()).isNotNull();
+    }
+    
+    @Test
+    public void givenJson_whenImportInitialResources_thenReturnInitialResources() {
+        InitialResources initialResources = settingsImporter.importInitialResources();
+        
+        assertThat(initialResources).isNotNull();
+        assertThat(initialResources.getInitialWeapons().length).isPositive();
+        assertThat(initialResources.getInitialFoods().length).isPositive();
+        assertThat(initialResources.getInitialPotions().length).isPositive();
+        assertThat(initialResources.getInitialMaterials().length).isPositive();
     }
 }

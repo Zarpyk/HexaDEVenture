@@ -1,0 +1,29 @@
+{
+  "initialWeapons": [
+    {
+      "id": "Sword",
+      "count": 1
+    },
+    {
+      "id": "Crossbow",
+      "count": 1
+    },
+    {
+      "id": "Circular Shield",
+      "count": 1
+    }
+  ],
+  "initialFood": [
+    {
+      "id": "Slice of bread",
+      "count": 5
+    }
+  ],
+  "initialPotions": [],
+  "initialMaterials": [
+    {
+      "id": "WOOD",
+      "count": 5
+    }
+  ]
+}

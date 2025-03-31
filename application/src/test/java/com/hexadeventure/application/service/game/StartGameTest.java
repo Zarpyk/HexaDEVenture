@@ -8,10 +8,23 @@ import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.application.service.common.UserFactory;
+import com.hexadeventure.model.inventory.Item;
+import com.hexadeventure.model.inventory.foods.Food;
+import com.hexadeventure.model.inventory.initial.InitialResourceTypeIdResourceData;
+import com.hexadeventure.model.inventory.initial.InitialResources;
+import com.hexadeventure.model.inventory.initial.InitialStringIdResourceData;
+import com.hexadeventure.model.inventory.materials.Material;
+import com.hexadeventure.model.inventory.potions.Potion;
+import com.hexadeventure.model.inventory.potions.PotionType;
+import com.hexadeventure.model.inventory.weapons.AggroGenType;
+import com.hexadeventure.model.inventory.weapons.Weapon;
+import com.hexadeventure.model.inventory.weapons.WeaponData;
+import com.hexadeventure.model.inventory.weapons.WeaponType;
 import com.hexadeventure.model.map.Chunk;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.Vector2;
 import com.hexadeventure.model.map.Vector2C;
+import com.hexadeventure.model.map.resources.ResourceType;
 import com.hexadeventure.model.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,13 +45,20 @@ public class StartGameTest {
     private static final int TEST_SIZE = GameService.MIN_MAP_SIZE;
     private static final Set<Vector2C> chunksToGenerate = new HashSet<>();
     
+    private static final String TEST_WEAPON_NAME = "Sword";
+    private static final String TEST_FOOD_NAME = "Apple";
+    private static final String TEST_POTION_NAME = "Health Potion";
+    private static final ResourceType TEST_MATERIAL_TYPE = ResourceType.WOOD;
+    
     private final UserRepository userRepository = mock(UserRepository.class);
     private final GameMapRepository gameMapRepository = mock(GameMapRepository.class);
     private final NoiseGenerator noiseGenerator = mock(NoiseGenerator.class);
     private final AStarPathfinder aStarPathfinder = mock(AStarPathfinder.class);
     private final SettingsImporter settingsImporter = mock(SettingsImporter.class);
-    private final GameService gameService = new GameService(userRepository, gameMapRepository,
-                                                            noiseGenerator, aStarPathfinder,
+    private final GameService gameService = new GameService(userRepository,
+                                                            gameMapRepository,
+                                                            noiseGenerator,
+                                                            aStarPathfinder,
                                                             settingsImporter);
     
     static {
@@ -53,10 +73,14 @@ public class StartGameTest {
     
     @BeforeEach
     public void beforeEach() {
-        when(noiseGenerator.getCircleWithNoisyEdge(anyInt(), any(), anyLong(), anyInt(), eq(chunksToGenerate)))
-                .thenReturn(new HashMap<>());
+        when(noiseGenerator.getCircleWithNoisyEdge(anyInt(),
+                                                   any(),
+                                                   anyLong(),
+                                                   anyInt(),
+                                                   eq(chunksToGenerate))).thenReturn(new HashMap<>());
         
         when(aStarPathfinder.generatePath(any(), any(), any())).thenReturn(new LinkedList<>());
+        setupSettingsImporter();
     }
     
     @Test
@@ -65,9 +89,15 @@ public class StartGameTest {
         
         gameService.startGame(TEST_USER_EMAIL, TEST_SEED, TEST_SIZE);
         
-        verify(noiseGenerator, atLeast(1))
-                .initNoise(any(), eq(TEST_SEED), anyDouble(),
-                           anyInt(), anyDouble(), anyDouble(), anyInt(), anyBoolean(), anyBoolean());
+        verify(noiseGenerator, atLeast(1)).initNoise(any(),
+                                                     eq(TEST_SEED),
+                                                     anyDouble(),
+                                                     anyInt(),
+                                                     anyDouble(),
+                                                     anyDouble(),
+                                                     anyInt(),
+                                                     anyBoolean(),
+                                                     anyBoolean());
         
         verify(noiseGenerator, atLeast(1)).getPerlinNoise(anyDouble(), anyDouble(), any(), anyBoolean());
         verify(noiseGenerator, atLeast(1)).releaseNoise(any());
@@ -126,5 +156,75 @@ public class StartGameTest {
         assertThatExceptionOfType(MapSizeException.class).isThrownBy(() -> {
             gameService.startGame(TEST_USER_EMAIL, TEST_SEED, size);
         });
+    }
+    
+    @Test
+    public void givenInitialResources_whenCreateNewMap_thenAddItToInventory() {
+        UserFactory.createTestUser(userRepository);
+        
+        gameService.startGame(TEST_USER_EMAIL, TEST_SEED, TEST_SIZE);
+        ArgumentCaptor<GameMap> captor = ArgumentCaptor.forClass(GameMap.class);
+        verify(gameMapRepository).save(captor.capture());
+        
+        GameMap gameMap = captor.getValue();
+        for (Item item : gameMap.getInventory().getItems().values()) {
+            if(item instanceof Weapon weapon) {
+                assertThat(weapon.getName()).isEqualTo(TEST_WEAPON_NAME);
+            } else if(item instanceof Food food) {
+                assertThat(food.getName()).isEqualTo(TEST_FOOD_NAME);
+            } else if(item instanceof Potion potion) {
+                assertThat(potion.getName()).isEqualTo(TEST_POTION_NAME);
+            } else if(item instanceof Material material) {
+                assertThat(material.getMaterialType()).isEqualTo(TEST_MATERIAL_TYPE);
+            }
+        }
+    }
+    
+    private void setupSettingsImporter() {
+        when(settingsImporter.importInitialResources()).thenReturn(getInitialResources());
+        
+        Map<String, WeaponData> weaponsCache = new HashMap<>();
+        Map<String, Food> foodsCache = new HashMap<>();
+        Map<String, Potion> potionsCache = new HashMap<>();
+        Map<ResourceType, Material> materialsCache = new HashMap<>();
+        
+        WeaponData weaponData = new WeaponData(TEST_WEAPON_NAME, 1, WeaponType.MELEE, 1, 1,
+                                               1, 1, 1, 1,
+                                               1, 1, AggroGenType.ATTACK, 1,
+                                               1, 1, 1, 1,
+                                               1, 1, 1);
+        weaponsCache.put(TEST_WEAPON_NAME, weaponData);
+        
+        Food food = new Food(TEST_FOOD_NAME, 1, 1);
+        foodsCache.put(TEST_FOOD_NAME, food);
+        
+        Potion potion = new Potion(TEST_POTION_NAME, 1, PotionType.HEALING);
+        potionsCache.put(TEST_POTION_NAME, potion);
+        
+        Material material = new Material("Wood", 1, TEST_MATERIAL_TYPE);
+        materialsCache.put(TEST_MATERIAL_TYPE, material);
+        
+        when(settingsImporter.importWeapons()).thenReturn(weaponsCache);
+        when(settingsImporter.importFoods()).thenReturn(foodsCache);
+        when(settingsImporter.importPotions()).thenReturn(potionsCache);
+        when(settingsImporter.importMaterials()).thenReturn(materialsCache);
+    }
+    
+    private static InitialResources getInitialResources() {
+        InitialStringIdResourceData[] initialWeapons = new InitialStringIdResourceData[]{
+                new InitialStringIdResourceData(TEST_WEAPON_NAME, 1)};
+        InitialStringIdResourceData[] initialFoods = new InitialStringIdResourceData[]{
+                new InitialStringIdResourceData(TEST_FOOD_NAME, 1)};
+        InitialStringIdResourceData[] initialPotions = new InitialStringIdResourceData[]{
+                new InitialStringIdResourceData(TEST_POTION_NAME, 1)};
+        InitialResourceTypeIdResourceData[] initialMaterials = new InitialResourceTypeIdResourceData[]{
+                new InitialResourceTypeIdResourceData(TEST_MATERIAL_TYPE, 1)};
+        
+        InitialResources initialResources = new InitialResources();
+        initialResources.setInitialWeapons(initialWeapons);
+        initialResources.setInitialFoods(initialFoods);
+        initialResources.setInitialPotions(initialPotions);
+        initialResources.setInitialMaterials(initialMaterials);
+        return initialResources;
     }
 }

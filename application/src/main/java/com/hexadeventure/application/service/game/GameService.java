@@ -9,9 +9,17 @@ import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.port.out.settings.SettingsImporter;
+import com.hexadeventure.model.inventory.foods.Food;
+import com.hexadeventure.model.inventory.initial.InitialResourceTypeIdResourceData;
+import com.hexadeventure.model.inventory.initial.InitialResources;
+import com.hexadeventure.model.inventory.initial.InitialStringIdResourceData;
 import com.hexadeventure.model.inventory.materials.Material;
+import com.hexadeventure.model.inventory.potions.Potion;
+import com.hexadeventure.model.inventory.weapons.Weapon;
+import com.hexadeventure.model.inventory.weapons.WeaponData;
 import com.hexadeventure.model.map.*;
 import com.hexadeventure.model.map.resources.Resource;
+import com.hexadeventure.model.map.resources.ResourceType;
 import com.hexadeventure.model.movement.MovementAction;
 import com.hexadeventure.model.movement.MovementResponse;
 import com.hexadeventure.model.movement.ResourceAction;
@@ -59,9 +67,38 @@ public class GameService implements GameUseCase {
             throw new MapSizeException("Map size must be a multiple of 16");
         }
         MapGenerator mapGenerator = new MapGenerator(noiseGenerator, aStarPathfinder);
-        GameMap newMap = mapGenerator.initialMapGeneration(email, seed, size);
-        gameMapRepository.save(newMap);
-        userRepository.updateMapIdByEmail(email, newMap.getId());
+        GameMap map = mapGenerator.initialMapGeneration(email, seed, size);
+        addInitialResources(map);
+        
+        gameMapRepository.save(map);
+        userRepository.updateMapIdByEmail(email, map.getId());
+    }
+    
+    private void addInitialResources(GameMap map) {
+        InitialResources initialResources = settingsImporter.importInitialResources();
+        Map<String, WeaponData> weapons = settingsImporter.importWeapons();
+        Map<String, Food> foods = settingsImporter.importFoods();
+        Map<String, Potion> potions = settingsImporter.importPotions();
+        Map<ResourceType, Material> materials = settingsImporter.importMaterials();
+        
+        SplittableRandom random = new SplittableRandom(map.getSeed());
+        
+        for (InitialStringIdResourceData weaponsData : initialResources.getInitialWeapons()) {
+            WeaponData weaponData = weapons.get(weaponsData.getId());
+            map.getInventory().addItem(new Weapon(weaponData, random), weaponsData.getCount());
+        }
+        
+        for (InitialStringIdResourceData foodsData : initialResources.getInitialFoods()) {
+            map.getInventory().addItem(foods.get(foodsData.getId()), foodsData.getCount());
+        }
+        
+        for (InitialStringIdResourceData potionsData : initialResources.getInitialPotions()) {
+            map.getInventory().addItem(potions.get(potionsData.getId()), potionsData.getCount());
+        }
+        
+        for (InitialResourceTypeIdResourceData resourcesData : initialResources.getInitialMaterials()) {
+            map.getInventory().addItem(materials.get(resourcesData.getId()), resourcesData.getCount());
+        }
     }
     
     @Override

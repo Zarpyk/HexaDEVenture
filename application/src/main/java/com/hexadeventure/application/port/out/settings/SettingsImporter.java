@@ -1,6 +1,7 @@
 package com.hexadeventure.application.port.out.settings;
 
 import com.hexadeventure.model.inventory.foods.Food;
+import com.hexadeventure.model.inventory.initial.InitialResources;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
 import com.hexadeventure.model.inventory.weapons.WeaponData;
@@ -13,4 +14,5 @@ public interface SettingsImporter {
     Map<String, Food> importFoods();
     Map<String, Potion> importPotions();
     Map<ResourceType, Material> importMaterials();
+    InitialResources importInitialResources();
 }
