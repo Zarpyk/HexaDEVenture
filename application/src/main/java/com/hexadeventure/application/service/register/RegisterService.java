@@ -6,7 +6,6 @@ import com.hexadeventure.application.port.in.login.RegisterUseCase;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.model.user.User;
-import org.springframework.transaction.annotation.Transactional;
 
 public class RegisterService implements RegisterUseCase {
     private final UserRepository userRepository;
@@ -18,7 +17,6 @@ public class RegisterService implements RegisterUseCase {
     }
     
     @Override
-    @Transactional
     public void register(User user) {
         if(userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new UserExistException(user.getEmail());
@@ -27,7 +25,6 @@ public class RegisterService implements RegisterUseCase {
     }
     
     @Override
-    @Transactional
     public void unregister(String email) {
         User user = userRepository.findByEmail(email).orElseThrow();
         userRepository.deleteByEmail(email);

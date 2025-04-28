@@ -4,18 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 @Getter
 @Setter
 public class User {
-    /**
-     * Simplified email validation that doesn't strictly follow the different standards.
-     * @see <a href="https://stackoverflow.com/a/8204716/11451105">Email Validation Regex</a>
-     */
-    private static final Pattern EMAIL_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
-                                                               Pattern.CASE_INSENSITIVE);
-    
     private final String id;
     private final String email;
     private final String username;

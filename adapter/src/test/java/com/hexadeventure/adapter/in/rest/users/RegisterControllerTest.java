@@ -24,7 +24,7 @@ public class RegisterControllerTest {
         RestCommon.Setup(new RegisterController(registerUseCase));
     }
     
-    @org.junit.jupiter.api.Test
+    @Test
     public void givenAnEmailAndUsernameAndPassword_whenRegistering_thenRegistersTheUser() {
         RestCommon.postWithBody("/register", UserFactory.USER_DTO, false)
                   .then().statusCode(HttpStatus.OK.value());

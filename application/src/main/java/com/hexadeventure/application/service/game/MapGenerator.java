@@ -92,7 +92,7 @@ public class MapGenerator {
         Graphics2D g2d = image.createGraphics();
         
         // Draw background
-        g2d.setColor(Color.WHITE);
+        g2d.setColor(Color.GRAY);
         g2d.fillRect(0, 0, imageSize, imageSize);
         
         // Draw cells
@@ -117,6 +117,11 @@ public class MapGenerator {
                     case PATH -> {
                         // Draw path cells in gray
                         g2d.setColor(Color.DARK_GRAY);
+                        g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
+                    }
+                    case GROUND -> {
+                        // Draw ground cells in white
+                        g2d.setColor(Color.WHITE);
                         g2d.fillRect(pixelX, pixelY, cellSize, cellSize);
                     }
                     case GROUND2 -> {

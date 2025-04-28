@@ -27,7 +27,6 @@ import com.hexadeventure.model.movement.MovementAction;
 import com.hexadeventure.model.movement.MovementResponse;
 import com.hexadeventure.model.movement.ResourceAction;
 import com.hexadeventure.model.user.User;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -58,7 +57,6 @@ public class GameService implements GameUseCase {
     }
     
     @Override
-    @Transactional
     public void startGame(String email, long seed, int size) {
         Optional<User> user = userRepository.findByEmail(email);
         assert user.isPresent();
