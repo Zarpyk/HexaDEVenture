@@ -1,6 +1,6 @@
 package com.hexadeventure.adapter.out.persistence.map;
 
-import com.hexadeventure.model.map.MainCharacter;
+import com.hexadeventure.model.combat.CombatTerrain;
 import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.map.*;
 
@@ -20,6 +20,10 @@ public class MapFactory {
     public static final GameMap GAME_MAP;
     public static final GameMap GAME_MAP_WITH_2_CHUNKS;
     public static final GameMap GAME_MAP_WITH_CHUNKS;
+    
+    public static final int COMBAT_ROW_SIZE = 3;
+    
+    public static final int COMBAT_COLUMN_SIZE = 4;
     
     static {
         for (int x = 0; x < Chunk.SIZE; x++) {
@@ -43,7 +47,8 @@ public class MapFactory {
                                              TEST_SIZE,
                                              chunks,
                                              new MainCharacter(new Vector2(TEST_SIZE / 2, TEST_SIZE / 2)),
-                                             new Inventory());
+                                             new Inventory(),
+                                             new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE));
         
         chunks = Map.of(
                 CHUNK1.getPosition(), CHUNK1,
@@ -57,6 +62,7 @@ public class MapFactory {
                                            TEST_SIZE,
                                            chunks,
                                            new MainCharacter(new Vector2(TEST_SIZE / 2, TEST_SIZE / 2)),
-                                           new Inventory());
+                                           new Inventory(),
+                                           new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE));
     }
 }

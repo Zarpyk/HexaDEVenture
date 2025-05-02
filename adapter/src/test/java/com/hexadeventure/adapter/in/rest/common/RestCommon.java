@@ -1,12 +1,12 @@
 package com.hexadeventure.adapter.in.rest.common;
 
+import com.hexadeventure.adapter.common.ApplicationExceptionHandlers;
+import com.hexadeventure.adapter.common.GenericExceptionHandler;
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.response.MockMvcResponse;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder;
-import com.hexadeventure.adapter.common.ApplicationExceptionHandlers;
-import com.hexadeventure.adapter.common.GenericExceptionHandler;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.principal;
@@ -49,5 +49,26 @@ public class RestCommon {
         else RestAssuredMockMvc.authentication = null;
         return given().contentType(ContentType.JSON).body(body)
                       .when().post(path);
+    }
+    
+    public static MockMvcResponse delete(String path) {
+        return delete(path, true);
+    }
+    
+    public static MockMvcResponse delete(String path, boolean withAuth) {
+        if(withAuth) RestAssuredMockMvc.authentication = principal(new UserPrincipal());
+        else RestAssuredMockMvc.authentication = null;
+        return given().when().delete(path);
+    }
+    
+    public static MockMvcResponse deleteWithBody(String path, Object body) {
+        return deleteWithBody(path, body, true);
+    }
+    
+    public static MockMvcResponse deleteWithBody(String path, Object body, boolean withAuth) {
+        if(withAuth) RestAssuredMockMvc.authentication = principal(new UserPrincipal());
+        else RestAssuredMockMvc.authentication = null;
+        return given().contentType(ContentType.JSON).body(body)
+                      .when().delete(path);
     }
 }

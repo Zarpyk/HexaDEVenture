@@ -2,7 +2,7 @@ package com.hexadeventure.adapter.out.settings.json.weapon;
 
 import com.hexadeventure.adapter.out.settings.json.ItemJson;
 import com.hexadeventure.model.inventory.weapons.AggroGenType;
-import com.hexadeventure.model.inventory.weapons.WeaponData;
+import com.hexadeventure.model.inventory.weapons.WeaponSetting;
 import com.hexadeventure.model.inventory.weapons.WeaponType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class WeaponDataJson extends ItemJson<WeaponData> {
+public class WeaponDataJson extends ItemJson<WeaponSetting> {
     private WeaponJsonType weaponType;
     
     private double minDamage;
@@ -42,26 +42,26 @@ public class WeaponDataJson extends ItemJson<WeaponData> {
         return weaponDataJson.getName();
     }
     
-    public WeaponData toModel() {
-        return new WeaponData(getName(),
-                              getSkin(),
-                              WeaponType.values()[weaponType.ordinal()],
-                              minDamage,
-                              maxDamage,
-                              minMeleeDefense,
-                              maxMeleeDefense,
-                              minRangedDefense,
-                              maxRangedDefense,
-                              minCooldown,
-                              maxCooldown,
-                              AggroGenType.values()[aggroGenType.ordinal()],
-                              extraAggroGeneration,
-                              minAggroGeneration,
-                              maxAggroGeneration,
-                              initialAggro,
-                              minHealingPower,
-                              maxHealingPower,
-                              minHipnotizationPower,
-                              maxHipnotizationPower);
+    public WeaponSetting toModel() {
+        return new WeaponSetting(getName(),
+                                 getSkin(),
+                                 WeaponType.values()[weaponType.ordinal()],
+                                 minDamage,
+                                 maxDamage,
+                                 minMeleeDefense,
+                                 maxMeleeDefense,
+                                 minRangedDefense,
+                                 maxRangedDefense,
+                                 minCooldown,
+                                 maxCooldown,
+                                 AggroGenType.values()[aggroGenType.ordinal()],
+                                 extraAggroGeneration,
+                                 minAggroGeneration,
+                                 maxAggroGeneration,
+                                 initialAggro,
+                                 minHealingPower,
+                                 maxHealingPower,
+                                 minHipnotizationPower,
+                                 maxHipnotizationPower);
     }
 }

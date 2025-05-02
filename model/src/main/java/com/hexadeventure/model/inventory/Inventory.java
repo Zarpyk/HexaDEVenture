@@ -1,13 +1,11 @@
 package com.hexadeventure.model.inventory;
 
 import com.hexadeventure.model.inventory.characters.PlayableCharacter;
+import com.hexadeventure.model.inventory.weapons.Weapon;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @AllArgsConstructor
@@ -51,6 +49,16 @@ public class Inventory {
     
     public void removeCharacter(PlayableCharacter playableCharacter) {
         characters.remove(playableCharacter.getId());
+    }
+    
+    public void setCharacterWeapon(PlayableCharacter character, String weaponId) {
+        PlayableCharacter characterObj = characters.get(character.getId());
+        characterObj.setWeapon((Weapon) items.get(weaponId));
+    }
+    
+    public void removeCharacterWeapon(PlayableCharacter character) {
+        PlayableCharacter characterObj = characters.get(character.getId());
+        characterObj.setWeapon(null);
     }
     
     @Override

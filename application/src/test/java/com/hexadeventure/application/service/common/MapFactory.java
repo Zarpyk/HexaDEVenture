@@ -4,6 +4,7 @@ import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.application.service.game.GameService;
+import com.hexadeventure.model.combat.CombatTerrain;
 import com.hexadeventure.model.enemies.Enemy;
 import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.inventory.foods.Food;
@@ -11,7 +12,7 @@ import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
 import com.hexadeventure.model.inventory.potions.PotionType;
 import com.hexadeventure.model.inventory.weapons.AggroGenType;
-import com.hexadeventure.model.inventory.weapons.WeaponData;
+import com.hexadeventure.model.inventory.weapons.WeaponSetting;
 import com.hexadeventure.model.inventory.weapons.WeaponType;
 import com.hexadeventure.model.map.*;
 import com.hexadeventure.model.map.resources.ResourceType;
@@ -64,6 +65,9 @@ public class MapFactory {
     public static final Vector2 ENEMY_MAP_ENEMY_POSITION = new Vector2(ENEMY_MAP_SIZE / 2 - ENEMY_MAP_ENEMY_OFFSET,
                                                                        ENEMY_MAP_SIZE / 2);
     
+    public static final int COMBAT_ROW_SIZE = 3;
+    public static final int COMBAT_COLUMN_SIZE = 4;
+    
     
     public static GameMap createEmptyGameMap(GameMapRepository gameMapRepository, AStarPathfinder aStarPathfinder,
                                              SettingsImporter settingsImporter) {
@@ -89,7 +93,8 @@ public class MapFactory {
                                       EMPTY_MAP_SIZE,
                                       chunks,
                                       new MainCharacter(new Vector2(EMPTY_MAP_SIZE / 2, EMPTY_MAP_SIZE / 2)),
-                                      new Inventory());
+                                      new Inventory(),
+                                      new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE));
         
         Map<Vector2, Integer> costMap = gameMap.getCostMap(centerChunk.getArroundPositions(1, true),
                                                            true);
@@ -128,7 +133,8 @@ public class MapFactory {
                                       OBSTACLE_MAP_SIZE,
                                       null,
                                       new MainCharacter(new Vector2(EMPTY_MAP_SIZE / 2, EMPTY_MAP_SIZE / 2)),
-                                      new Inventory());
+                                      new Inventory(),
+                                      new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE));
         
         mockGameMap(gameMapRepository, OBSTACLE_MAP_ID, gameMap, chunks);
         mockSettingsImporter(settingsImporter);
@@ -165,7 +171,8 @@ public class MapFactory {
                                       RESOURCE_MAP_SIZE,
                                       chunks,
                                       new MainCharacter(new Vector2(RESOURCE_MAP_SIZE / 2, RESOURCE_MAP_SIZE / 2)),
-                                      new Inventory());
+                                      new Inventory(),
+                                      new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE));
         
         Map<Vector2, Integer> costMap = gameMap.getCostMap(centerChunk.getArroundPositions(1, true),
                                                            true);
@@ -209,7 +216,8 @@ public class MapFactory {
                                       ENEMY_MAP_SIZE,
                                       chunks,
                                       new MainCharacter(new Vector2(ENEMY_MAP_SIZE / 2, ENEMY_MAP_SIZE / 2)),
-                                      new Inventory());
+                                      new Inventory(),
+                                      new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE));
         
         Map<Vector2, Integer> costMap = gameMap.getCostMap(centerChunk.getArroundPositions(1, true),
                                                            true);
@@ -304,27 +312,27 @@ public class MapFactory {
      * @param settingsImporter the settings importer
      */
     private static void mockSettingsImporter(SettingsImporter settingsImporter) {
-        WeaponData weaponData = new WeaponData("test",
-                                               1,
-                                               WeaponType.MELEE,
-                                               1,
-                                               1,
-                                               1,
-                                               1,
-                                               1,
-                                               1,
-                                               1,
-                                               1,
-                                               AggroGenType.ATTACK,
-                                               1,
-                                               1,
-                                               1,
-                                               1,
-                                               1,
-                                               1,
-                                               1,
-                                               1);
-        when(settingsImporter.importWeapons()).thenReturn(Map.of(weaponData.name(), weaponData));
+        WeaponSetting weaponSetting = new WeaponSetting("test",
+                                                        1,
+                                                        WeaponType.MELEE,
+                                                        1,
+                                                        1,
+                                                        1,
+                                                        1,
+                                                        1,
+                                                        1,
+                                                        1,
+                                                        1,
+                                                        AggroGenType.ATTACK,
+                                                        1,
+                                                        1,
+                                                        1,
+                                                        1,
+                                                        1,
+                                                        1,
+                                                        1,
+                                                        1);
+        when(settingsImporter.importWeapons()).thenReturn(Map.of(weaponSetting.name(), weaponSetting));
         Food food = new Food("test", 1, 1);
         when(settingsImporter.importFoods()).thenReturn(Map.of(food.getName(), food));
         Potion potion = new Potion("test", 1, PotionType.HEALING);

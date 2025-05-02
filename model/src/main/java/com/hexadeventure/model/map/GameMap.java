@@ -1,5 +1,6 @@
 package com.hexadeventure.model.map;
 
+import com.hexadeventure.model.combat.CombatTerrain;
 import com.hexadeventure.model.enemies.Enemy;
 import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.map.resources.Resource;
@@ -10,6 +11,9 @@ import java.util.*;
 
 @Getter
 public class GameMap {
+    public static final int COMBAT_TERRAIN_ROW_SIZE = 3;
+    public static final int COMBAT_TERRAIN_COLUMN_SIZE = 4;
+    
     private final String id;
     private final String userEmail;
     private final long seed;
@@ -18,6 +22,7 @@ public class GameMap {
     private Map<Vector2C, Chunk> chunks = new HashMap<>();
     private final MainCharacter mainCharacter;
     private final Inventory inventory;
+    private final CombatTerrain combatTerrain;
     
     @Setter
     private Vector2 bossPosition;
@@ -31,10 +36,11 @@ public class GameMap {
         this.size = size;
         mainCharacter = new MainCharacter(new Vector2(size / 2, size / 2));
         inventory = new Inventory();
+        combatTerrain = new CombatTerrain(COMBAT_TERRAIN_ROW_SIZE, COMBAT_TERRAIN_COLUMN_SIZE);
     }
     
     public GameMap(String id, String userEmail, long seed, int size, Map<Vector2C, Chunk> chunks,
-                   MainCharacter mainCharacter, Inventory inventory) {
+                   MainCharacter mainCharacter, Inventory inventory, CombatTerrain combatTerrain) {
         this.id = id;
         this.userEmail = userEmail;
         this.seed = seed;
@@ -42,6 +48,7 @@ public class GameMap {
         if(chunks != null) this.chunks.putAll(chunks);
         this.mainCharacter = mainCharacter;
         this.inventory = inventory;
+        this.combatTerrain = combatTerrain;
     }
     
     public void addChunks(Map<Vector2C, Chunk> chunks, boolean canOverrideChunks) {

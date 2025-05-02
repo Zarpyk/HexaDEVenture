@@ -29,22 +29,22 @@ public class Weapon extends Item {
         setId(Integer.toString(hashCode()));
     }
     
-    public Weapon(WeaponData weaponData, SplittableRandom random) {
-        super(weaponData.name(), ItemType.WEAPON, weaponData.skin());
-        weaponType = weaponData.weaponType();
-        damage = Math.round(random.nextDouble(weaponData.minDamage(),
-                                              weaponData.maxDamage() + OFFSET) * 100) / 100d;
-        meleeDefense = Math.round(random.nextDouble(weaponData.minMeleeDefense(),
-                                                    weaponData.maxMeleeDefense() + OFFSET) * 100) / 100d;
-        rangedDefense = Math.round(random.nextDouble(weaponData.minRangedDefense(),
-                                                     weaponData.maxRangedDefense() + OFFSET) * 100) / 100d;
-        initialAggro = weaponData.initialAggro();
-        healingPower = Math.round(random.nextDouble(weaponData.minHealingPower(),
-                                                    weaponData.maxHealingPower() + OFFSET) * 100) / 100d;
-        hipnotizationPower = Math.round(random.nextDouble(weaponData.minHipnotizationPower(),
-                                                          weaponData.maxHipnotizationPower() + OFFSET) * 100) / 100d;
-        cooldown = initCooldown(weaponData, random);
-        aggroGeneration = initAggroGeneration(weaponData, random);
+    public Weapon(WeaponSetting weaponSetting, SplittableRandom random) {
+        super(weaponSetting.name(), ItemType.WEAPON, weaponSetting.skin());
+        weaponType = weaponSetting.weaponType();
+        damage = Math.round(random.nextDouble(weaponSetting.minDamage(),
+                                              weaponSetting.maxDamage() + OFFSET) * 100) / 100d;
+        meleeDefense = Math.round(random.nextDouble(weaponSetting.minMeleeDefense(),
+                                                    weaponSetting.maxMeleeDefense() + OFFSET) * 100) / 100d;
+        rangedDefense = Math.round(random.nextDouble(weaponSetting.minRangedDefense(),
+                                                     weaponSetting.maxRangedDefense() + OFFSET) * 100) / 100d;
+        initialAggro = weaponSetting.initialAggro();
+        healingPower = Math.round(random.nextDouble(weaponSetting.minHealingPower(),
+                                                    weaponSetting.maxHealingPower() + OFFSET) * 100) / 100d;
+        hipnotizationPower = Math.round(random.nextDouble(weaponSetting.minHipnotizationPower(),
+                                                          weaponSetting.maxHipnotizationPower() + OFFSET) * 100) / 100d;
+        cooldown = initCooldown(weaponSetting, random);
+        aggroGeneration = initAggroGeneration(weaponSetting, random);
         setId(Integer.toString(hashCode()));
     }
     
@@ -64,27 +64,27 @@ public class Weapon extends Item {
         setId(Integer.toString(hashCode()));
     }
     
-    private int initCooldown(WeaponData weaponData, SplittableRandom random) {
+    private int initCooldown(WeaponSetting weaponSetting, SplittableRandom random) {
         return switch (weaponType) {
-            case MELEE, RANGED, TANK -> random.nextInt(weaponData.minCooldown(),
-                                                       weaponData.maxCooldown() + 1);
-            case HEALER -> (int) Math.round(random.nextInt(weaponData.minCooldown(),
-                                                           weaponData.maxCooldown() + 1) *
-                                            (healingPower / weaponData.maxHealingPower()));
-            case HIPNOTIZER -> (int) Math.round(random.nextInt(weaponData.minCooldown(),
-                                                               weaponData.maxCooldown() + 1) *
-                                                (hipnotizationPower / weaponData.maxHipnotizationPower()));
+            case MELEE, RANGED, TANK -> random.nextInt(weaponSetting.minCooldown(),
+                                                       weaponSetting.maxCooldown() + 1);
+            case HEALER -> (int) Math.round(random.nextInt(weaponSetting.minCooldown(),
+                                                           weaponSetting.maxCooldown() + 1) *
+                                            (healingPower / weaponSetting.maxHealingPower()));
+            case HIPNOTIZER -> (int) Math.round(random.nextInt(weaponSetting.minCooldown(),
+                                                               weaponSetting.maxCooldown() + 1) *
+                                                (hipnotizationPower / weaponSetting.maxHipnotizationPower()));
         };
     }
     
-    private double initAggroGeneration(WeaponData weaponData, SplittableRandom random) {
-        return switch (weaponData.aggroGenType()) {
+    private double initAggroGeneration(WeaponSetting weaponSetting, SplittableRandom random) {
+        return switch (weaponSetting.aggroGenType()) {
             case ATTACK -> damage;
-            case ATTACK_AND_EXTRA -> damage + weaponData.extraAggroGeneration();
-            case RANGE -> Math.round(random.nextDouble(weaponData.minAggroGeneration(),
-                                                       weaponData.maxAggroGeneration() + OFFSET) * 100) / 100d;
+            case ATTACK_AND_EXTRA -> damage + weaponSetting.extraAggroGeneration();
+            case RANGE -> Math.round(random.nextDouble(weaponSetting.minAggroGeneration(),
+                                                       weaponSetting.maxAggroGeneration() + OFFSET) * 100) / 100d;
             case HEALING -> healingPower;
-            case HEALING_AND_EXTRA -> healingPower + weaponData.extraAggroGeneration();
+            case HEALING_AND_EXTRA -> healingPower + weaponSetting.extraAggroGeneration();
             case HIPNOTIZATION -> hipnotizationPower;
         };
     }

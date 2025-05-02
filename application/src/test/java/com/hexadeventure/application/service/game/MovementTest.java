@@ -4,7 +4,6 @@ import com.hexadeventure.application.exceptions.GameInCombatException;
 import com.hexadeventure.application.exceptions.GameNotStartedException;
 import com.hexadeventure.application.port.out.noise.NoiseGenerator;
 import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
-import com.hexadeventure.application.port.out.persistence.ChunkRepository;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.port.out.settings.SettingsImporter;
@@ -34,7 +33,6 @@ public class MovementTest {
     
     private static final UserRepository userRepository = mock(UserRepository.class);
     private static final GameMapRepository gameMapRepository = mock(GameMapRepository.class);
-    private static final ChunkRepository chunkRepository = mock(ChunkRepository.class);
     private static final NoiseGenerator noiseGenerator = mock(NoiseGenerator.class);
     private static final AStarPathfinder aStarPathfinder = mock(AStarPathfinder.class);
     private static final SettingsImporter settingsImporter = mock(SettingsImporter.class);
@@ -42,6 +40,7 @@ public class MovementTest {
                                                                    noiseGenerator, aStarPathfinder,
                                                                    settingsImporter);
     
+    //region Move
     @Test
     public void givenNoStartGameUser_whenMove_thenThrowAnException() {
         User testUser = UserFactory.createTestUser(userRepository);
@@ -55,7 +54,6 @@ public class MovementTest {
     public void givenPosition_whenMove_thenMoveToThePosition() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.EMPTY_MAP_ID);
-        when(userRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(java.util.Optional.of(testUser));
         
         GameMap gameMap = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
         
@@ -76,7 +74,6 @@ public class MovementTest {
     public void givenPositionWithObstacle_whenMove_thenCancelMovement() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.OBSTACLE_MAP_ID);
-        when(userRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(java.util.Optional.of(testUser));
         
         MapFactory.createObstacleGameMap(gameMapRepository, settingsImporter);
         
@@ -89,7 +86,6 @@ public class MovementTest {
     public void givenPositionWithPathWithResource_whenMove_thenCollectResource() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.RESOURCE_MAP_ID);
-        when(userRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(java.util.Optional.of(testUser));
         
         GameMap gameMap = MapFactory.createResourceGameMap(gameMapRepository,
                                                            aStarPathfinder,
@@ -143,7 +139,6 @@ public class MovementTest {
     public void givenPositionWithPathWithEnemy_whenMove_thenTheEnemyMoveToPlayer() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.ENEMY_MAP_ID);
-        when(userRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(java.util.Optional.of(testUser));
         
         GameMap gameMap = MapFactory.createEnemyGameMap(gameMapRepository,
                                                         aStarPathfinder,
@@ -178,7 +173,6 @@ public class MovementTest {
     public void givenMapInCombat_whenMove_thenThrowAnException() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.ENEMY_MAP_ID);
-        when(userRepository.findByEmail(TEST_USER_EMAIL)).thenReturn(java.util.Optional.of(testUser));
         
         GameMap gameMap = MapFactory.createEnemyGameMap(gameMapRepository,
                                                         aStarPathfinder,
@@ -188,4 +182,5 @@ public class MovementTest {
         assertThatThrownBy(() -> gameService.move(TEST_USER_EMAIL, MapFactory.ENEMY_END_POSITION))
                 .isInstanceOf(GameInCombatException.class);
     }
+    //endregion
 }

@@ -18,7 +18,7 @@ import com.hexadeventure.model.inventory.potions.Potion;
 import com.hexadeventure.model.inventory.potions.PotionType;
 import com.hexadeventure.model.inventory.weapons.AggroGenType;
 import com.hexadeventure.model.inventory.weapons.Weapon;
-import com.hexadeventure.model.inventory.weapons.WeaponData;
+import com.hexadeventure.model.inventory.weapons.WeaponSetting;
 import com.hexadeventure.model.inventory.weapons.WeaponType;
 import com.hexadeventure.model.map.Chunk;
 import com.hexadeventure.model.map.GameMap;
@@ -118,9 +118,9 @@ public class StartGameTest {
         testUser.setMapId(gameMap.get().getId());
         when(userRepository.findByEmail(eq(TEST_USER_EMAIL))).thenReturn(Optional.of(testUser));
         
-        assertThatExceptionOfType(GameStartedException.class).isThrownBy(() -> {
-            gameService.startGame(TEST_USER_EMAIL, TEST_SEED, TEST_SIZE);
-        });
+        assertThatExceptionOfType(GameStartedException.class).isThrownBy(() -> gameService.startGame(TEST_USER_EMAIL,
+                                                                                                     TEST_SEED,
+                                                                                                     TEST_SIZE));
         
         verify(gameMapRepository, times(1)).save(any());
     }
@@ -143,9 +143,9 @@ public class StartGameTest {
     public void givenSmallSize_whenCreateNewMap_thenThrowException(int size) {
         UserFactory.createTestUser(userRepository);
         
-        assertThatExceptionOfType(MapSizeException.class).isThrownBy(() -> {
-            gameService.startGame(TEST_USER_EMAIL, TEST_SEED, size);
-        });
+        assertThatExceptionOfType(MapSizeException.class).isThrownBy(() -> gameService.startGame(TEST_USER_EMAIL,
+                                                                                                 TEST_SEED,
+                                                                                                 size));
     }
     
     @ParameterizedTest(name = "Given size {0} when create new map then throw exception")
@@ -153,9 +153,9 @@ public class StartGameTest {
     public void givenNotMultipleOfChunkSize_whenCreateNewMap_thenThrowException(int size) {
         UserFactory.createTestUser(userRepository);
         
-        assertThatExceptionOfType(MapSizeException.class).isThrownBy(() -> {
-            gameService.startGame(TEST_USER_EMAIL, TEST_SEED, size);
-        });
+        assertThatExceptionOfType(MapSizeException.class).isThrownBy(() -> gameService.startGame(TEST_USER_EMAIL,
+                                                                                                 TEST_SEED,
+                                                                                                 size));
     }
     
     @Test
@@ -183,17 +183,17 @@ public class StartGameTest {
     private void setupSettingsImporter() {
         when(settingsImporter.importInitialResources()).thenReturn(getInitialResources());
         
-        Map<String, WeaponData> weaponsCache = new HashMap<>();
+        Map<String, WeaponSetting> weaponsCache = new HashMap<>();
         Map<String, Food> foodsCache = new HashMap<>();
         Map<String, Potion> potionsCache = new HashMap<>();
         Map<ResourceType, Material> materialsCache = new HashMap<>();
         
-        WeaponData weaponData = new WeaponData(TEST_WEAPON_NAME, 1, WeaponType.MELEE, 1, 1,
-                                               1, 1, 1, 1,
-                                               1, 1, AggroGenType.ATTACK, 1,
-                                               1, 1, 1, 1,
-                                               1, 1, 1);
-        weaponsCache.put(TEST_WEAPON_NAME, weaponData);
+        WeaponSetting weaponSetting = new WeaponSetting(TEST_WEAPON_NAME, 1, WeaponType.MELEE, 1, 1,
+                                                        1, 1, 1, 1,
+                                                        1, 1, AggroGenType.ATTACK, 1,
+                                                        1, 1, 1, 1,
+                                                        1, 1, 1);
+        weaponsCache.put(TEST_WEAPON_NAME, weaponSetting);
         
         Food food = new Food(TEST_FOOD_NAME, 1, 1);
         foodsCache.put(TEST_FOOD_NAME, food);

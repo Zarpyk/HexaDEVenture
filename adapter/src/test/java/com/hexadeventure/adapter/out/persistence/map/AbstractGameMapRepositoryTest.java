@@ -147,6 +147,15 @@ public abstract class AbstractGameMapRepositoryTest {
     }
     
     @Test
+    public void givenGameMap_whenSave_thenCombatTerrainIsSaved() {
+        gameMapRepository.save(MapFactory.GAME_MAP);
+        
+        Optional<GameMap> map = gameMapRepository.findById(MapFactory.GAME_MAP.getId());
+        assertThat(map).isPresent();
+        assertThat(map.get().getCombatTerrain()).isEqualTo(MapFactory.GAME_MAP.getCombatTerrain());
+    }
+    
+    @Test
     public void givenExistingMap_whenDeleteById_thenMapIsDeleted() {
         gameMapRepository.save(MapFactory.GAME_MAP);
         

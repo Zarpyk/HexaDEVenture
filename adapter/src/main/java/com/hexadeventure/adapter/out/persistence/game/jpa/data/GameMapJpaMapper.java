@@ -1,5 +1,6 @@
 package com.hexadeventure.adapter.out.persistence.game.jpa.data;
 
+import com.hexadeventure.adapter.out.persistence.game.jpa.data.combat.CombatTerrainJpaMapper;
 import com.hexadeventure.adapter.out.persistence.game.jpa.data.inventory.InventoryJpaMapper;
 import com.hexadeventure.model.map.GameMap;
 
@@ -12,6 +13,7 @@ public class GameMapJpaMapper {
         entity.setMapSize(model.getSize());
         entity.setMainCharacter(MainCharacterJpaMapper.toEntity(model.getMainCharacter()));
         entity.setInventory(InventoryJpaMapper.toEntity(model.getInventory()));
+        entity.setCombatTerrain(CombatTerrainJpaMapper.toEntity(model.getCombatTerrain()));
         return entity;
     }
     
@@ -22,6 +24,7 @@ public class GameMapJpaMapper {
                            entity.getMapSize(),
                            null,
                            MainCharacterJpaMapper.toModel(entity.getMainCharacter()),
-                           InventoryJpaMapper.toModel(entity.getInventory()));
+                           InventoryJpaMapper.toModel(entity.getInventory()),
+                           CombatTerrainJpaMapper.toModel(entity.getCombatTerrain()));
     }
 }

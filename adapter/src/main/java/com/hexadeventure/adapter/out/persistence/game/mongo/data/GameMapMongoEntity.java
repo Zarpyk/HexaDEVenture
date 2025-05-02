@@ -17,4 +17,5 @@ public class GameMapMongoEntity {
     private MainCharacterMongoEntity mainCharacter;
     
     private String inventoryFileId;
+    private String combatTerrainFileId;
 }

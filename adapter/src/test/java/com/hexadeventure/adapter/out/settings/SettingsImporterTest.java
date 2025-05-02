@@ -4,7 +4,7 @@ import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.initial.InitialResources;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
-import com.hexadeventure.model.inventory.weapons.WeaponData;
+import com.hexadeventure.model.inventory.weapons.WeaponSetting;
 import com.hexadeventure.model.map.resources.ResourceType;
 import org.junit.Test;
 
@@ -22,33 +22,33 @@ public class SettingsImporterTest {
     
     @Test
     public void givenJson_whenImportWeapons_thenReturnWeaponDataList() {
-        Map<String, WeaponData> weaponsData = settingsImporter.importWeapons();
+        Map<String, WeaponSetting> weaponsData = settingsImporter.importWeapons();
         
         assertThat(weaponsData.size()).isEqualTo(2);
-        Optional<WeaponData> weapon = weaponsData.values().stream().findFirst();
+        Optional<WeaponSetting> weapon = weaponsData.values().stream().findFirst();
         assertThat(weapon).isPresent();
         
-        WeaponData weaponData = weapon.get();
-        assertThat(weaponData.name()).isNotBlank();
-        assertThat(weaponData.skin()).isPositive();
-        assertThat(weaponData.weaponType()).isNotNull();
-        assertThat(weaponData.minDamage()).isPositive();
-        assertThat(weaponData.maxDamage()).isPositive();
-        assertThat(weaponData.minMeleeDefense()).isPositive();
-        assertThat(weaponData.maxMeleeDefense()).isPositive();
-        assertThat(weaponData.minRangedDefense()).isPositive();
-        assertThat(weaponData.maxRangedDefense()).isPositive();
-        assertThat(weaponData.minCooldown()).isPositive();
-        assertThat(weaponData.maxCooldown()).isPositive();
-        assertThat(weaponData.aggroGenType()).isNotNull();
-        assertThat(weaponData.extraAggroGeneration()).isPositive();
-        assertThat(weaponData.minAggroGeneration()).isPositive();
-        assertThat(weaponData.maxAggroGeneration()).isPositive();
-        assertThat(weaponData.initialAggro()).isPositive();
-        assertThat(weaponData.minHealingPower()).isPositive();
-        assertThat(weaponData.maxHealingPower()).isPositive();
-        assertThat(weaponData.minHipnotizationPower()).isPositive();
-        assertThat(weaponData.maxHipnotizationPower()).isPositive();
+        WeaponSetting weaponSetting = weapon.get();
+        assertThat(weaponSetting.name()).isNotBlank();
+        assertThat(weaponSetting.skin()).isPositive();
+        assertThat(weaponSetting.weaponType()).isNotNull();
+        assertThat(weaponSetting.minDamage()).isPositive();
+        assertThat(weaponSetting.maxDamage()).isPositive();
+        assertThat(weaponSetting.minMeleeDefense()).isPositive();
+        assertThat(weaponSetting.maxMeleeDefense()).isPositive();
+        assertThat(weaponSetting.minRangedDefense()).isPositive();
+        assertThat(weaponSetting.maxRangedDefense()).isPositive();
+        assertThat(weaponSetting.minCooldown()).isPositive();
+        assertThat(weaponSetting.maxCooldown()).isPositive();
+        assertThat(weaponSetting.aggroGenType()).isNotNull();
+        assertThat(weaponSetting.extraAggroGeneration()).isPositive();
+        assertThat(weaponSetting.minAggroGeneration()).isPositive();
+        assertThat(weaponSetting.maxAggroGeneration()).isPositive();
+        assertThat(weaponSetting.initialAggro()).isPositive();
+        assertThat(weaponSetting.minHealingPower()).isPositive();
+        assertThat(weaponSetting.maxHealingPower()).isPositive();
+        assertThat(weaponSetting.minHipnotizationPower()).isPositive();
+        assertThat(weaponSetting.maxHipnotizationPower()).isPositive();
     }
     
     @Test

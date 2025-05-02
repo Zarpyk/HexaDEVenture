@@ -1,0 +1,105 @@
+package com.hexadeventure.model.combat;
+
+import com.hexadeventure.model.inventory.characters.PlayableCharacter;
+import com.hexadeventure.model.map.GameMap;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import java.util.Objects;
+import java.util.UUID;
+
+@Getter
+@AllArgsConstructor
+public class CombatTerrain {
+    private final String id;
+    private final int rowSize;
+    private final int columnSize;
+    
+    private final PlayableCharacter[][] playerTerrain;
+    private final PlayableCharacter[][] enemyTerrain;
+    
+    public CombatTerrain() {
+        id = UUID.randomUUID().toString();
+        this.rowSize = GameMap.COMBAT_TERRAIN_ROW_SIZE;
+        this.columnSize = GameMap.COMBAT_TERRAIN_COLUMN_SIZE;
+        this.playerTerrain = new PlayableCharacter[rowSize][columnSize];
+        this.enemyTerrain = new PlayableCharacter[rowSize][columnSize];
+    }
+    
+    public CombatTerrain(int rowSize, int columnSize) {
+        id = UUID.randomUUID().toString();
+        this.rowSize = rowSize;
+        this.columnSize = columnSize;
+        this.playerTerrain = new PlayableCharacter[rowSize][columnSize];
+        this.enemyTerrain = new PlayableCharacter[rowSize][columnSize];
+    }
+    
+    public PlayableCharacter getCharacterAt(int row, int column) {
+        return playerTerrain[row][column];
+    }
+    
+    /**
+     * Places a character on the terrain at the specified position.
+     *
+     * @param row The row index of the player terrain
+     * @param column The column index of the player terrain
+     * @param character The character to place on the terrain
+     */
+    public void placeCharacter(int row, int column, PlayableCharacter character) {
+        playerTerrain[row][column] = character;
+    }
+    
+    /**
+     * Removes a character on the terrain at the specified position
+     *
+     * @param row The row index of the player terrain
+     * @param column The column index of the player terrain
+     */
+    public void removeCharacter(int row, int column) {
+        playerTerrain[row][column] = null;
+    }
+    
+    /**
+     * Places an enemy on the terrain at the specified position.
+     *
+     * @param row The row index of the enemy terrain
+     * @param column The column index of the enemy terrain
+     * @param enemy The enemy to place on the terrain
+     */
+    public void placeEnemy(int row, int column, PlayableCharacter enemy) {
+        enemyTerrain[row][column] = enemy;
+    }
+    
+    /**
+     * Removes an enemy on the terrain at the specified position
+     *
+     * @param row The row index of the enemy terrain
+     * @param column The column index of the enemy terrain
+     */
+    public void removeEnemy(int row, int column) {
+        enemyTerrain[row][column] = null;
+    }
+    
+    /**
+     * Resets the terrain by removing all characters and enemies.
+     */
+    public void resetTerrain() {
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < columnSize; j++) {
+                playerTerrain[i][j] = null;
+                enemyTerrain[i][j] = null;
+            }
+        }
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if(!(o instanceof CombatTerrain terrain)) return false;
+        return Objects.equals(id, terrain.id);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+}

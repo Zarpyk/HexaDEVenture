@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.hexadeventure.adapter.out.persistence.common.GridFs;
+import com.hexadeventure.model.combat.CombatTerrain;
 import com.hexadeventure.model.inventory.Inventory;
+import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import com.hexadeventure.model.map.GameMap;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 
@@ -21,6 +23,8 @@ public class GameMapMongoMapper {
         PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
                                                                     .allowIfBaseType("com.hexadeventure")
                                                                     .allowIfSubType(HashMap.class)
+                                                                    .allowIfSubType(PlayableCharacter[].class)
+                                                                    .allowIfSubType(PlayableCharacter[][].class)
                                                                     .build();
         objectMapper.activateDefaultTyping(ptv,
                                            ObjectMapper.DefaultTyping.NON_FINAL_AND_ENUMS,
@@ -42,6 +46,11 @@ public class GameMapMongoMapper {
             String inventoryFileId = gridFs.storeData(model.getInventory(),
                                                       mongoEntity.getInventoryFileId());
             mongoEntity.setInventoryFileId(inventoryFileId);
+            
+            // Save the combat terrain
+            String combatTerrainFileId = gridFs.storeData(model.getCombatTerrain(),
+                                                          mongoEntity.getCombatTerrainFileId());
+            mongoEntity.setCombatTerrainFileId(combatTerrainFileId);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -53,6 +62,7 @@ public class GameMapMongoMapper {
         try {
             GridFs gridFs = new GridFs(objectMapper, gridFsOperations);
             Inventory inventory = gridFs.readData(entity.getInventoryFileId(), Inventory.class);
+            CombatTerrain combatTerrain = gridFs.readData(entity.getCombatTerrainFileId(), CombatTerrain.class);
             
             return new GameMap(entity.getId(),
                                entity.getUserId(),
@@ -60,7 +70,8 @@ public class GameMapMongoMapper {
                                entity.getMapSize(),
                                null,
                                MainCharacterMongoMapper.toModel(entity.getMainCharacter()),
-                               inventory);
+                               inventory,
+                               combatTerrain);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

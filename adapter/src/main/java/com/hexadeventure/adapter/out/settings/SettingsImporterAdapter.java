@@ -12,7 +12,7 @@ import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.initial.InitialResources;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
-import com.hexadeventure.model.inventory.weapons.WeaponData;
+import com.hexadeventure.model.inventory.weapons.WeaponSetting;
 import com.hexadeventure.model.map.resources.ResourceType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
@@ -36,14 +36,14 @@ public class SettingsImporterAdapter implements SettingsImporter {
     
     private static final ObjectMapper objectMapper = new ObjectMapper();
     
-    private static final Map<String, WeaponData> weaponsCache = new HashMap<>();
+    private static final Map<String, WeaponSetting> weaponsCache = new HashMap<>();
     private static final Map<String, Food> foodsCache = new HashMap<>();
     private static final Map<String, Potion> potionsCache = new HashMap<>();
     private static final Map<ResourceType, Material> materialsCache = new HashMap<>();
     private static final InitialResources initialResources = new InitialResources();
     
     @Override
-    public Map<String, WeaponData> importWeapons() {
+    public Map<String, WeaponSetting> importWeapons() {
         return importJson(weaponsCache, WEAPONS_JSON, WeaponDataJson::getID, WeaponDataJson.class);
     }
     

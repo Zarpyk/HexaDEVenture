@@ -1,5 +1,6 @@
 package com.hexadeventure.adapter.out.persistence.game.jpa.data;
 
+import com.hexadeventure.adapter.out.persistence.game.jpa.data.combat.CombatTerrainJpaEntity;
 import com.hexadeventure.adapter.out.persistence.game.jpa.data.inventory.InventoryJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,4 +24,8 @@ public class GameMapJpaEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "inventory_id")
     private InventoryJpaEntity inventory;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "combat_terrain_id")
+    private CombatTerrainJpaEntity combatTerrain;
 }

@@ -1,7 +1,6 @@
 package com.hexadeventure.application.service.game;
 
 import com.hexadeventure.application.exceptions.GameInCombatException;
-import com.hexadeventure.application.exceptions.GameNotStartedException;
 import com.hexadeventure.application.exceptions.GameStartedException;
 import com.hexadeventure.application.exceptions.MapSizeException;
 import com.hexadeventure.application.port.in.game.GameUseCase;
@@ -10,6 +9,7 @@ import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.port.out.settings.SettingsImporter;
+import com.hexadeventure.application.service.common.Utilities;
 import com.hexadeventure.model.enemies.Enemy;
 import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.initial.InitialResourceTypeIdResourceData;
@@ -18,7 +18,7 @@ import com.hexadeventure.model.inventory.initial.InitialStringIdResourceData;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
 import com.hexadeventure.model.inventory.weapons.Weapon;
-import com.hexadeventure.model.inventory.weapons.WeaponData;
+import com.hexadeventure.model.inventory.weapons.WeaponSetting;
 import com.hexadeventure.model.map.*;
 import com.hexadeventure.model.map.resources.Resource;
 import com.hexadeventure.model.map.resources.ResourceType;
@@ -77,7 +77,7 @@ public class GameService implements GameUseCase {
     
     private void addInitialResources(GameMap map) {
         InitialResources initialResources = settingsImporter.importInitialResources();
-        Map<String, WeaponData> weapons = settingsImporter.importWeapons();
+        Map<String, WeaponSetting> weapons = settingsImporter.importWeapons();
         Map<String, Food> foods = settingsImporter.importFoods();
         Map<String, Potion> potions = settingsImporter.importPotions();
         Map<ResourceType, Material> materials = settingsImporter.importMaterials();
@@ -85,8 +85,8 @@ public class GameService implements GameUseCase {
         SplittableRandom random = new SplittableRandom(map.getSeed());
         
         for (InitialStringIdResourceData weaponsData : initialResources.getInitialWeapons()) {
-            WeaponData weaponData = weapons.get(weaponsData.getId());
-            map.getInventory().addItem(new Weapon(weaponData, random), weaponsData.getCount());
+            WeaponSetting weaponSetting = weapons.get(weaponsData.getId());
+            map.getInventory().addItem(new Weapon(weaponSetting, random), weaponsData.getCount());
         }
         
         for (InitialStringIdResourceData foodsData : initialResources.getInitialFoods()) {
@@ -104,15 +104,7 @@ public class GameService implements GameUseCase {
     
     @Override
     public MovementResponse move(String email, Vector2 positionToMove) {
-        Optional<User> user = userRepository.findByEmail(email);
-        assert user.isPresent();
-        
-        // Check if the game has started
-        if(user.get().getMapId() == null) throw new GameNotStartedException();
-        
-        Optional<GameMap> map = gameMapRepository.findById(user.get().getMapId());
-        assert map.isPresent();
-        GameMap gameMap = map.get();
+        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
         
         // Check if the game is in combat
         if(gameMap.isInCombat()) throw new GameInCombatException();
@@ -167,12 +159,12 @@ public class GameService implements GameUseCase {
                                                                             position,
                                                                             gameMap.getCostMap(chunkArroundPlayer,
                                                                                                true));
-                    // Ignore first position
+                    // Ignore the first position
                     enemyPath.poll();
                     
                     EnemyMovement enemyMovement;
                     if(enemyPath.size() <= Enemy.MOVEMENT_SPEED) {
-                        // If the player in on the enemy range, start combat
+                        // If the player is on the enemy range, start combat
                         gameMap.moveEnemy(enemy.getPosition(), position);
                         enemyMovement = new EnemyMovement(position.x, position.y);
                         startCombat = true;

@@ -1,5 +1,6 @@
 package com.hexadeventure.model.inventory;
 
+import com.hexadeventure.common.GameMapFactory;
 import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.materials.Material;
@@ -7,6 +8,7 @@ import com.hexadeventure.model.inventory.potions.Potion;
 import com.hexadeventure.model.inventory.potions.PotionType;
 import com.hexadeventure.model.inventory.weapons.Weapon;
 import com.hexadeventure.model.inventory.weapons.WeaponType;
+import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.resources.ResourceType;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +19,6 @@ public class InventoryTest {
     public static final String TEST_FOOD_NAME = "Apple";
     public static final String TEST_POTION_NAME = "Health Potion";
     public static final String TEST_MATERIAL_NAME = "Wood";
-    
     
     @Test
     public void givenWeapon_whenAddItemToInventory_thenItemIsAdded() {
@@ -122,5 +123,39 @@ public class InventoryTest {
         inventory.removeCharacter(character);
         
         assertThat(inventory.getCharacters()).isEmpty();
+    }
+    
+    @Test
+    public void givenCharacterAndWeapon_whenSetCharacterWeapon_thenWeaponIsSet() {
+        Inventory inventory = new Inventory();
+        PlayableCharacter character = new PlayableCharacter("Warrior", 100, 10);
+        Weapon weapon = new Weapon(TEST_WEAPON_NAME, WeaponType.MELEE, 1);
+        
+        inventory.addCharacter(character);
+        inventory.addItem(weapon);
+        inventory.setCharacterWeapon(character, weapon.getId());
+        
+        assertThat(inventory.getCharacters().get(character.getId()).getWeapon()).isEqualTo(weapon);
+    }
+    
+    @Test
+    public void givenCharacter_whenRemoveCharacterWeapon_thenWeaponIsRemoved() {
+        Inventory inventory = new Inventory();
+        PlayableCharacter character = new PlayableCharacter("Warrior", 100, 10);
+        Weapon weapon = new Weapon(TEST_WEAPON_NAME, WeaponType.MELEE, 1);
+        
+        inventory.addCharacter(character);
+        inventory.addItem(weapon);
+        inventory.setCharacterWeapon(character, weapon.getId());
+        inventory.removeCharacterWeapon(character);
+        
+        assertThat(inventory.getCharacters().get(character.getId()).getWeapon()).isNull();
+    }
+    
+    @Test
+    public void whenCreateMap_thenInventoryIsCreated() {
+        GameMap gameMap = GameMapFactory.createGameMap();
+        
+        assertThat(gameMap.getInventory()).isNotNull();
     }
 }
