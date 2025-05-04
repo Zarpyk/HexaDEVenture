@@ -1,7 +1,9 @@
 package com.hexadeventure.adapter.in.rest.game;
 
-import com.hexadeventure.adapter.in.rest.game.combat.CombatStatusDTO;
+import com.hexadeventure.adapter.in.rest.game.combat.CombatProcessDTO;
+import com.hexadeventure.adapter.in.rest.game.combat.CombatInfoDTO;
 import com.hexadeventure.application.port.in.game.CombatUseCase;
+import com.hexadeventure.model.combat.CombatProcess;
 import com.hexadeventure.model.combat.CombatTerrain;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +19,9 @@ public class CombatController {
     }
     
     @GetMapping("/game/combat")
-    public ResponseEntity<CombatStatusDTO> move(Principal principal) {
+    public ResponseEntity<CombatInfoDTO> move(Principal principal) {
         CombatTerrain response = combatUseCase.getCombatStatus(principal.getName());
-        return ResponseEntity.ok(CombatStatusDTO.fromModel(response));
+        return ResponseEntity.ok(CombatInfoDTO.fromModel(response));
     }
     
     @PostMapping("/game/combat/character")
@@ -39,5 +41,11 @@ public class CombatController {
                                       removeCharacterDTO.row(),
                                       removeCharacterDTO.column());
         return ResponseEntity.ok().build();
+    }
+    
+    @PostMapping("/game/combat/start")
+    public ResponseEntity<CombatProcessDTO> startAutoCombat(Principal principal) {
+        CombatProcess combatProcess = combatUseCase.startAutoCombat(principal.getName());
+        return ResponseEntity.ok(CombatProcessDTO.fromModel(combatProcess));
     }
 }

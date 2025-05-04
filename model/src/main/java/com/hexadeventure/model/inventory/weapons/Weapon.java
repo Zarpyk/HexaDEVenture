@@ -23,6 +23,19 @@ public class Weapon extends Item {
     private double healingPower;
     private double hipnotizationPower;
     
+    public Weapon(Weapon weapon) {
+        super(weapon.getName(), ItemType.WEAPON, weapon.getSkin());
+        this.weaponType = weapon.weaponType;
+        this.damage = weapon.damage;
+        this.meleeDefense = weapon.meleeDefense;
+        this.rangedDefense = weapon.rangedDefense;
+        this.cooldown = weapon.cooldown;
+        this.aggroGeneration = weapon.aggroGeneration;
+        this.initialAggro = weapon.initialAggro;
+        this.healingPower = weapon.healingPower;
+        this.hipnotizationPower = weapon.hipnotizationPower;
+    }
+    
     public Weapon(String name, WeaponType weaponType, int skin) {
         super(name, ItemType.WEAPON, skin);
         this.weaponType = weaponType;

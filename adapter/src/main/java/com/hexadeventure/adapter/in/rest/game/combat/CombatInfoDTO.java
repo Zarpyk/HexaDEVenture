@@ -4,9 +4,9 @@ import com.hexadeventure.model.combat.CombatTerrain;
 
 import java.util.Arrays;
 
-public record CombatStatusDTO(CharacterDataDTO[][] playerCharacters,
-                              CharacterDataDTO[][] enemies) {
-    public static CombatStatusDTO fromModel(CombatTerrain model) {
+public record CombatInfoDTO(CharacterDataDTO[][] playerCharacters,
+                            CharacterDataDTO[][] enemies) {
+    public static CombatInfoDTO fromModel(CombatTerrain model) {
         CharacterDataDTO[][] playerArray = Arrays.stream(model.getPlayerTerrain())
                                                  .map(array -> Arrays.stream(array)
                                                                      .map(CharacterDataDTO::fromModel)
@@ -17,6 +17,6 @@ public record CombatStatusDTO(CharacterDataDTO[][] playerCharacters,
                                                                       .map(CharacterDataDTO::fromModel)
                                                                       .toArray(CharacterDataDTO[]::new))
                                                   .toArray(CharacterDataDTO[][]::new);
-        return new CombatStatusDTO(playerArray, enemiesArray);
+        return new CombatInfoDTO(playerArray, enemiesArray);
     }
 }

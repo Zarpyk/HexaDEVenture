@@ -5,10 +5,15 @@ import com.hexadeventure.application.port.in.game.CombatUseCase;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.service.common.Utilities;
+import com.hexadeventure.model.combat.CombatProcess;
 import com.hexadeventure.model.combat.CombatTerrain;
+import com.hexadeventure.model.combat.TurnInfo;
 import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import com.hexadeventure.model.map.GameMap;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CombatService implements CombatUseCase {
     private final UserRepository userRepository;
@@ -66,6 +71,20 @@ public class CombatService implements CombatUseCase {
         inventory.addCharacter(playableCharacter);
         
         gameMapRepository.save(gameMap);
+    }
+    
+    @Override
+    public CombatProcess startAutoCombat(String email) {
+        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
+        
+        if(!gameMap.isInCombat()) throw new CombatNotStartedException();
+        
+        CombatTerrain combatTerrain = gameMap.getCombatTerrain();
+        List<TurnInfo> turnInfos = new ArrayList<>();
+        
+        
+        
+        return null;
     }
     
     private static void checkParams(int row, int column, CombatTerrain combatTerrain) {
