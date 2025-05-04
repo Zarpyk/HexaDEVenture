@@ -107,6 +107,6 @@ public class Vector2C {
     
     @Override
     public String toString() {
-        return "(" + x + ", " + y + ")";
+        return "(" + x + "," + y + ")";
     }
 }

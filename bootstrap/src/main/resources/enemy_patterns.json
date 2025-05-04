@@ -1,0 +1,462 @@
+[
+  {
+    "minThreshold": -1,
+    "enemies": [
+      [
+        "Skeleton Warrior",
+        "Giant Skeleton",
+        "Skeleton Warrior",
+        "Skeleton Warrior"
+      ],
+      [
+        "Skeleton Archer",
+        "Skeleton Warrior",
+        "Skeleton Warrior",
+        "Skeleton Archer"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Healer",
+        "Skeleton Archer",
+        "Skeleton Guardian"
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.0,
+    "enemies": [
+      [
+        "Skeleton Warrior",
+        null,
+        null,
+        "Skeleton Warrior"
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.0,
+    "enemies": [
+      [
+        null,
+        null,
+        "Skeleton Warrior",
+        null
+      ],
+      [
+        null,
+        null,
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.2,
+    "enemies": [
+      [
+        null,
+        "Skeleton Warrior",
+        "Skeleton Warrior",
+        null
+      ],
+      [
+        null,
+        null,
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.2,
+    "enemies": [
+      [
+        null,
+        "Skeleton Guardian",
+        "Skeleton Warrior",
+        null
+      ],
+      [
+        null,
+        null,
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.2,
+    "enemies": [
+      [
+        null,
+        null,
+        "Skeleton Warrior",
+        null
+      ],
+      [
+        null,
+        "Skeleton Healer",
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.2,
+    "enemies": [
+      [
+        null,
+        null,
+        "Skeleton Warrior",
+        null
+      ],
+      [
+        null,
+        "Skeleton Archer",
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.5,
+    "enemies": [
+      [
+        null,
+        "Skeleton Guardian",
+        "Skeleton Warrior",
+        "Skeleton Warrior"
+      ],
+      [
+        null,
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.5,
+    "enemies": [
+      [
+        null,
+        "Skeleton Guardian",
+        "Skeleton Guardian",
+        null
+      ],
+      [
+        null,
+        "Skeleton Archer",
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        "Skeleton Healer",
+        null,
+        null
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.5,
+    "enemies": [
+      [
+        null,
+        "Skeleton Warrior",
+        "Skeleton Warrior",
+        null
+      ],
+      [
+        "Skeleton Archer",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.7,
+    "enemies": [
+      [
+        "Skeleton Guardian",
+        "Skeleton Guardian",
+        "Skeleton Guardian",
+        "Skeleton Guardian"
+      ],
+      [
+        null,
+        "Skeleton Archer",
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        "Skeleton Healer",
+        null,
+        null
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.7,
+    "enemies": [
+      [
+        "Skeleton Warrior",
+        "Skeleton Guardian",
+        "Skeleton Guardian",
+        "Skeleton Warrior"
+      ],
+      [
+        null,
+        null,
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        "Skeleton Healer",
+        "Skeleton Archer",
+        null
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.7,
+    "enemies": [
+      [
+        "Skeleton Warrior",
+        "Skeleton Warrior",
+        "Skeleton Warrior",
+        "Skeleton Warrior"
+      ],
+      [
+        null,
+        "Skeleton Warrior",
+        "Skeleton Warrior",
+        null
+      ],
+      [
+        null,
+        "Skeleton Healer",
+        null,
+        null
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.7,
+    "enemies": [
+      [
+        "Skeleton Warrior",
+        "Skeleton Guardian",
+        "Skeleton Guardian",
+        "Skeleton Warrior"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        "Skeleton Guardian"
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.8,
+    "enemies": [
+      [
+        "Skeleton Warrior",
+        "Skeleton Guardian",
+        "Skeleton Warrior",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Healer",
+        "Skeleton Healer",
+        null
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        null
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.8,
+    "enemies": [
+      [
+        "Skeleton Guardian",
+        "Skeleton Warrior",
+        "Skeleton Warrior",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Warrior",
+        "Skeleton Healer",
+        "Skeleton Healer",
+        "Skeleton Archer"
+      ],
+      [
+        null,
+        "Skeleton Archer",
+        "Skeleton Archer",
+        null
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.8,
+    "enemies": [
+      [
+        "Skeleton Warrior",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        null
+      ],
+      [
+        "Skeleton Archer",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        "Skeleton Archer"
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.9,
+    "enemies": [
+      [
+        "Skeleton Guardian",
+        "Skeleton Warrior",
+        "Skeleton Warrior",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        "Skeleton Healer",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Healer",
+        "Skeleton Healer",
+        "Skeleton Warrior"
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.9,
+    "enemies": [
+      [
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        "Skeleton Guardian"
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.9,
+    "enemies": [
+      [
+        "Skeleton Guardian",
+        "Skeleton Warrior",
+        "Skeleton Guardian",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        "Skeleton Guardian",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Healer",
+        "Skeleton Guardian",
+        "Skeleton Guardian"
+      ]
+    ]
+  }
+]

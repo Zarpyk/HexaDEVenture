@@ -1,13 +1,14 @@
 package com.hexadeventure.adapter.in.rest.game.movement;
 
+import com.hexadeventure.adapter.in.rest.game.map.Vector2DTO;
 import com.hexadeventure.model.movement.MovementAction;
 
 import java.util.List;
 
-public record MovementActionDTO(int x, int y, ResourceActionDTO resource, List<EnemyMovementDTO> enemyMovements) {
+public record MovementActionDTO(Vector2DTO position, ResourceActionDTO resource,
+                                List<EnemyMovementDTO> enemyMovements) {
     public static MovementActionDTO fromModel(MovementAction model) {
-        return new MovementActionDTO(model.x(),
-                                     model.y(),
+        return new MovementActionDTO(Vector2DTO.fromModel(model.position()),
                                      ResourceActionDTO.fromModel(model.resourceAction()),
                                      model.enemyMovements().stream().map(EnemyMovementDTO::fromModel).toList());
     }

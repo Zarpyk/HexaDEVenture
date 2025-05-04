@@ -1,4 +1,6 @@
 package com.hexadeventure.model.movement;
 
-public record EnemyMovement(int x, int y) {
+import com.hexadeventure.model.map.Vector2;
+
+public record EnemyMovement(Vector2 position) {
 }

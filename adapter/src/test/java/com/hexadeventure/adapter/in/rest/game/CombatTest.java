@@ -28,6 +28,7 @@ public class CombatTest {
         RestCommon.Setup(new CombatController(combatUseCase));
     }
     
+    //region CheckCombatStatus
     @Test
     public void givenNoStartGameUser_whenCheckCombatStatus_thenReturn405() {
         doThrow(GameNotStartedException.class).when(combatUseCase).getCombatStatus(UserFactory.EMAIL);
@@ -52,7 +53,9 @@ public class CombatTest {
                   .statusCode(HttpStatus.OK.value())
                   .extract().body().as(CombatStatusDTO.class);
     }
+    //endregion
     
+    //region PlaceCharacter
     @Test
     public void givenPositionWithCharacterIDOnEmptyPosition_whenPlaceCharacter_thenReturnOK() {
         PlaceCharacterDTO placeCharacterDTO = new PlaceCharacterDTO(TEST_ROW, TEST_COLUMN, TEST_CHARACTER_ID);
@@ -96,7 +99,9 @@ public class CombatTest {
                   .then()
                   .statusCode(HttpStatus.BAD_REQUEST.value());
     }
+    //endregion
     
+    //region RemoveCharacter
     @Test
     public void givenNonEmptyPosition_whenRemoveCharacter_thenReturnOK() {
         RemoveCharacterDTO removeCharacterDTO = new RemoveCharacterDTO(TEST_ROW, TEST_COLUMN);
@@ -120,10 +125,11 @@ public class CombatTest {
     public void givenInvalidPosition_whenRemoveCharacter_thenReturn400() {
         RemoveCharacterDTO removeCharacterDTO = new RemoveCharacterDTO(-1, -1);
         doThrow(InvalidPositionException.class).when(combatUseCase).removeCharacter(UserFactory.EMAIL,
-                                                                                   -1,
-                                                                                   -1);
+                                                                                    -1,
+                                                                                    -1);
         RestCommon.deleteWithBody("/game/combat/character", removeCharacterDTO, true)
                   .then()
                   .statusCode(HttpStatus.BAD_REQUEST.value());
     }
+    //endregion
 }

@@ -7,6 +7,7 @@ import com.hexadeventure.application.service.game.GameService;
 import com.hexadeventure.model.combat.CombatTerrain;
 import com.hexadeventure.model.enemies.Enemy;
 import com.hexadeventure.model.inventory.Inventory;
+import com.hexadeventure.model.inventory.characters.EnemyPattern;
 import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
@@ -86,7 +87,7 @@ public class MapFactory {
         }
         mockChunk(gameMapRepository, EMPTY_MAP_ID, chunks);
         
-        // Create game map
+        // Create the game map
         GameMap gameMap = new GameMap(EMPTY_MAP_ID,
                                       TEST_USER_EMAIL,
                                       TEST_SEED,
@@ -100,7 +101,7 @@ public class MapFactory {
                                                            true);
         gameMap.setChunks(new HashMap<>());
         
-        // Generate path
+        // Generate the path
         Queue<Vector2> path = generatePath(EMPTY_START_POSITION, EMPTY_END_POSITION);
         
         mockGameMap(gameMapRepository, EMPTY_MAP_ID, gameMap, chunks);
@@ -119,14 +120,14 @@ public class MapFactory {
             Chunk chunk = chunks.get(chunkPosition);
             for (int x = chunkPosition.getRealX(); x < chunkPosition.getEndX(); x++) {
                 for (int y = chunkPosition.getRealY(); y < chunkPosition.getEndY(); y++) {
-                    // Add obstacle
+                    // Add an obstacle
                     chunk.setCell(new Vector2(x, y), CellType.WALL);
                 }
             }
         }
         mockChunk(gameMapRepository, OBSTACLE_MAP_ID, chunks);
         
-        // Create game map
+        // Create the game map
         GameMap gameMap = new GameMap(OBSTACLE_MAP_ID,
                                       TEST_USER_EMAIL,
                                       TEST_SEED,
@@ -164,7 +165,7 @@ public class MapFactory {
         }
         mockChunk(gameMapRepository, RESOURCE_MAP_ID, chunks);
         
-        // Create game map
+        // Create the game map
         GameMap gameMap = new GameMap(RESOURCE_MAP_ID,
                                       TEST_USER_EMAIL,
                                       TEST_SEED,
@@ -178,7 +179,7 @@ public class MapFactory {
                                                            true);
         if(!returnChunks) gameMap.setChunks(new HashMap<>());
         
-        // Generate path for player
+        // Generate a path for player
         Queue<Vector2> path = generatePath(RESOURCE_START_POSITION, RESOURCE_END_POSITION);
         
         mockGameMap(gameMapRepository, RESOURCE_MAP_ID, gameMap, chunks);
@@ -202,7 +203,10 @@ public class MapFactory {
                     chunk.setCell(position, CellType.GROUND);
                     // Add enemy
                     if(position.equals(ENEMY_MAP_ENEMY_POSITION)) {
-                        chunk.addEnemy(new Vector2(x, y), new Enemy(position, 8));
+                        SplittableRandom random = new SplittableRandom(position.getRandomSeed(TEST_SEED, 0));
+                        EnemyPattern pattern = EnemyFactory.createEnemyPattern();
+                        Map<WeaponType, List<WeaponSetting>> weapons = WeaponFactory.createWeaponsSettings();
+                        chunk.addEnemy(new Vector2(x, y), new Enemy(position, random, pattern, weapons));
                     }
                 }
             }
@@ -223,10 +227,10 @@ public class MapFactory {
                                                            true);
         gameMap.setChunks(new HashMap<>());
         
-        // Generate path for main character
+        // Generate path for the main character
         Queue<Vector2> path = generatePath(ENEMY_START_POSITION, ENEMY_END_POSITION);
         
-        // Generate path for enemy
+        // Generate a path for the enemy
         Queue<Vector2> lastPath;
         Vector2 newPosition = ENEMY_MAP_ENEMY_POSITION;
         for (Vector2 position : path) {

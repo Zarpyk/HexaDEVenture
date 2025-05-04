@@ -1,4 +1,4 @@
-package com.hexadeventure.common;
+package com.hexadeventure.application.service.common;
 
 import com.hexadeventure.model.inventory.weapons.AggroGenType;
 import com.hexadeventure.model.inventory.weapons.Weapon;

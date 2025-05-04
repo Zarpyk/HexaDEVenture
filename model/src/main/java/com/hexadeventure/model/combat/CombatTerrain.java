@@ -60,6 +60,22 @@ public class CombatTerrain {
     }
     
     /**
+     * Places multiple enemies on the terrain.
+     *
+     * @param enemies 2D Array of enemies to place on the terrain, the first will be row, and the second will be column
+     */
+    public void placeEnemies(PlayableCharacter[][] enemies) {
+        for (int i = 0; i < enemies.length; i++) {
+            for (int j = 0; j < enemies[i].length; j++) {
+                PlayableCharacter enemy = enemies[i][j];
+                if(enemy != null) {
+                    placeEnemy(i, j, enemy);
+                }
+            }
+        }
+    }
+    
+    /**
      * Places an enemy on the terrain at the specified position.
      *
      * @param row The row index of the enemy terrain

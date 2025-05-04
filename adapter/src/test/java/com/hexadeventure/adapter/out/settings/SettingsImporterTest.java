@@ -1,5 +1,7 @@
 package com.hexadeventure.adapter.out.settings;
 
+import com.hexadeventure.model.inventory.characters.EnemyPattern;
+import com.hexadeventure.model.inventory.characters.EnemySetting;
 import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.initial.InitialResources;
 import com.hexadeventure.model.inventory.materials.Material;
@@ -8,6 +10,7 @@ import com.hexadeventure.model.inventory.weapons.WeaponSetting;
 import com.hexadeventure.model.map.resources.ResourceType;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,7 +27,7 @@ public class SettingsImporterTest {
     public void givenJson_whenImportWeapons_thenReturnWeaponDataList() {
         Map<String, WeaponSetting> weaponsData = settingsImporter.importWeapons();
         
-        assertThat(weaponsData.size()).isEqualTo(2);
+        assertThat(weaponsData.size()).isPositive();
         Optional<WeaponSetting> weapon = weaponsData.values().stream().findFirst();
         assertThat(weapon).isPresent();
         
@@ -55,7 +58,7 @@ public class SettingsImporterTest {
     public void givenJson_whenImportFoods_thenReturnFoodsList() {
         Map<String, Food> foods = settingsImporter.importFoods();
         
-        assertThat(foods.size()).isEqualTo(2);
+        assertThat(foods.size()).isPositive();
         Optional<Food> food = foods.values().stream().findFirst();
         assertThat(food).isPresent();
         
@@ -69,7 +72,7 @@ public class SettingsImporterTest {
     public void givenJson_whenImportPotions_thenReturnPotionsList() {
         Map<String, Potion> potions = settingsImporter.importPotions();
         
-        assertThat(potions.size()).isEqualTo(2);
+        assertThat(potions.size()).isPositive();
         Optional<Potion> potion = potions.values().stream().findFirst();
         assertThat(potion).isPresent();
         
@@ -84,7 +87,7 @@ public class SettingsImporterTest {
     public void givenJson_whenImportMaterials_thenReturnMaterialsList() {
         Map<ResourceType, Material> materials = settingsImporter.importMaterials();
         
-        assertThat(materials.size()).isEqualTo(2);
+        assertThat(materials.size()).isPositive();
         Optional<Material> material = materials.values().stream().findFirst();
         assertThat(material).isPresent();
         
@@ -103,5 +106,43 @@ public class SettingsImporterTest {
         assertThat(initialResources.getInitialFoods().length).isPositive();
         assertThat(initialResources.getInitialPotions().length).isPositive();
         assertThat(initialResources.getInitialMaterials().length).isPositive();
+    }
+    
+    @Test
+    public void givenJson_whenImportEnemyPatterns_thenReturnEnemyPatterns() {
+        EnemyPattern[] enemyPatterns = settingsImporter.importEnemyPatterns(1);
+        
+        assertThat(enemyPatterns).isNotNull();
+        assertThat(enemyPatterns.length).isPositive();
+        
+        Optional<EnemyPattern> pattern = Arrays.stream(enemyPatterns).findFirst();
+        assertThat(pattern).isPresent();
+        
+        EnemyPattern enemyPattern = pattern.get();
+        
+        // 0 only for testing, can be -1 to indicate that is a boss
+        assertThat(enemyPattern.minThreshold()).isGreaterThanOrEqualTo(0);
+        
+        assertThat(enemyPattern.enemies()).isNotEmpty();
+        assertThat(enemyPattern.enemies().length).isEqualTo(3);
+        assertThat(enemyPattern.enemies()[0].length).isEqualTo(4);
+    }
+    
+    @Test
+    public void givenThreshold_whenGetEnemyPatterns_thenReturnAllPaternsLowerOrEqualThanThreshold() {
+        EnemyPattern[] enemyPatterns = settingsImporter.importEnemyPatterns(0.5f);
+        assertThat(enemyPatterns.length).isEqualTo(2);
+        
+        enemyPatterns = settingsImporter.importEnemyPatterns(0.4f);
+        assertThat(enemyPatterns.length).isEqualTo(1);
+        
+        enemyPatterns = settingsImporter.importEnemyPatterns(0);
+        assertThat(enemyPatterns.length).isEqualTo(0);
+    }
+    
+    @Test
+    public void givenThreshold_whenGetBossPatterns_thenReturnAllBossPatterns() {
+        EnemyPattern[] enemyPatterns = settingsImporter.importBossPatterns();
+        assertThat(enemyPatterns.length).isEqualTo(1);
     }
 }

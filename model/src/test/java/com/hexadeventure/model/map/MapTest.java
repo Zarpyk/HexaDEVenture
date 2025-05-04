@@ -1,17 +1,23 @@
 package com.hexadeventure.model.map;
 
+import com.hexadeventure.common.EnemyFactory;
 import com.hexadeventure.common.GameMapFactory;
+import com.hexadeventure.common.WeaponFactory;
 import com.hexadeventure.model.enemies.Enemy;
+import com.hexadeventure.model.inventory.characters.EnemyPattern;
+import com.hexadeventure.model.inventory.weapons.WeaponSetting;
+import com.hexadeventure.model.inventory.weapons.WeaponType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.List;
+import java.util.Map;
 import java.util.SplittableRandom;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapTest {
-    
     @Test
     public void givenASize_whenCreatingAMap_thenCreatesAMapWithCorrectSize() {
         GameMap gameMap = GameMapFactory.createGameMap();
@@ -91,7 +97,10 @@ public class MapTest {
     public void givenAnEnemyCell_whenAddingItToTheMap_thenAddsTheEnemyCell() {
         GameMap gameMap = GameMapFactory.createGameMap();
         Vector2 position = new Vector2(1, 1);
-        Enemy enemy = new Enemy(position, 0);
+        SplittableRandom random = new SplittableRandom();
+        EnemyPattern pattern = EnemyFactory.createEnemyPattern();
+        Map<WeaponType, List<WeaponSetting>> weapons = WeaponFactory.createWeaponsSettings();
+        Enemy enemy = new Enemy(position, random, pattern, weapons);
         gameMap.addEnemy(position, enemy);
         
         assertThat(gameMap.getEnemy(position)).isNotNull();

@@ -2,8 +2,12 @@ package com.hexadeventure.application.service.game;
 
 import com.hexadeventure.application.port.out.noise.NoiseGenerator;
 import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
+import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.model.enemies.Boss;
 import com.hexadeventure.model.enemies.Enemy;
+import com.hexadeventure.model.inventory.characters.EnemyPattern;
+import com.hexadeventure.model.inventory.weapons.WeaponSetting;
+import com.hexadeventure.model.inventory.weapons.WeaponType;
 import com.hexadeventure.model.map.*;
 import com.hexadeventure.model.map.resources.Resource;
 import com.hexadeventure.utils.DoubleMapper;
@@ -14,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.Queue;
 
 public class MapGenerator {
@@ -35,7 +40,7 @@ public class MapGenerator {
     private static final double BOSS_CLEAR_CIRCLE_THRESHOLD = 0.15;
     private static final int BOSS_PATH_EXTRA_WIDTH = 1;
     private static final int BOSS_PATHFINDING_GENERATE_CHUNKS_WIDTH = 1;
-    private static final int BOSS_CLEAR_CIRCLE_VARIATION = 3;
+    private static final int BOSS_VARIATION = 3;
     
     private static final double GENERATE_ENEMY_PROBABILITY = 0.5;
     private static final double GENERATE_ENEMY_PROBABILITY_MAX_INCREMENT = 5;
@@ -45,10 +50,13 @@ public class MapGenerator {
     
     private final NoiseGenerator noiseGenerator;
     private final AStarPathfinder aStarPathfinder;
+    private final SettingsImporter settingsImporter;
     
-    public MapGenerator(NoiseGenerator noiseGenerator, AStarPathfinder aStarPathfinder) {
+    public MapGenerator(NoiseGenerator noiseGenerator, AStarPathfinder aStarPathfinder,
+                        SettingsImporter settingsImporter) {
         this.noiseGenerator = noiseGenerator;
         this.aStarPathfinder = aStarPathfinder;
+        this.settingsImporter = settingsImporter;
     }
     
     public GameMap initialMapGeneration(String email, long seed, int size) {
@@ -283,16 +291,21 @@ public class MapGenerator {
                       bossPosition,
                       BOSS_CLEAR_RADIUS,
                       BOSS_CLEAR_CIRCLE_THRESHOLD,
-                      BOSS_CLEAR_CIRCLE_VARIATION,
+                      BOSS_VARIATION,
                       false, chunksToGenerate);
         
         generateRoadToBoss(map, chunksToGenerate);
         
-        map.addEnemy(bossPosition, new Boss(bossPosition));
+        EnemyPattern[] enemyPatterns = settingsImporter.importBossPatterns();
+        SplittableRandom random = new SplittableRandom(Objects.hash(map.getSeed(), BOSS_VARIATION));
+        EnemyPattern randomPattern = enemyPatterns[random.nextInt(enemyPatterns.length)];
+        Map<WeaponType, List<WeaponSetting>> weapons = settingsImporter.importWeaponsByType();
+        // Splitting boss from a normal enemy allow difference it on the printMap
+        map.addEnemy(bossPosition, new Boss(bossPosition, random, randomPattern, weapons));
     }
     
     private static Vector2 getBossPosition(GameMap map) {
-        SplittableRandom random = new SplittableRandom(Objects.hash(map.getSeed(), BOSS_CLEAR_CIRCLE_VARIATION));
+        SplittableRandom random = new SplittableRandom(Objects.hash(map.getSeed(), BOSS_VARIATION));
         int randomDirection = random.nextInt(4);
         Vector2 direction = switch (randomDirection) {
             case 0 -> Vector2.UP;
@@ -390,14 +403,17 @@ public class MapGenerator {
                     double maxDistance = (map.getSize() / 2.0) - BORDER_OFFSET;
                     double normalizedDistance = Math.clamp(distance / maxDistance, 0, 1);
                     
-                    // Increase enemy spawn chance based on distance from center
+                    // Increase enemy spawn chance based on distance from the center
                     double spawnRate = GENERATE_ENEMY_PROBABILITY / 100.0;
                     spawnRate += normalizedDistance * (GENERATE_ENEMY_PROBABILITY_MAX_INCREMENT / 100.0);
                     
                     SplittableRandom random = new SplittableRandom(position.getRandomSeed(map.getSeed(),
                                                                                           GENERATE_ENEMY_VARIATION));
                     if(random.nextDouble() < spawnRate) {
-                        map.addEnemy(position, new Enemy(position, normalizedDistance));
+                        EnemyPattern[] enemyPatterns = settingsImporter.importEnemyPatterns(normalizedDistance);
+                        EnemyPattern randomPattern = enemyPatterns[random.nextInt(enemyPatterns.length)];
+                        Map<WeaponType, List<WeaponSetting>> weapons = settingsImporter.importWeaponsByType();
+                        map.addEnemy(position, new Enemy(position, random, randomPattern, weapons));
                     }
                 }
             }

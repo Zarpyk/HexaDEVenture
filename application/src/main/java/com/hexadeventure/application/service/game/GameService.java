@@ -67,7 +67,7 @@ public class GameService implements GameUseCase {
         if(size % 16 != 0) {
             throw new MapSizeException("Map size must be a multiple of 16");
         }
-        MapGenerator mapGenerator = new MapGenerator(noiseGenerator, aStarPathfinder);
+        MapGenerator mapGenerator = new MapGenerator(noiseGenerator, aStarPathfinder, settingsImporter);
         GameMap map = mapGenerator.initialMapGeneration(email, seed, size);
         addInitialResources(map);
         
@@ -100,6 +100,20 @@ public class GameService implements GameUseCase {
         for (InitialResourceTypeIdResourceData resourcesData : initialResources.getInitialMaterials()) {
             map.getInventory().addItem(materials.get(resourcesData.getId()), resourcesData.getCount());
         }
+    }
+    
+    @Override
+    public ChunkData getChunks(String email) {
+        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
+        
+        MainCharacter mainCharacter = gameMap.getMainCharacter();
+        Vector2C currentChunk = Chunk.getChunkPosition(mainCharacter.getPosition());
+        
+        // Get chunks around the player
+        Set<Vector2C> chunkArroundPlayer = currentChunk.getArroundPositions(RENDER_DISTANCE, false);
+        Map<Vector2C, Chunk> mapChunks = gameMapRepository.findMapChunks(gameMap.getId(), chunkArroundPlayer);
+        
+        return new ChunkData(mapChunks);
     }
     
     @Override
@@ -166,7 +180,8 @@ public class GameService implements GameUseCase {
                     if(enemyPath.size() <= Enemy.MOVEMENT_SPEED) {
                         // If the player is on the enemy range, start combat
                         gameMap.moveEnemy(enemy.getPosition(), position);
-                        enemyMovement = new EnemyMovement(position.x, position.y);
+                        gameMap.getCombatTerrain().placeEnemies(enemy.getEnemies());
+                        enemyMovement = new EnemyMovement(position);
                         startCombat = true;
                         gameMap.setInCombat(true);
                     } else {
@@ -177,7 +192,7 @@ public class GameService implements GameUseCase {
                         }
                         if(enemyPosition == null) throw new IllegalStateException("Enemy position is null");
                         gameMap.moveEnemy(enemy.getPosition(), enemyPosition);
-                        enemyMovement = new EnemyMovement(enemyPosition.x, enemyPosition.y);
+                        enemyMovement = new EnemyMovement(enemyPosition);
                     }
                     enemyMovements.add(enemyMovement);
                     if(startCombat) break;
@@ -185,7 +200,7 @@ public class GameService implements GameUseCase {
                 if(startCombat) break;
             }
             
-            MovementAction movementAction = new MovementAction(position.x, position.y, resourceAction, enemyMovements);
+            MovementAction movementAction = new MovementAction(position, resourceAction, enemyMovements);
             actions.add(movementAction);
         }
         mainCharacter.setPosition(position);

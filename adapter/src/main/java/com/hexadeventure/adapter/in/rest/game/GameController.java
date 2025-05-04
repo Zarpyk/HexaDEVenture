@@ -1,10 +1,13 @@
 package com.hexadeventure.adapter.in.rest.game;
 
+import com.hexadeventure.adapter.in.rest.game.map.ChunkDataDTO;
 import com.hexadeventure.adapter.in.rest.game.movement.MovementResponseDTO;
+import com.hexadeventure.adapter.in.rest.game.map.Vector2DTO;
 import com.hexadeventure.application.port.in.game.GameUseCase;
 import com.hexadeventure.model.movement.MovementResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,9 +29,15 @@ public class GameController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     
+    @GetMapping("/game/chunks")
+    public ResponseEntity<ChunkDataDTO> getChunks(Principal principal) {
+        ChunkDataDTO response = ChunkDataDTO.fromModel(gameUseCase.getChunks(principal.getName()));
+        return ResponseEntity.ok(response);
+    }
+    
     @PostMapping("/game/move")
-    public ResponseEntity<MovementResponseDTO> move(Principal principal, @RequestBody MovementDTO movementDTO) {
-        MovementResponse response = gameUseCase.move(principal.getName(), movementDTO.toModel());
+    public ResponseEntity<MovementResponseDTO> move(Principal principal, @RequestBody Vector2DTO position) {
+        MovementResponse response = gameUseCase.move(principal.getName(), Vector2DTO.toModel(position));
         return ResponseEntity.ok(MovementResponseDTO.fromModel(response));
     }
 }

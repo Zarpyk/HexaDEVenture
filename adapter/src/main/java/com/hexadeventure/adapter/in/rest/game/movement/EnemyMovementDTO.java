@@ -1,9 +1,10 @@
 package com.hexadeventure.adapter.in.rest.game.movement;
 
+import com.hexadeventure.adapter.in.rest.game.map.Vector2DTO;
 import com.hexadeventure.model.movement.EnemyMovement;
 
-public record EnemyMovementDTO(int x, int y) {
+public record EnemyMovementDTO(Vector2DTO position) {
     public static EnemyMovementDTO fromModel(EnemyMovement enemyMovement) {
-        return new EnemyMovementDTO(enemyMovement.x(), enemyMovement.y());
+        return new EnemyMovementDTO(Vector2DTO.fromModel(enemyMovement.position()));
     }
 }

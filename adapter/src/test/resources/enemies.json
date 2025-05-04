@@ -1,0 +1,18 @@
+[
+  {
+    "id": "Melee Skeleton",
+    "weaponType": "MELEE",
+    "minHealth": 100,
+    "maxHealth": 200,
+    "minSpeed": 25,
+    "maxSpeed": 100
+  },
+  {
+    "id": "Ranged Skeleton",
+    "weaponType": "RANGED",
+    "minHealth": 50,
+    "maxHealth": 150,
+    "minSpeed": 50,
+    "maxSpeed": 125
+  }
+]

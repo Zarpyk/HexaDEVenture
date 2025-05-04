@@ -11,11 +11,12 @@ import com.hexadeventure.model.combat.CombatTerrain;
 import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.user.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class CombatTest {
     private static final String TEST_USER_EMAIL = "test@test.com";
@@ -31,6 +32,12 @@ public class CombatTest {
     private static final AStarPathfinder aStarPathfinder = mock(AStarPathfinder.class);
     private static final SettingsImporter settingsImporter = mock(SettingsImporter.class);
     private final CombatService combatService = new CombatService(userRepository, gameMapRepository);
+    
+    @BeforeEach
+    public void afterEach() {
+        // Reset verify mocks
+        reset(gameMapRepository);
+    }
     
     //region GetCombatStatus
     @Test
@@ -167,6 +174,7 @@ public class CombatTest {
         
         // Execute the method
         combatService.placeCharacter(TEST_USER_EMAIL, TEST_COMBAT_ROW, TEST_COMBAT_COLUMN, playableCharacter.getId());
+        verify(gameMapRepository, times(1)).save(map);
         
         // Check
         CombatTerrain combat = combatService.getCombatStatus(TEST_USER_EMAIL);
@@ -290,9 +298,11 @@ public class CombatTest {
         map.getInventory().addCharacter(playableCharacter);
         // Place character on the combat terrain
         combatService.placeCharacter(TEST_USER_EMAIL, TEST_COMBAT_ROW, TEST_COMBAT_COLUMN, playableCharacter.getId());
+        verify(gameMapRepository, times(1)).save(map);
         
         // Execute the method
         combatService.removeCharacter(TEST_USER_EMAIL, TEST_COMBAT_ROW, TEST_COMBAT_COLUMN);
+        verify(gameMapRepository, times(2)).save(map);
         
         // Check
         CombatTerrain combat = combatService.getCombatStatus(TEST_USER_EMAIL);

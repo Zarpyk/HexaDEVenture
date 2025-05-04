@@ -1,0 +1,42 @@
+[
+  {
+    "id": "Skeleton Warrior",
+    "weaponType": "MELEE",
+    "minHealth": 100,
+    "maxHealth": 200,
+    "minSpeed": 25,
+    "maxSpeed": 100
+  },
+  {
+    "id": "Skeleton Archer",
+    "weaponType": "RANGED",
+    "minHealth": 50,
+    "maxHealth": 150,
+    "minSpeed": 50,
+    "maxSpeed": 125
+  },
+  {
+    "id": "Skeleton Guardian",
+    "weaponType": "TANK",
+    "minHealth": 150,
+    "maxHealth": 400,
+    "minSpeed": 10,
+    "maxSpeed": 75
+  },
+  {
+    "id": "Skeleton Healer",
+    "weaponType": "HEALER",
+    "minHealth": 100,
+    "maxHealth": 250,
+    "minSpeed": 10,
+    "maxSpeed": 50
+  },
+  {
+    "id": "Giant Skeleton",
+    "weaponType": "MELEE",
+    "minHealth": 500,
+    "maxHealth": 500,
+    "minSpeed": 10,
+    "maxSpeed": 10
+  }
+]

@@ -1,0 +1,53 @@
+[
+  {
+    "minThreshold": -1,
+    "enemies": [
+      [
+        "Melee Skeleton",
+        "Melee Skeleton",
+        "Melee Skeleton",
+        "Melee Skeleton"
+      ],
+      [
+        "Melee Skeleton",
+        "Melee Skeleton",
+        "Melee Skeleton",
+        "Melee Skeleton"
+      ],
+      [
+        "Melee Skeleton",
+        "Melee Skeleton",
+        "Melee Skeleton",
+        "Melee Skeleton"
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.1,
+    "enemies": [
+      [
+        "Melee Skeleton"
+      ],
+      [
+        "Melee Skeleton"
+      ],
+      [
+        "Melee Skeleton"
+      ]
+    ]
+  },
+  {
+    "minThreshold": 0.5,
+    "enemies": [
+      [
+        "Melee Skeleton"
+      ],
+      [
+        "Melee Skeleton"
+      ],
+      [
+        "Melee Skeleton"
+      ]
+    ]
+  }
+]

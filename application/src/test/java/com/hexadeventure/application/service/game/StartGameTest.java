@@ -7,8 +7,11 @@ import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.port.out.settings.SettingsImporter;
+import com.hexadeventure.application.service.common.EnemyFactory;
 import com.hexadeventure.application.service.common.UserFactory;
+import com.hexadeventure.application.service.common.WeaponFactory;
 import com.hexadeventure.model.inventory.Item;
+import com.hexadeventure.model.inventory.characters.EnemyPattern;
 import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.initial.InitialResourceTypeIdResourceData;
 import com.hexadeventure.model.inventory.initial.InitialResources;
@@ -80,6 +83,7 @@ public class StartGameTest {
                                                    eq(chunksToGenerate))).thenReturn(new HashMap<>());
         
         when(aStarPathfinder.generatePath(any(), any(), any())).thenReturn(new LinkedList<>());
+        
         setupSettingsImporter();
     }
     
@@ -208,6 +212,11 @@ public class StartGameTest {
         when(settingsImporter.importFoods()).thenReturn(foodsCache);
         when(settingsImporter.importPotions()).thenReturn(potionsCache);
         when(settingsImporter.importMaterials()).thenReturn(materialsCache);
+        
+        when(settingsImporter.importWeaponsByType()).thenReturn(WeaponFactory.createWeaponsSettings());
+        EnemyPattern[] enemyPatterns = {EnemyFactory.createEnemyPattern()};
+        when(settingsImporter.importEnemyPatterns(anyDouble())).thenReturn(enemyPatterns);
+        when(settingsImporter.importBossPatterns()).thenReturn(enemyPatterns);
     }
     
     private static InitialResources getInitialResources() {
