@@ -4,8 +4,8 @@ import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 
 public record CharacterDataDTO(String id,
                                String name,
-                               int health,
-                               int speed,
+                               double health,
+                               double speed,
                                WeaponDataDTO weapon) {
     public static CharacterDataDTO fromModel(PlayableCharacter model) {
         if(model == null) return null;
