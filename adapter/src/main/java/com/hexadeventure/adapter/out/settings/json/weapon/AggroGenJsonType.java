@@ -6,5 +6,5 @@ public enum AggroGenJsonType {
     RANGE,
     HEALING,
     HEALING_AND_EXTRA,
-    HIPNOTIZATION
+    HYPNOTIZATION
 }

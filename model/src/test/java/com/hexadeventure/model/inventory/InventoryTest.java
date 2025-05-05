@@ -149,7 +149,9 @@ public class InventoryTest {
         inventory.setCharacterWeapon(character, weapon.getId());
         inventory.removeCharacterWeapon(character);
         
-        assertThat(inventory.getCharacters().get(character.getId()).getWeapon()).isNull();
+        assertThat(inventory.getCharacters()
+                            .get(character.getId())
+                            .getWeapon()).isEqualTo(Weapon.DEFAULT_WEAPON);
     }
     
     @Test

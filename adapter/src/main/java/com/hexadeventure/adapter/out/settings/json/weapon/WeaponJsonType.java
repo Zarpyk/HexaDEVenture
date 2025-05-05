@@ -5,5 +5,5 @@ public enum WeaponJsonType {
     RANGED,
     TANK,
     HEALER,
-    HIPNOTIZER
+    HYPNOTIZER
 }

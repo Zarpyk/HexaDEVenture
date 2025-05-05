@@ -18,6 +18,6 @@ public record WeaponSetting(String name,
                             int initialAggro,
                             double minHealingPower,
                             double maxHealingPower,
-                            double minHipnotizationPower,
-                            double maxHipnotizationPower) {
+                            double minHypnotizationPower,
+                            double maxHypnotizationPower) {
 }

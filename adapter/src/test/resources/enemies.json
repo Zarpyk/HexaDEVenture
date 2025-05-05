@@ -5,7 +5,9 @@
     "minHealth": 100,
     "maxHealth": 200,
     "minSpeed": 25,
-    "maxSpeed": 100
+    "maxSpeed": 100,
+    "minHypnotizationResistence": 2,
+    "maxHypnotizationResistence": 10
   },
   {
     "id": "Ranged Skeleton",
@@ -13,6 +15,8 @@
     "minHealth": 50,
     "maxHealth": 150,
     "minSpeed": 50,
-    "maxSpeed": 125
+    "maxSpeed": 125,
+    "minHypnotizationResistence": 2,
+    "maxHypnotizationResistence": 10
   }
 ]

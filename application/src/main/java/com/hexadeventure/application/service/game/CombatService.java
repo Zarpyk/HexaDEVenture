@@ -82,7 +82,7 @@ public class CombatService implements CombatUseCase {
         CombatTerrain combatTerrain = gameMap.getCombatTerrain();
         List<TurnInfo> turnInfos = new ArrayList<>();
         
-        
+        CombatProcessor combatProcessor = new CombatProcessor(combatTerrain);
         
         return null;
     }

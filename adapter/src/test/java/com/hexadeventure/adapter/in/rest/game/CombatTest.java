@@ -10,6 +10,8 @@ import com.hexadeventure.model.combat.CombatAction;
 import com.hexadeventure.model.combat.CombatProcess;
 import com.hexadeventure.model.combat.CombatTerrain;
 import com.hexadeventure.model.combat.TurnInfo;
+import com.hexadeventure.model.inventory.characters.CharacterStat;
+import com.hexadeventure.model.inventory.characters.CharacterStatusChange;
 import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,29 +19,38 @@ import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
 public class CombatTest {
-    private static final int ROW_SIZE = 3;
-    private static final int COLUMN_SIZE = 4;
-    private static final CombatTerrain COMBAT_TERRAIN = new CombatTerrain(ROW_SIZE, COLUMN_SIZE);
-    private static final PlayableCharacter TEST_CHARACTER = new PlayableCharacter("testCharacterId",
-                                                                                  0,
-                                                                                  0);
-    private static final CombatProcess COMBAT_INFO = new CombatProcess(
-            new ArrayList<>(Collections.singleton(new TurnInfo(CombatAction.ATTACK,
-                                                               0,
-                                                               0,
-                                                               TEST_CHARACTER,
-                                                               0,
-                                                               0,
-                                                               TEST_CHARACTER)))
-    );
-    
     private static final int TEST_ROW = 0;
     private static final int TEST_COLUMN = 0;
     private static final String TEST_CHARACTER_ID = "testCharacterId";
+    
+    private static final int ROW_SIZE = 3;
+    private static final int COLUMN_SIZE = 4;
+    private static final CombatTerrain COMBAT_TERRAIN = new CombatTerrain(ROW_SIZE, COLUMN_SIZE);
+    private static final PlayableCharacter TEST_CHARACTER = new PlayableCharacter(TEST_CHARACTER_ID,
+                                                                                  0,
+                                                                                  0);
+    
+    private static final List<CharacterStatusChange> STATUS_CHANGES =
+            new ArrayList<>(Collections.singleton(new CharacterStatusChange(
+                    CharacterStat.HEALTH,
+                    10,
+                    0)));
+    
+    private static final CombatProcess COMBAT_INFO = new CombatProcess(
+            new ArrayList<>(Collections.singleton(new TurnInfo(CombatAction.ATTACK,
+                                                               false,
+                                                               0,
+                                                               0, STATUS_CHANGES,
+                                                               0,
+                                                               0,
+                                                               STATUS_CHANGES)))
+    );
+    
     
     private final CombatUseCase combatUseCase = mock(CombatUseCase.class);
     

@@ -13,6 +13,18 @@ import java.util.SplittableRandom;
 public class Weapon extends Item {
     private static final double OFFSET = 0.001;
     
+    public static final Weapon DEFAULT_WEAPON = new Weapon("Fists",
+                                                           WeaponType.MELEE,
+                                                           -1,
+                                                           1,
+                                                           1,
+                                                           1,
+                                                           1,
+                                                           1,
+                                                           100,
+                                                           0,
+                                                           0);
+    
     private WeaponType weaponType;
     private double damage;
     private double meleeDefense;
@@ -21,7 +33,7 @@ public class Weapon extends Item {
     private double aggroGeneration;
     private int initialAggro;
     private double healingPower;
-    private double hipnotizationPower;
+    private double hypnotizationPower;
     
     public Weapon(Weapon weapon) {
         super(weapon.getName(), ItemType.WEAPON, weapon.getSkin());
@@ -33,7 +45,8 @@ public class Weapon extends Item {
         this.aggroGeneration = weapon.aggroGeneration;
         this.initialAggro = weapon.initialAggro;
         this.healingPower = weapon.healingPower;
-        this.hipnotizationPower = weapon.hipnotizationPower;
+        this.hypnotizationPower = weapon.hypnotizationPower;
+        setId(weapon.getId());
     }
     
     public Weapon(String name, WeaponType weaponType, int skin) {
@@ -54,8 +67,8 @@ public class Weapon extends Item {
         initialAggro = weaponSetting.initialAggro();
         healingPower = Math.round(random.nextDouble(weaponSetting.minHealingPower(),
                                                     weaponSetting.maxHealingPower() + OFFSET) * 100) / 100d;
-        hipnotizationPower = Math.round(random.nextDouble(weaponSetting.minHipnotizationPower(),
-                                                          weaponSetting.maxHipnotizationPower() + OFFSET) * 100) / 100d;
+        hypnotizationPower = Math.round(random.nextDouble(weaponSetting.minHypnotizationPower(),
+                                                          weaponSetting.maxHypnotizationPower() + OFFSET) * 100) / 100d;
         cooldown = initCooldown(weaponSetting, random);
         aggroGeneration = initAggroGeneration(weaponSetting, random);
         setId(Integer.toString(hashCode()));
@@ -63,7 +76,7 @@ public class Weapon extends Item {
     
     public Weapon(String name, WeaponType weaponType, int skin, double damage, double meleeDefense,
                   double rangedDefense, int cooldown, double aggroGeneration, int initialAggro, double healingPower,
-                  double hipnotizationPower) {
+                  double hypnotizationPower) {
         super(name, ItemType.WEAPON, skin);
         this.weaponType = weaponType;
         this.damage = damage;
@@ -73,7 +86,7 @@ public class Weapon extends Item {
         this.aggroGeneration = aggroGeneration;
         this.initialAggro = initialAggro;
         this.healingPower = healingPower;
-        this.hipnotizationPower = hipnotizationPower;
+        this.hypnotizationPower = hypnotizationPower;
         setId(Integer.toString(hashCode()));
     }
     
@@ -84,9 +97,9 @@ public class Weapon extends Item {
             case HEALER -> (int) Math.round(random.nextInt(weaponSetting.minCooldown(),
                                                            weaponSetting.maxCooldown() + 1) *
                                             (healingPower / weaponSetting.maxHealingPower()));
-            case HIPNOTIZER -> (int) Math.round(random.nextInt(weaponSetting.minCooldown(),
+            case HYPNOTIZER -> (int) Math.round(random.nextInt(weaponSetting.minCooldown(),
                                                                weaponSetting.maxCooldown() + 1) *
-                                                (hipnotizationPower / weaponSetting.maxHipnotizationPower()));
+                                                (hypnotizationPower / weaponSetting.maxHypnotizationPower()));
         };
     }
     
@@ -98,13 +111,20 @@ public class Weapon extends Item {
                                                        weaponSetting.maxAggroGeneration() + OFFSET) * 100) / 100d;
             case HEALING -> healingPower;
             case HEALING_AND_EXTRA -> healingPower + weaponSetting.extraAggroGeneration();
-            case HIPNOTIZATION -> hipnotizationPower;
+            case HYPNOTIZATION -> hypnotizationPower;
         };
     }
     
     @Override
     public String toString() {
         return super.toString() + "-" + hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if(o == null || getClass() != o.getClass()) return false;
+        Weapon weapon = (Weapon) o;
+        return Objects.equals(getId(), weapon.getId());
     }
     
     @Override
@@ -118,6 +138,6 @@ public class Weapon extends Item {
                             aggroGeneration,
                             initialAggro,
                             healingPower,
-                            hipnotizationPower);
+                            hypnotizationPower);
     }
 }

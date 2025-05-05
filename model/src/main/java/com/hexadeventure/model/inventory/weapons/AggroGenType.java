@@ -6,5 +6,5 @@ public enum AggroGenType {
     RANGE,
     HEALING,
     HEALING_AND_EXTRA,
-    HIPNOTIZATION
+    HYPNOTIZATION
 }

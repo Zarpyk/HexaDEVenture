@@ -11,7 +11,7 @@ public record WeaponDataDTO(WeaponType weaponType,
                             double aggroGeneration,
                             int initialAggro,
                             double healingPower,
-                            double hipnotizationPower) {
+                            double hypnotizationPower) {
     public static WeaponDataDTO fromModel(Weapon model) {
         return new WeaponDataDTO(model.getWeaponType(),
                                  model.getDamage(),
@@ -21,6 +21,6 @@ public record WeaponDataDTO(WeaponType weaponType,
                                  model.getAggroGeneration(),
                                  model.getInitialAggro(),
                                  model.getHealingPower(),
-                                 model.getHipnotizationPower());
+                                 model.getHypnotizationPower());
     }
 }

@@ -8,5 +8,7 @@ public record EnemySetting(
         int minHealth,
         int maxHealth,
         int minSpeed,
-        int maxSpeed
+        int maxSpeed,
+        int minHypnotizationResistence,
+        int maxHypnotizationResistence
 ) {}

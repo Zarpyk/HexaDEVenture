@@ -18,6 +18,7 @@ import java.util.SplittableRandom;
 @Getter
 @Setter
 public class Enemy {
+    private static final double OFFSET = 0.001;
     public static final int MOVEMENT_SPEED = 2;
     
     private Vector2 position;
@@ -34,7 +35,9 @@ public class Enemy {
                 String name = settings[i][j].id();
                 int health = random.nextInt(settings[i][j].minHealth(), settings[i][j].maxHealth() + 1);
                 int speed = random.nextInt(settings[i][j].minSpeed(), settings[i][j].maxSpeed() + 1);
-                enemies[i][j] = new PlayableCharacter(name, health, speed);
+                double hypnoRes = random.nextDouble(settings[i][j].minHypnotizationResistence(),
+                                                    settings[i][j].maxHypnotizationResistence() + OFFSET);
+                enemies[i][j] = new PlayableCharacter(name, health, speed, hypnoRes);
                 
                 List<WeaponSetting> weaponSettings = weapons.get(settings[i][j].weaponType());
                 WeaponSetting weaponSetting = weaponSettings.get(random.nextInt(weaponSettings.size()));

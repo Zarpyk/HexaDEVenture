@@ -1,8 +1,10 @@
 package com.hexadeventure.model.combat;
 
-import com.hexadeventure.model.inventory.characters.PlayableCharacter;
+import com.hexadeventure.model.inventory.characters.CharacterStatusChange;
 
-public record TurnInfo(CombatAction action,
-                       int row, int column, PlayableCharacter characterStatus,
-                       int targetRow, int targetColumn, PlayableCharacter targetStatus) {
+import java.util.List;
+
+public record TurnInfo(CombatAction action, boolean isEnemyTurn,
+                       int row, int column, List<CharacterStatusChange> characterStatus,
+                       int targetRow, int targetColumn, List<CharacterStatusChange> targetStatus) {
 }

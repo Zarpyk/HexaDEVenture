@@ -1,41 +1,49 @@
 package com.hexadeventure.model.inventory.characters;
 
 import com.hexadeventure.model.inventory.weapons.Weapon;
-import com.hexadeventure.model.inventory.weapons.WeaponType;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
 import java.util.UUID;
 
 @Getter
 public class PlayableCharacter {
-    private static final Weapon DEFAULT_WEAPON = new Weapon("Fists",
-                                                            WeaponType.MELEE,
-                                                            -1,
-                                                            1,
-                                                            1,
-                                                            1,
-                                                            1,
-                                                            1,
-                                                            100,
-                                                            0,
-                                                            0);
-    
     private final String id;
     private final String name;
-    private final int health;
-    private final int speed;
+    @Setter
+    private double health;
+    @Setter
+    private double speed;
+    @Setter
+    private double hypnotizationResistence;
     private Weapon weapon;
     
-    public PlayableCharacter(String name, int health, int speed) {
+    public PlayableCharacter(String name, double health, double speed) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.health = health;
         this.speed = speed;
-        this.weapon = new Weapon(DEFAULT_WEAPON);
+        this.weapon = new Weapon(Weapon.DEFAULT_WEAPON);
+    }
+    
+    public PlayableCharacter(String name, double health, double speed, double hypnotizationResistence) {
+        this(name, health, speed);
+        this.hypnotizationResistence = Math.round(hypnotizationResistence * 100) / 100d;
     }
     
     public void setWeapon(Weapon weapon) {
-        this.weapon = Objects.requireNonNullElse(weapon, new Weapon(DEFAULT_WEAPON));
+        this.weapon = Objects.requireNonNullElse(weapon, new Weapon(Weapon.DEFAULT_WEAPON));
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if(!(o instanceof PlayableCharacter that)) return false;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

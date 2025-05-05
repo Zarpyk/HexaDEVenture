@@ -5,5 +5,5 @@ public enum WeaponType {
     RANGED,
     TANK,
     HEALER,
-    HIPNOTIZER
+    HYPNOTIZER
 }

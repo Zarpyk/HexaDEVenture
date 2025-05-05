@@ -494,9 +494,9 @@
     "maxHealingPower": 250.0
   },
   {
-    "name": "Hipnotization Wand",
+    "name": "Hypnotization Wand",
     "skin": 31,
-    "weaponType": "HIPNOTIZER",
+    "weaponType": "HYPNOTIZER",
     "minDamage": 0.0,
     "maxDamage": 0.0,
     "minMeleeDefense": 0.0,
@@ -505,15 +505,15 @@
     "maxRangedDefense": 7.5,
     "minCooldown": 3,
     "maxCooldown": 4,
-    "aggroGenType": "HIPNOTIZATION",
+    "aggroGenType": "HYPNOTIZATION",
     "initialAggro": 200,
-    "minHipnotizationPower": 20.0,
-    "maxHipnotizationPower": 75.0
+    "minHypnotizationPower": 20.0,
+    "maxHypnotizationPower": 75.0
   },
   {
-    "name": "Hipnotization Staff",
+    "name": "Hypnotization Staff",
     "skin": 32,
-    "weaponType": "HIPNOTIZER",
+    "weaponType": "HYPNOTIZER",
     "minDamage": 0.0,
     "maxDamage": 0.0,
     "minMeleeDefense": 2.5,
@@ -522,15 +522,15 @@
     "maxRangedDefense": 15.0,
     "minCooldown": 3,
     "maxCooldown": 5,
-    "aggroGenType": "HIPNOTIZATION",
+    "aggroGenType": "HYPNOTIZATION",
     "initialAggro": 200,
-    "minHealingPower": 75.0,
-    "maxHealingPower": 150.0
+    "minHypnotizationPower": 75.0,
+    "maxHypnotizationPower": 150.0
   },
   {
-    "name": "Hipnotization Book",
+    "name": "Hypnotization Book",
     "skin": 33,
-    "weaponType": "HIPNOTIZER",
+    "weaponType": "HYPNOTIZER",
     "minDamage": 0.0,
     "maxDamage": 0.0,
     "minMeleeDefense": 2.5,
@@ -539,9 +539,9 @@
     "maxRangedDefense": 7.5,
     "minCooldown": 4,
     "maxCooldown": 5,
-    "aggroGenType": "HIPNOTIZATION",
+    "aggroGenType": "HYPNOTIZATION",
     "initialAggro": 200,
-    "minHealingPower": 150.0,
-    "maxHealingPower": 250.0
+    "minHypnotizationPower": 150.0,
+    "maxHypnotizationPower": 250.0
   }
 ]
