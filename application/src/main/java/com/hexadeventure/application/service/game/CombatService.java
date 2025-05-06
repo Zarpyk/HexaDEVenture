@@ -98,7 +98,8 @@ public class CombatService implements CombatUseCase {
         boolean noEnemyRemain = true;
         for (CharacterCombatInfo enemy : combatProcessor.getEnemies()) {
             if(enemy.isDead()) {
-                combatTerrain.removeEnemy(enemy.getRow(), enemy.getColumn());
+                if(!enemy.isHypnotized()) combatTerrain.removeEnemy(enemy.getRow(), enemy.getColumn());
+                else enemy.getCharacter().getChangedStats().updateStats(enemy);
             } else {
                 enemy.getCharacter().getChangedStats().updateStats(enemy);
                 noEnemyRemain = false;

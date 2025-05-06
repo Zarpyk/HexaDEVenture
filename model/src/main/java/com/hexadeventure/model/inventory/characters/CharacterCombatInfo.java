@@ -48,9 +48,10 @@ public class CharacterCombatInfo {
         
         this.id = character.getId();
         this.name = character.getName();
-        this.health = character.getHealth();
+        this.health = character.getChangedStats().getHealth();
         this.speed = character.getSpeed();
         this.hypnotizationResistance = character.getHypnotizationResistence();
+        this.isHypnotized = character.getChangedStats().isHypnotized();
         this.weaponType = character.getWeapon().getWeaponType();
         this.damage = character.getWeapon().getDamage();
         this.meleeDefense = character.getWeapon().getMeleeDefense();

@@ -70,7 +70,7 @@ public class CombatProcessor {
     
     public CharacterCombatInfo getFirstEnemy() {
         for (CharacterCombatInfo enemy : enemies) {
-            if(enemy.isDead() || enemy.isHypnotized()) continue;
+            if(enemy.isDead()) continue;
             return enemy;
         }
         return null;
@@ -78,7 +78,7 @@ public class CombatProcessor {
     
     public void processTurn() {
         for (CharacterCombatInfo character : turnQueue) {
-            if(character.isDead() || character.isHypnotized()) continue;
+            if(character.isDead()) continue;
             switch (character.getWeaponType()) {
                 case MELEE -> processMelee(character);
                 case RANGED -> processRanged(character);

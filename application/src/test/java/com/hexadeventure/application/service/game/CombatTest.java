@@ -542,6 +542,43 @@ public class CombatTest {
     }
     
     @Test
+    public void givenCharactersAndEnemies_whenEnemyHypnotized_thenIsNotRemoveFromTerrain() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        // Create an empty game map
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        map.setInCombat(true);
+        
+        // Create characters and enemies
+        PlayableCharacter character = PlayableCharacterFactory.createHypnotizerCharacter(9999);
+        character.getWeapon().setHypnotizationPower(100);
+        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
+        enemy.setHypnotizationResistence(0);
+        
+        // Place characters and enemies on the combat terrain
+        map.getCombatTerrain().placeCharacter(0, 0, character);
+        map.getCombatTerrain().placeEnemy(0, 0, enemy);
+        
+        // Execute the method
+        CombatProcess combatProcess = combatService.startAutoCombat(TEST_USER_EMAIL);
+        
+        // Verify the turn queue
+        PlayableCharacter[][] playerTerrain = map.getCombatTerrain().getPlayerTerrain();
+        assertThat(playerTerrain[0][0]).isNotNull();
+        assertThat(playerTerrain[0][0].getChangedStats().getHealth()).isEqualTo(character.getHealth());
+        assertThat(playerTerrain[0][0].getChangedStats().isHypnotized()).isFalse();
+        
+        PlayableCharacter[][] enemyTerrain = map.getCombatTerrain().getEnemyTerrain();
+        assertThat(enemyTerrain[0][0]).isNotNull();
+        
+        assertThat(combatProcess.turns()).hasSize(1);
+        TurnInfo first = combatProcess.turns().getFirst();
+        assertThat(first.action()).isEqualTo(CombatAction.HYPNOTIZE);
+        assertThat(first.isEnemyTurn()).isFalse();
+    }
+    
+    @Test
     public void givenCharactersAndEnemies_whenNoEnemyAlive_thenFinishCombat() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.EMPTY_MAP_ID);
