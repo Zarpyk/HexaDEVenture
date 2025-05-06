@@ -106,7 +106,7 @@ public class MapFactory {
         
         mockGameMap(gameMapRepository, EMPTY_MAP_ID, gameMap, chunks);
         when(aStarPathfinder.generatePath(any(), any(), eq(costMap))).thenReturn(path);
-        mockSettingsImporter(settingsImporter);
+        ItemFactory.setupSettingsImporter(settingsImporter);
         return gameMap;
     }
     
@@ -138,7 +138,7 @@ public class MapFactory {
                                       new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE));
         
         mockGameMap(gameMapRepository, OBSTACLE_MAP_ID, gameMap, chunks);
-        mockSettingsImporter(settingsImporter);
+        ItemFactory.setupSettingsImporter(settingsImporter);
     }
     
     public static GameMap createResourceGameMap(GameMapRepository gameMapRepository, AStarPathfinder aStarPathfinder,
@@ -184,7 +184,7 @@ public class MapFactory {
         
         mockGameMap(gameMapRepository, RESOURCE_MAP_ID, gameMap, chunks);
         when(aStarPathfinder.generatePath(any(), any(), eq(costMap))).thenReturn(path);
-        mockSettingsImporter(settingsImporter);
+        ItemFactory.setupSettingsImporter(settingsImporter);
         return gameMap;
     }
     
@@ -248,7 +248,7 @@ public class MapFactory {
         mockGameMap(gameMapRepository, ENEMY_MAP_ID, gameMap, chunks);
         when(aStarPathfinder.generatePath(eq(ENEMY_START_POSITION), eq(ENEMY_END_POSITION), eq(costMap)))
                 .thenReturn(path);
-        mockSettingsImporter(settingsImporter);
+        ItemFactory.setupSettingsImporter(settingsImporter);
         return gameMap;
     }
     
@@ -309,39 +309,5 @@ public class MapFactory {
             gameMap.setChunks(result);
             return Optional.of(gameMap);
         });
-    }
-    
-    /**
-     * Mock the settings importer to return some default settings.
-     * @param settingsImporter the settings importer
-     */
-    private static void mockSettingsImporter(SettingsImporter settingsImporter) {
-        WeaponSetting weaponSetting = new WeaponSetting("test",
-                                                        1,
-                                                        WeaponType.MELEE,
-                                                        1,
-                                                        1,
-                                                        1,
-                                                        1,
-                                                        1,
-                                                        1,
-                                                        1,
-                                                        1,
-                                                        AggroGenType.ATTACK,
-                                                        1,
-                                                        1,
-                                                        1,
-                                                        1,
-                                                        1,
-                                                        1,
-                                                        1,
-                                                        1);
-        when(settingsImporter.importWeapons()).thenReturn(Map.of(weaponSetting.name(), weaponSetting));
-        Food food = new Food("test", 1, 1);
-        when(settingsImporter.importFoods()).thenReturn(Map.of(food.getName(), food));
-        Potion potion = new Potion("test", 1, PotionType.HEALING);
-        when(settingsImporter.importPotions()).thenReturn(Map.of(potion.getName(), potion));
-        Material material = new Material("test", 1, ResourceType.WOOD);
-        when(settingsImporter.importMaterials()).thenReturn(Map.of(material.getMaterialType(), material));
     }
 }

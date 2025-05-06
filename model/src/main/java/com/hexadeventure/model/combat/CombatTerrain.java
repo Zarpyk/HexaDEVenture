@@ -1,5 +1,6 @@
 package com.hexadeventure.model.combat;
 
+import com.hexadeventure.model.inventory.characters.Loot;
 import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import com.hexadeventure.model.map.GameMap;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,9 @@ public class CombatTerrain {
     private final PlayableCharacter[][] playerTerrain;
     private final PlayableCharacter[][] enemyTerrain;
     
+    private Loot[] loot;
+    private int lootSeed;
+    
     public CombatTerrain() {
         id = UUID.randomUUID().toString();
         this.rowSize = GameMap.COMBAT_TERRAIN_ROW_SIZE;
@@ -34,6 +38,13 @@ public class CombatTerrain {
         this.enemyTerrain = new PlayableCharacter[rowSize][columnSize];
     }
     
+    /**
+     * Gets the character at the specified position on the terrain.
+     *
+     * @param row The row index of the player terrain
+     * @param column The column index of the player terrain
+     * @return The character at the specified position, or null if no character is present
+     */
     public PlayableCharacter getCharacterAt(int row, int column) {
         return playerTerrain[row][column];
     }
@@ -94,6 +105,17 @@ public class CombatTerrain {
      */
     public void removeEnemy(int row, int column) {
         enemyTerrain[row][column] = null;
+    }
+    
+    /**
+     * Sets the loot and loot seed for the terrain.
+     *
+     * @param loot The loot when win the combat
+     * @param lootSeed The seed to generate the loot
+     */
+    public void setLoot(Loot[] loot, int lootSeed) {
+        this.loot = loot;
+        this.lootSeed = lootSeed;
     }
     
     /**

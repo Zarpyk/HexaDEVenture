@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class WeaponFactory {
-    public static final String TEST_WEAPON_NAME = "Sword";
+    public static final String TEST_WEAPON_NAME = "Weapon";
     public static final WeaponType TEST_WEAPON_TYPE = WeaponType.MELEE;
     public static final int TEST_WEAPON_SKIN = 1;
     

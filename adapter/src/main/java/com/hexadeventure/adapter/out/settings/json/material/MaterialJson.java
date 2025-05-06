@@ -9,13 +9,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MaterialJson extends ItemJson<Material> {
-    private MaterialJsonType materialType;
+    private ResourceType materialType;
     
     public static ResourceType getID(MaterialJson materialJson) {
-        return ResourceType.values()[materialJson.getMaterialType().ordinal()];
+        return materialJson.getMaterialType();
     }
     
     public Material toModel() {
-        return new Material(getName(), getSkin(), ResourceType.values()[materialType.ordinal()]);
+        return new Material(getName(), getSkin(), materialType);
     }
 }

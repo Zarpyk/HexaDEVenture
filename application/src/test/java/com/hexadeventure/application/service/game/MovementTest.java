@@ -219,6 +219,22 @@ public class MovementTest {
     }
     
     @Test
+    public void givenPositionWithPathWithEnemy_whenMove_thenTheLootIsSavedOnTheMap() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.ENEMY_MAP_ID);
+        
+        GameMap gameMap = MapFactory.createEnemyGameMap(gameMapRepository,
+                                                        aStarPathfinder,
+                                                        settingsImporter);
+        
+        gameService.move(TEST_USER_EMAIL, MapFactory.ENEMY_END_POSITION);
+        
+        assertThat(gameMap.isInCombat()).isTrue();
+        assertThat(gameMap.getCombatTerrain().getLoot()).isNotEmpty();
+        assertThat(gameMap.getCombatTerrain().getLootSeed()).isGreaterThanOrEqualTo(0);
+    }
+    
+    @Test
     public void givenMapInCombat_whenMove_thenThrowAnException() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.ENEMY_MAP_ID);

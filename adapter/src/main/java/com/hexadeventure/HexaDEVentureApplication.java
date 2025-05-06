@@ -46,6 +46,6 @@ public class HexaDEVentureApplication {
     
     @Bean
     public CombatUseCase combatUseCase() {
-        return new CombatService(userRepository, gameMapRepository);
+        return new CombatService(userRepository, gameMapRepository, settingsImporter);
     }
 }

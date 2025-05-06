@@ -13,6 +13,7 @@ import java.util.Map;
 public class EnemyPatternJson {
     private float minThreshold;
     private String[][] enemies;
+    private LootJson[] loot;
     
     public EnemySetting[][] toModel(Map<String, EnemySetting> enemySettings, int rowSize, int columnSize) {
         EnemySetting[][] model = new EnemySetting[rowSize][columnSize];

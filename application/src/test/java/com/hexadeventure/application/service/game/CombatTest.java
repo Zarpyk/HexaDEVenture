@@ -5,14 +5,13 @@ import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.port.out.settings.SettingsImporter;
-import com.hexadeventure.application.service.common.MapFactory;
-import com.hexadeventure.application.service.common.PlayableCharacterFactory;
-import com.hexadeventure.application.service.common.UserFactory;
-import com.hexadeventure.application.service.common.WeaponFactory;
+import com.hexadeventure.application.service.common.*;
 import com.hexadeventure.model.combat.CombatAction;
 import com.hexadeventure.model.combat.CombatProcess;
 import com.hexadeventure.model.combat.CombatTerrain;
 import com.hexadeventure.model.combat.TurnInfo;
+import com.hexadeventure.model.inventory.Item;
+import com.hexadeventure.model.inventory.ItemType;
 import com.hexadeventure.model.inventory.characters.CharacterCombatInfo;
 import com.hexadeventure.model.inventory.characters.CharacterStat;
 import com.hexadeventure.model.inventory.characters.CharacterStatusChange;
@@ -21,6 +20,8 @@ import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -40,10 +41,11 @@ public class CombatTest {
     private static final GameMapRepository gameMapRepository = mock(GameMapRepository.class);
     private static final AStarPathfinder aStarPathfinder = mock(AStarPathfinder.class);
     private static final SettingsImporter settingsImporter = mock(SettingsImporter.class);
-    private final CombatService combatService = new CombatService(userRepository, gameMapRepository);
+    private final CombatService combatService = new CombatService(userRepository, gameMapRepository, settingsImporter);
+    
     
     @BeforeEach
-    public void afterEach() {
+    public void beforeEach() {
         // Reset verify mocks
         reset(gameMapRepository);
     }
@@ -659,6 +661,35 @@ public class CombatTest {
         PlayableCharacter addedEnemy = map.getInventory().getCharacters().get(enemy.getId());
         assertThat(addedEnemy.getChangedStats().getHealth()).isEqualTo(addedEnemy.getHealth());
         assertThat(addedEnemy.getChangedStats().isHypnotized()).isFalse();
+    }
+    
+    @Test
+    public void givenCharactersAndEnemies_whenFinishCombat_thenAddLootToInventory() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        // Create an empty game map
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        map.setInCombat(true);
+        
+        // Create characters and enemies
+        PlayableCharacter character = PlayableCharacterFactory.createMeleeCharacter(9999);
+        character.getWeapon().setDamage(PlayableCharacterFactory.TEST_CHARACTER_HEALTH * 9999);
+        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
+        
+        // Place characters and enemies on the combat terrain
+        map.getCombatTerrain().placeCharacter(0, 0, character);
+        map.getCombatTerrain().placeEnemy(0, 0, enemy);
+        map.getCombatTerrain().setLoot(EnemyFactory.createEnemyPattern().loot(), 1234);
+        
+        // Execute the method
+        combatService.startAutoCombat(TEST_USER_EMAIL);
+        
+        Collection<Item> items = map.getInventory().getItems().values();
+        assertThat(items.stream().anyMatch(item -> item.getType() == ItemType.WEAPON)).isTrue();
+        assertThat(items.stream().anyMatch(item -> item.getType() == ItemType.FOOD)).isTrue();
+        assertThat(items.stream().anyMatch(item -> item.getType() == ItemType.POTION)).isTrue();
+        assertThat(items.stream().anyMatch(item -> item.getType() == ItemType.MATERIAL)).isTrue();
     }
     //endregion
     

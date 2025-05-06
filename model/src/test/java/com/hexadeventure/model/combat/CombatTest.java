@@ -2,10 +2,8 @@ package com.hexadeventure.model.combat;
 
 import com.hexadeventure.common.CharacterFactory;
 import com.hexadeventure.common.GameMapFactory;
-import com.hexadeventure.model.inventory.characters.CharacterCombatInfo;
-import com.hexadeventure.model.inventory.characters.CharacterStat;
-import com.hexadeventure.model.inventory.characters.CharacterStatusChange;
-import com.hexadeventure.model.inventory.characters.PlayableCharacter;
+import com.hexadeventure.model.inventory.ItemType;
+import com.hexadeventure.model.inventory.characters.*;
 import com.hexadeventure.model.map.GameMap;
 import org.junit.jupiter.api.Test;
 
@@ -75,6 +73,20 @@ public class CombatTest {
         combatTerrain.removeEnemy(0, 0);
         
         assertThat(combatTerrain.getEnemyTerrain()[0][0]).isNull();
+    }
+    
+    @Test
+    public void givenLootAndLootSeed_whenSetLoot_thenLootIsSet() {
+        int row = 3;
+        int column = 4;
+        CombatTerrain combatTerrain = new CombatTerrain(row, column);
+        Loot[] lootArray = new Loot[]{new Loot(ItemType.WEAPON, "", 1)};
+        int lootSeed = 1234;
+        
+        combatTerrain.setLoot(lootArray, lootSeed);
+        
+        assertThat(combatTerrain.getLoot()).isEqualTo(lootArray);
+        assertThat(combatTerrain.getLootSeed()).isEqualTo(lootSeed);
     }
     
     @Test

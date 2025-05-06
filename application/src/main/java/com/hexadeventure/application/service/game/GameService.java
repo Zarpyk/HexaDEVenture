@@ -183,6 +183,7 @@ public class GameService implements GameUseCase {
                         // If the player is on the enemy range, start combat
                         gameMap.moveEnemy(enemy.getPosition(), position);
                         gameMap.getCombatTerrain().placeEnemies(enemy.getEnemies());
+                        gameMap.getCombatTerrain().setLoot(enemy.getLoot(), enemy.getLootSeed());
                         enemyMovement = new EnemyMovement(position);
                         startCombat = true;
                         gameMap.setInCombat(true);

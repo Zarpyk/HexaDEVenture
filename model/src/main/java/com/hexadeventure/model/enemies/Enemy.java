@@ -2,6 +2,7 @@ package com.hexadeventure.model.enemies;
 
 import com.hexadeventure.model.inventory.characters.EnemyPattern;
 import com.hexadeventure.model.inventory.characters.EnemySetting;
+import com.hexadeventure.model.inventory.characters.Loot;
 import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import com.hexadeventure.model.inventory.weapons.Weapon;
 import com.hexadeventure.model.inventory.weapons.WeaponSetting;
@@ -23,10 +24,15 @@ public class Enemy {
     
     private Vector2 position;
     private PlayableCharacter[][] enemies;
+    private Loot[] loot;
+    private int lootSeed;
     
     public Enemy(Vector2 position, SplittableRandom random, EnemyPattern pattern,
                  Map<WeaponType, List<WeaponSetting>> weapons) {
         this.position = position;
+        this.loot = pattern.loot();
+        this.lootSeed = random.nextInt(Integer.MAX_VALUE);
+        
         enemies = new PlayableCharacter[GameMap.COMBAT_TERRAIN_ROW_SIZE][GameMap.COMBAT_TERRAIN_COLUMN_SIZE];
         EnemySetting[][] settings = pattern.enemies();
         for (int i = 0; i < settings.length; i++) {
