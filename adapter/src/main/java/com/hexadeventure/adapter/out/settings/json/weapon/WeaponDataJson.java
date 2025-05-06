@@ -12,7 +12,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class WeaponDataJson extends ItemJson<WeaponSetting> {
-    private WeaponJsonType weaponType;
+    private double minThreshold;
+    private double maxThreshold;
+    
+    private WeaponType weaponType;
     
     private double minDamage;
     private double maxDamage;
@@ -26,7 +29,7 @@ public class WeaponDataJson extends ItemJson<WeaponSetting> {
     private int minCooldown;
     private int maxCooldown;
     
-    private AggroGenJsonType aggroGenType;
+    private AggroGenType aggroGenType;
     private double extraAggroGeneration;
     private double minAggroGeneration;
     private double maxAggroGeneration;
@@ -45,7 +48,9 @@ public class WeaponDataJson extends ItemJson<WeaponSetting> {
     public WeaponSetting toModel() {
         return new WeaponSetting(getName(),
                                  getSkin(),
-                                 WeaponType.values()[weaponType.ordinal()],
+                                 minThreshold,
+                                 maxThreshold,
+                                 weaponType,
                                  minDamage,
                                  maxDamage,
                                  minMeleeDefense,

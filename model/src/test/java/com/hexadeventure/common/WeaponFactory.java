@@ -72,6 +72,8 @@ public class WeaponFactory {
     public static WeaponSetting createWeaponSetting() {
         return new WeaponSetting(TEST_WEAPON_NAME,
                                  0,
+                                 0,
+                                 1,
                                  TEST_WEAPON_TYPE,
                                  0,
                                  1,

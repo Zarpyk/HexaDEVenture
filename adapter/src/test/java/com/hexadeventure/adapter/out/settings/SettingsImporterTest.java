@@ -6,10 +6,12 @@ import com.hexadeventure.model.inventory.initial.InitialResources;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
 import com.hexadeventure.model.inventory.weapons.WeaponSetting;
+import com.hexadeventure.model.inventory.weapons.WeaponType;
 import com.hexadeventure.model.map.resources.ResourceType;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -51,6 +53,15 @@ public class SettingsImporterTest {
         assertThat(weaponSetting.maxHealingPower()).isPositive();
         assertThat(weaponSetting.minHypnotizationPower()).isPositive();
         assertThat(weaponSetting.maxHypnotizationPower()).isPositive();
+    }
+    
+    @Test
+    public void givenThreshold_whenImportWeaponsByTypeWithThreshold_thenReturnWeaponsOnTheRange() {
+        Map<WeaponType, List<WeaponSetting>> weapons = settingsImporter.importWeaponsByTypeAndThreshold(0.5);
+        assertThat(weapons.get(WeaponType.MELEE)).hasSize(1);
+        
+        weapons = settingsImporter.importWeaponsByTypeAndThreshold(1);
+        assertThat(weapons.get(WeaponType.MELEE)).hasSize(1);
     }
     
     @Test

@@ -2,6 +2,8 @@
   {
     "name": "Sword",
     "skin": 1,
+    "minThreshold": 0.0,
+    "maxThreshold": 0.5,
     "weaponType": "MELEE",
     "minDamage": 10.0,
     "maxDamage": 15.0,
@@ -17,6 +19,8 @@
   {
     "name": "Large Sword",
     "skin": 2,
+    "minThreshold": 0.3,
+    "maxThreshold": 1.0,
     "weaponType": "MELEE",
     "minDamage": 15.0,
     "maxDamage": 20.0,
@@ -32,6 +36,8 @@
   {
     "name": "Royal Sword",
     "skin": 3,
+    "minThreshold": 0.7,
+    "maxThreshold": 1.0,
     "weaponType": "MELEE",
     "minDamage": 20.0,
     "maxDamage": 30.0,
@@ -47,6 +53,8 @@
   {
     "name": "Saber",
     "skin": 4,
+    "minThreshold": 0.3,
+    "maxThreshold": 0.5,
     "weaponType": "MELEE",
     "minDamage": 10.0,
     "maxDamage": 15.0,
@@ -62,6 +70,8 @@
   {
     "name": "Axe",
     "skin": 5,
+    "minThreshold": 0.3,
+    "maxThreshold": 0.7,
     "weaponType": "MELEE",
     "minDamage": 10.0,
     "maxDamage": 15.0,
@@ -77,6 +87,8 @@
   {
     "name": "Double-bitted Axe",
     "skin": 6,
+    "minThreshold": 0.5,
+    "maxThreshold": 0.9,
     "weaponType": "MELEE",
     "minDamage": 25.0,
     "maxDamage": 30.0,
@@ -92,6 +104,8 @@
   {
     "name": "Rough Double-bitted Axe",
     "skin": 7,
+    "minThreshold": 0.7,
+    "maxThreshold": 1.0,
     "weaponType": "MELEE",
     "minDamage": 25.0,
     "maxDamage": 30.0,
@@ -107,6 +121,8 @@
   {
     "name": "Crossbow",
     "skin": 8,
+    "minThreshold": 0.0,
+    "maxThreshold": 0.5,
     "weaponType": "RANGED",
     "minDamage": 15.0,
     "maxDamage": 20.0,
@@ -123,6 +139,8 @@
   {
     "name": "Heavy Crossbow",
     "skin": 9,
+    "minThreshold": 0.3,
+    "maxThreshold": 1.0,
     "weaponType": "RANGED",
     "minDamage": 20.0,
     "maxDamage": 25.0,
@@ -139,6 +157,8 @@
   {
     "name": "Skeletal Crossbow",
     "skin": 10,
+    "minThreshold": 0.7,
+    "maxThreshold": 1.0,
     "weaponType": "RANGED",
     "minDamage": 10.0,
     "maxDamage": 25.0,
@@ -155,6 +175,8 @@
   {
     "name": "Bombs",
     "skin": 11,
+    "minThreshold": 0.5,
+    "maxThreshold": 1.0,
     "weaponType": "RANGED",
     "minDamage": 25.0,
     "maxDamage": 30.0,
@@ -171,6 +193,8 @@
   {
     "name": "Throwing Axe",
     "skin": 12,
+    "minThreshold": 0.3,
+    "maxThreshold": 0.7,
     "weaponType": "RANGED",
     "minDamage": 15.0,
     "maxDamage": 25.0,
@@ -187,6 +211,8 @@
   {
     "name": "Throwing Knife",
     "skin": 13,
+    "minThreshold": 0.3,
+    "maxThreshold": 0.7,
     "weaponType": "RANGED",
     "minDamage": 10.0,
     "maxDamage": 15.0,
@@ -203,6 +229,8 @@
   {
     "name": "Circular Shield",
     "skin": 14,
+    "minThreshold": 0.0,
+    "maxThreshold": 0.5,
     "weaponType": "TANK",
     "minDamage": 5.0,
     "maxDamage": 7.5,
@@ -220,6 +248,8 @@
   {
     "name": "Basic Shield",
     "skin": 15,
+    "minThreshold": 0.3,
+    "maxThreshold": 1.0,
     "weaponType": "TANK",
     "minDamage": 5.0,
     "maxDamage": 10.0,
@@ -237,6 +267,8 @@
   {
     "name": "Reinforced Shield",
     "skin": 16,
+    "minThreshold": 0.7,
+    "maxThreshold": 1.0,
     "weaponType": "TANK",
     "minDamage": 7.5,
     "maxDamage": 15.0,
@@ -254,6 +286,8 @@
   {
     "name": "Square Shield",
     "skin": 17,
+    "minThreshold": 0.3,
+    "maxThreshold": 0.7,
     "weaponType": "TANK",
     "minDamage": 5.0,
     "maxDamage": 10.0,
@@ -271,6 +305,8 @@
   {
     "name": "Royal Circular Shield",
     "skin": 18,
+    "minThreshold": 0.5,
+    "maxThreshold": 0.7,
     "weaponType": "TANK",
     "minDamage": 7.5,
     "maxDamage": 12.5,
@@ -288,6 +324,8 @@
   {
     "name": "Royal Shield",
     "skin": 19,
+    "minThreshold": 0.7,
+    "maxThreshold": 0.9,
     "weaponType": "TANK",
     "minDamage": 7.5,
     "maxDamage": 15.0,
@@ -305,6 +343,8 @@
   {
     "name": "Royal Reinforced Shield",
     "skin": 20,
+    "minThreshold": 0.8,
+    "maxThreshold": 1.0,
     "weaponType": "TANK",
     "minDamage": 10.0,
     "maxDamage": 20.0,
@@ -322,6 +362,8 @@
   {
     "name": "Royal Square Shield",
     "skin": 21,
+    "minThreshold": 0.8,
+    "maxThreshold": 1.0,
     "weaponType": "TANK",
     "minDamage": 7.5,
     "maxDamage": 12.5,
@@ -339,6 +381,8 @@
   {
     "name": "Skeletal Shield",
     "skin": 22,
+    "minThreshold": 0.3,
+    "maxThreshold": 1.0,
     "weaponType": "TANK",
     "minDamage": 5.0,
     "maxDamage": 10.0,
@@ -356,6 +400,8 @@
   {
     "name": "Reinforced Skeletal Shield",
     "skin": 23,
+    "minThreshold": 0.7,
+    "maxThreshold": 1.0,
     "weaponType": "TANK",
     "minDamage": 7.5,
     "maxDamage": 15.0,
@@ -373,6 +419,8 @@
   {
     "name": "Defense Staff",
     "skin": 24,
+    "minThreshold": 0.3,
+    "maxThreshold": 0.7,
     "weaponType": "TANK",
     "minDamage": 5.0,
     "maxDamage": 7.5,
@@ -390,6 +438,8 @@
   {
     "name": "Skeletal Defense Staff",
     "skin": 25,
+    "minThreshold": 0.5,
+    "maxThreshold": 1.0,
     "weaponType": "TANK",
     "minDamage": 5.0,
     "maxDamage": 7.5,
@@ -407,6 +457,8 @@
   {
     "name": "Defense Book",
     "skin": 26,
+    "minThreshold": 0.7,
+    "maxThreshold": 1.0,
     "weaponType": "TANK",
     "minDamage": 7.5,
     "maxDamage": 10.0,
@@ -424,6 +476,8 @@
   {
     "name": "Healing Wand",
     "skin": 27,
+    "minThreshold": 0.0,
+    "maxThreshold": 0.5,
     "weaponType": "HEALER",
     "minDamage": 1.0,
     "maxDamage": 2.5,
@@ -442,6 +496,8 @@
   {
     "name": "Healing Staff",
     "skin": 28,
+    "minThreshold": 0.3,
+    "maxThreshold": 1.0,
     "weaponType": "HEALER",
     "minDamage": 2.5,
     "maxDamage": 10.0,
@@ -460,6 +516,8 @@
   {
     "name": "Enemy Healing Staff",
     "skin": 29,
+    "minThreshold": 0.0,
+    "maxThreshold": 0.5,
     "weaponType": "HEALER",
     "minDamage": 2.5,
     "maxDamage": 10.0,
@@ -478,6 +536,8 @@
   {
     "name": "Healing Book",
     "skin": 30,
+    "minThreshold": 0.5,
+    "maxThreshold": 1.0,
     "weaponType": "HEALER",
     "minDamage": 1.0,
     "maxDamage": 5.0,
@@ -496,6 +556,8 @@
   {
     "name": "Hypnotization Wand",
     "skin": 31,
+    "minThreshold": 0.0,
+    "maxThreshold": 0.5,
     "weaponType": "HYPNOTIZER",
     "minDamage": 0.0,
     "maxDamage": 0.0,
@@ -513,6 +575,8 @@
   {
     "name": "Hypnotization Staff",
     "skin": 32,
+    "minThreshold": 0.3,
+    "maxThreshold": 0.7,
     "weaponType": "HYPNOTIZER",
     "minDamage": 0.0,
     "maxDamage": 0.0,
@@ -530,6 +594,8 @@
   {
     "name": "Hypnotization Book",
     "skin": 33,
+    "minThreshold": 0.3,
+    "maxThreshold": 1.0,
     "weaponType": "HYPNOTIZER",
     "minDamage": 0.0,
     "maxDamage": 0.0,

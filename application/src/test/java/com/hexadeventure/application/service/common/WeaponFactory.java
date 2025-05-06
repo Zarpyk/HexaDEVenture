@@ -63,7 +63,7 @@ public class WeaponFactory {
     }
     
     public static WeaponSetting createMeleeWeaponSetting() {
-        return new WeaponSetting(TEST_WEAPON_NAME, 0, TEST_WEAPON_TYPE,
+        return new WeaponSetting(TEST_WEAPON_NAME, 0, 0, 1, TEST_WEAPON_TYPE,
                                  TEST_DAMAGE, TEST_DAMAGE,
                                  TEST_MELEE_DEFENSE, TEST_MELEE_DEFENSE,
                                  TEST_RANGED_DEFENSE, TEST_RANGED_DEFENSE,
@@ -76,7 +76,7 @@ public class WeaponFactory {
     }
     
     public static WeaponSetting createRangedWeaponSetting() {
-        return new WeaponSetting(TEST_WEAPON_NAME, 0, WeaponType.RANGED,
+        return new WeaponSetting(TEST_WEAPON_NAME, 0, 0, 1, WeaponType.RANGED,
                                  TEST_DAMAGE, TEST_DAMAGE,
                                  TEST_MELEE_DEFENSE, TEST_MELEE_DEFENSE,
                                  TEST_RANGED_DEFENSE, TEST_RANGED_DEFENSE,
@@ -89,7 +89,7 @@ public class WeaponFactory {
     }
     
     public static WeaponSetting createTankWeaponSetting() {
-        return new WeaponSetting(TEST_WEAPON_NAME, 0, WeaponType.TANK,
+        return new WeaponSetting(TEST_WEAPON_NAME, 0, 0, 1, WeaponType.TANK,
                                  TEST_DAMAGE, TEST_DAMAGE,
                                  TEST_MELEE_DEFENSE, TEST_MELEE_DEFENSE,
                                  TEST_RANGED_DEFENSE, TEST_RANGED_DEFENSE,
@@ -102,7 +102,7 @@ public class WeaponFactory {
     }
     
     public static WeaponSetting createHealerWeaponSetting() {
-        return new WeaponSetting(TEST_WEAPON_NAME, 0, WeaponType.HEALER,
+        return new WeaponSetting(TEST_WEAPON_NAME, 0, 0, 1, WeaponType.HEALER,
                                  TEST_DAMAGE, TEST_DAMAGE,
                                  TEST_MELEE_DEFENSE, TEST_MELEE_DEFENSE,
                                  TEST_RANGED_DEFENSE, TEST_RANGED_DEFENSE,
@@ -115,7 +115,7 @@ public class WeaponFactory {
     }
     
     public static WeaponSetting createHypnotizerWeaponSetting() {
-        return new WeaponSetting(TEST_WEAPON_NAME, 0, WeaponType.HYPNOTIZER,
+        return new WeaponSetting(TEST_WEAPON_NAME, 0, 0, 1, WeaponType.HYPNOTIZER,
                                  TEST_DAMAGE, TEST_DAMAGE,
                                  TEST_MELEE_DEFENSE, TEST_MELEE_DEFENSE,
                                  TEST_RANGED_DEFENSE, TEST_RANGED_DEFENSE,

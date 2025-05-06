@@ -20,8 +20,7 @@
         "Skeleton Archer",
         "Skeleton Guardian"
       ]
-    ],
-    "loot": []
+    ]
   },
   {
     "minThreshold": 0.0,
@@ -44,50 +43,6 @@
         null,
         null
       ]
-    ],
-    "loot": [
-      {
-        "type": "WEAPON",
-        "id": "Sword",
-        "count": 1,
-        "probability": 0.7
-      },
-      {
-        "type": "WEAPON",
-        "id": "Long Sword",
-        "count": 1,
-        "probability": 0.2
-      },
-      {
-        "type": "FOOD",
-        "id": "Apple",
-        "count": 2,
-        "probability": 1
-      },
-      {
-        "type": "FOOD",
-        "id": "Apple",
-        "count": 3,
-        "probability": 0.2
-      },
-      {
-        "type": "POTION",
-        "id": "Healing Potion",
-        "count": 1,
-        "probability": 0.2
-      },
-      {
-        "type": "MATERIAL",
-        "id": "Wood",
-        "count": 1,
-        "probability": 0.7
-      },
-      {
-        "type": "MATERIAL",
-        "id": "Wood",
-        "count": 2,
-        "probability": 0.5
-      }
     ]
   },
   {
@@ -111,62 +66,6 @@
         null,
         null
       ]
-    ],
-    "loot": [
-      {
-        "type": "WEAPON",
-        "id": "Sword",
-        "count": 1,
-        "probability": 0.5
-      },
-      {
-        "type": "WEAPON",
-        "id": "Crossbow",
-        "count": 1,
-        "probability": 0.5
-      },
-      {
-        "type": "WEAPON",
-        "id": "Long Sword",
-        "count": 1,
-        "probability": 0.1
-      },
-      {
-        "type": "WEAPON",
-        "id": "Heavy Crossbow",
-        "count": 1,
-        "probability": 0.1
-      },
-      {
-        "type": "FOOD",
-        "id": "Apple",
-        "count": 2,
-        "probability": 1
-      },
-      {
-        "type": "FOOD",
-        "id": "Apple",
-        "count": 3,
-        "probability": 0.2
-      },
-      {
-        "type": "POTION",
-        "id": "Healing Potion",
-        "count": 1,
-        "probability": 0.2
-      },
-      {
-        "type": "MATERIAL",
-        "id": "Wood",
-        "count": 1,
-        "probability": 0.7
-      },
-      {
-        "type": "MATERIAL",
-        "id": "Wood",
-        "count": 2,
-        "probability": 0.5
-      }
     ]
   },
   {
@@ -190,62 +89,6 @@
         null,
         null
       ]
-    ],
-    "loot": [
-      {
-        "type": "WEAPON",
-        "id": "Sword",
-        "count": 1,
-        "probability": 0.7
-      },
-      {
-        "type": "WEAPON",
-        "id": "Crossbow",
-        "count": 1,
-        "probability": 0.5
-      },
-      {
-        "type": "WEAPON",
-        "id": "Long Sword",
-        "count": 1,
-        "probability": 0.2
-      },
-      {
-        "type": "WEAPON",
-        "id": "Heavy Crossbow",
-        "count": 1,
-        "probability": 0.1
-      },
-      {
-        "type": "FOOD",
-        "id": "Apple",
-        "count": 2,
-        "probability": 1
-      },
-      {
-        "type": "FOOD",
-        "id": "Apple",
-        "count": 3,
-        "probability": 0.2
-      },
-      {
-        "type": "POTION",
-        "id": "Healing Potion",
-        "count": 1,
-        "probability": 0.2
-      },
-      {
-        "type": "MATERIAL",
-        "id": "Wood",
-        "count": 1,
-        "probability": 0.7
-      },
-      {
-        "type": "MATERIAL",
-        "id": "Wood",
-        "count": 2,
-        "probability": 0.5
-      }
     ]
   },
   {
@@ -269,74 +112,6 @@
         null,
         null
       ]
-    ],
-    "loot": [
-      {
-        "type": "WEAPON",
-        "id": "Sword",
-        "count": 1,
-        "probability": 0.5
-      },
-      {
-        "type": "WEAPON",
-        "id": "Crossbow",
-        "count": 1,
-        "probability": 0.5
-      },
-      {
-        "type": "WEAPON",
-        "id": "Circular Shield",
-        "count": 1,
-        "probability": 0.5
-      },
-      {
-        "type": "WEAPON",
-        "id": "Long Sword",
-        "count": 1,
-        "probability": 0.1
-      },
-      {
-        "type": "WEAPON",
-        "id": "Heavy Crossbow",
-        "count": 1,
-        "probability": 0.1
-      },
-      {
-        "type": "WEAPON",
-        "id": "Basic Shield",
-        "count": 1,
-        "probability": 0.1
-      },
-      {
-        "type": "FOOD",
-        "id": "Apple",
-        "count": 2,
-        "probability": 1
-      },
-      {
-        "type": "FOOD",
-        "id": "Apple",
-        "count": 3,
-        "probability": 0.2
-      },
-      {
-        "type": "POTION",
-        "id": "Healing Potion",
-        "count": 1,
-        "probability": 0.2
-      },
-      {
-        "type": "MATERIAL",
-        "id": "Wood",
-        "count": 1,
-        "probability": 0.7
-      },
-      {
-        "type": "MATERIAL",
-        "id": "Wood",
-        "count": 2,
-        "probability": 0.5
-      }
     ]
   },
   {
@@ -360,74 +135,6 @@
         null,
         null
       ]
-    ],
-    "loot": [
-      {
-        "type": "WEAPON",
-        "id": "Sword",
-        "count": 1,
-        "probability": 0.5
-      },
-      {
-        "type": "WEAPON",
-        "id": "Crossbow",
-        "count": 1,
-        "probability": 0.5
-      },
-      {
-        "type": "WEAPON",
-        "id": "Healing Wand",
-        "count": 1,
-        "probability": 0.5
-      },
-      {
-        "type": "WEAPON",
-        "id": "Long Sword",
-        "count": 1,
-        "probability": 0.1
-      },
-      {
-        "type": "WEAPON",
-        "id": "Heavy Crossbow",
-        "count": 1,
-        "probability": 0.1
-      },
-      {
-        "type": "WEAPON",
-        "id": "Healing Staff",
-        "count": 1,
-        "probability": 0.1
-      },
-      {
-        "type": "FOOD",
-        "id": "Apple",
-        "count": 3,
-        "probability": 1
-      },
-      {
-        "type": "FOOD",
-        "id": "Apple",
-        "count": 5,
-        "probability": 0.2
-      },
-      {
-        "type": "POTION",
-        "id": "Healing Potion",
-        "count": 1,
-        "probability": 0.2
-      },
-      {
-        "type": "MATERIAL",
-        "id": "Wood",
-        "count": 1,
-        "probability": 0.7
-      },
-      {
-        "type": "MATERIAL",
-        "id": "Wood",
-        "count": 2,
-        "probability": 0.5
-      }
     ]
   },
   {

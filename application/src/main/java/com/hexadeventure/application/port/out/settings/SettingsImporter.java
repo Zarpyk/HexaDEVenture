@@ -14,7 +14,7 @@ import java.util.Map;
 
 public interface SettingsImporter {
     Map<String, WeaponSetting> importWeapons();
-    Map<WeaponType, List<WeaponSetting>> importWeaponsByType();
+    Map<WeaponType, List<WeaponSetting>> importWeaponsByTypeAndThreshold(double threshold);
     Map<String, Food> importFoods();
     Map<String, Potion> importPotions();
     Map<ResourceType, Material> importMaterials();

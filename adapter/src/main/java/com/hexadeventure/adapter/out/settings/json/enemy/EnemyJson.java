@@ -1,6 +1,5 @@
 package com.hexadeventure.adapter.out.settings.json.enemy;
 
-import com.hexadeventure.adapter.out.settings.json.weapon.WeaponJsonType;
 import com.hexadeventure.model.inventory.characters.EnemySetting;
 import com.hexadeventure.model.inventory.weapons.WeaponType;
 import lombok.Getter;
@@ -12,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EnemyJson {
     private String id;
-    private WeaponJsonType weaponType;
+    private WeaponType weaponType;
     private int minHealth;
     private int maxHealth;
     private int minSpeed;
@@ -23,7 +22,7 @@ public class EnemyJson {
     public EnemySetting toModel() {
         return new EnemySetting(
                 id,
-                WeaponType.values()[weaponType.ordinal()],
+                weaponType,
                 minHealth,
                 maxHealth,
                 minSpeed,

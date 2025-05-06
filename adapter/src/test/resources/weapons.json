@@ -2,6 +2,8 @@
   {
     "name": "Sword",
     "skin": 1,
+    "minThreshold": 0.0,
+    "maxThreshold": 0.7,
     "weaponType": "MELEE",
     "minDamage": 1.0,
     "maxDamage": 2.0,
@@ -24,6 +26,8 @@
   {
     "name": "Sword 2",
     "skin": 2,
+    "minThreshold": 0.9,
+    "maxThreshold": 1.0,
     "weaponType": "MELEE",
     "minDamage": 1.0,
     "maxDamage": 2.0,

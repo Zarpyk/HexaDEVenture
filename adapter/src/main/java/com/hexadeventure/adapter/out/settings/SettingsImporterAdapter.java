@@ -47,7 +47,7 @@ public class SettingsImporterAdapter implements SettingsImporter {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     
     private static final Map<String, WeaponSetting> weaponsCache = new HashMap<>();
-    private static final Map<WeaponType, List<WeaponSetting>> weaponsTypeCache = new HashMap<>();
+    private static final Set<WeaponSetting> weaponsSortedCache = new TreeSet<>(WeaponSetting::compareTo);
     private static final Map<String, Food> foodsCache = new HashMap<>();
     private static final Map<String, Potion> potionsCache = new HashMap<>();
     private static final Map<ResourceType, Material> materialsCache = new HashMap<>();
@@ -61,16 +61,29 @@ public class SettingsImporterAdapter implements SettingsImporter {
     }
     
     @Override
-    public Map<WeaponType, List<WeaponSetting>> importWeaponsByType() {
-        if(!weaponsTypeCache.isEmpty()) return weaponsTypeCache;
-        Map<String, WeaponSetting> weapons = importWeapons();
-        for (WeaponSetting weapon : weapons.values()) {
-            if(!weaponsTypeCache.containsKey(weapon.weaponType())) {
-                weaponsTypeCache.put(weapon.weaponType(), new ArrayList<>());
+    public Map<WeaponType, List<WeaponSetting>> importWeaponsByTypeAndThreshold(double threshold) {
+        Map<WeaponType, List<WeaponSetting>> weponsToReturn = new HashMap<>();
+        Set<WeaponSetting> weapons = importWeaponsByThreshold(threshold);
+        for (WeaponSetting weapon : weapons) {
+            if(!weponsToReturn.containsKey(weapon.weaponType())) {
+                weponsToReturn.put(weapon.weaponType(), new ArrayList<>());
             }
-            weaponsTypeCache.get(weapon.weaponType()).add(weapon);
+            weponsToReturn.get(weapon.weaponType()).add(weapon);
         }
-        return weaponsTypeCache;
+        return weponsToReturn;
+    }
+    
+    private Set<WeaponSetting> importWeaponsByThreshold(double threshold) {
+        Set<WeaponSetting> weaponsSortedCache = importWeaponsSorted();
+        Set<WeaponSetting> weaponsToReturn = new HashSet<>();
+        for (WeaponSetting weaponSetting : weaponsSortedCache) {
+            if(threshold >= weaponSetting.minThreshold() && threshold <= weaponSetting.maxThreshold()) {
+                weaponsToReturn.add(weaponSetting);
+            } else if(weaponSetting.minThreshold() > threshold) {
+                break;
+            }
+        }
+        return weaponsToReturn;
     }
     
     @Override
@@ -173,6 +186,14 @@ public class SettingsImporterAdapter implements SettingsImporter {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    @SuppressWarnings("SameReturnValue")
+    private Set<WeaponSetting> importWeaponsSorted() {
+        if(!weaponsSortedCache.isEmpty()) return weaponsSortedCache;
+        Map<String, WeaponSetting> weapons = importWeapons();
+        weaponsSortedCache.addAll(weapons.values());
+        return weaponsSortedCache;
     }
     
     private <T, ID, JSON_T extends ItemJson<T>> Map<ID, T> importJson(Map<ID, T> cache, String jsonFile,

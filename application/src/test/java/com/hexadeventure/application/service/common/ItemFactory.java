@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 public class ItemFactory {
@@ -34,7 +35,7 @@ public class ItemFactory {
         Map<String, Potion> potionsCache = new HashMap<>();
         Map<ResourceType, Material> materialsCache = new HashMap<>();
         
-        WeaponSetting weaponSetting = new WeaponSetting(TEST_WEAPON_NAME, 1, WeaponType.MELEE, 1, 1,
+        WeaponSetting weaponSetting = new WeaponSetting(TEST_WEAPON_NAME, 1, 0, 1, WeaponType.MELEE, 1, 1,
                                                         1, 1, 1, 1,
                                                         1, 1, AggroGenType.ATTACK, 1,
                                                         1, 1, 1, 1,
@@ -55,7 +56,7 @@ public class ItemFactory {
         when(settingsImporter.importPotions()).thenReturn(potionsCache);
         when(settingsImporter.importMaterials()).thenReturn(materialsCache);
         
-        when(settingsImporter.importWeaponsByType()).thenReturn(WeaponFactory.createWeaponsSettings());
+        when(settingsImporter.importWeaponsByTypeAndThreshold(anyInt())).thenReturn(WeaponFactory.createWeaponsSettings());
         EnemyPattern[] enemyPatterns = {EnemyFactory.createEnemyPattern()};
         when(settingsImporter.importEnemyPatterns(anyDouble())).thenReturn(enemyPatterns);
         when(settingsImporter.importBossPatterns()).thenReturn(enemyPatterns);

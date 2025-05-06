@@ -2,6 +2,8 @@ package com.hexadeventure.model.inventory.weapons;
 
 public record WeaponSetting(String name,
                             int skin,
+                            double minThreshold,
+                            double maxThreshold,
                             WeaponType weaponType,
                             double minDamage,
                             double maxDamage,
@@ -20,4 +22,8 @@ public record WeaponSetting(String name,
                             double maxHealingPower,
                             double minHypnotizationPower,
                             double maxHypnotizationPower) {
+    
+    public int compareTo(WeaponSetting weaponSetting) {
+        return Double.compare(minThreshold, weaponSetting.minThreshold());
+    }
 }

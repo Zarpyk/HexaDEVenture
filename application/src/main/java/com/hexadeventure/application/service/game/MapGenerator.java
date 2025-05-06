@@ -299,7 +299,7 @@ public class MapGenerator {
         EnemyPattern[] enemyPatterns = settingsImporter.importBossPatterns();
         SplittableRandom random = new SplittableRandom(Objects.hash(map.getSeed(), BOSS_VARIATION));
         EnemyPattern randomPattern = enemyPatterns[random.nextInt(enemyPatterns.length)];
-        Map<WeaponType, List<WeaponSetting>> weapons = settingsImporter.importWeaponsByType();
+        Map<WeaponType, List<WeaponSetting>> weapons = settingsImporter.importWeaponsByTypeAndThreshold(1);
         // Splitting boss from a normal enemy allow difference it on the printMap
         map.addEnemy(bossPosition, new Boss(bossPosition, random, randomPattern, weapons));
     }
@@ -412,7 +412,8 @@ public class MapGenerator {
                     if(random.nextDouble() < spawnRate) {
                         EnemyPattern[] enemyPatterns = settingsImporter.importEnemyPatterns(normalizedDistance);
                         EnemyPattern randomPattern = enemyPatterns[random.nextInt(enemyPatterns.length)];
-                        Map<WeaponType, List<WeaponSetting>> weapons = settingsImporter.importWeaponsByType();
+                        Map<WeaponType, List<WeaponSetting>> weapons = settingsImporter.importWeaponsByTypeAndThreshold(
+                                normalizedDistance);
                         map.addEnemy(position, new Enemy(position, random, randomPattern, weapons));
                     }
                 }
