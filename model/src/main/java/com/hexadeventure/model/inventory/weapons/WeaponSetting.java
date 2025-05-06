@@ -24,6 +24,14 @@ public record WeaponSetting(String name,
                             double maxHypnotizationPower) {
     
     public int compareTo(WeaponSetting weaponSetting) {
-        return Double.compare(minThreshold, weaponSetting.minThreshold());
+        int compare = Double.compare(minThreshold, weaponSetting.minThreshold());
+        if (compare != 0) return compare;
+        compare = Integer.compare(weaponType.ordinal(), weaponSetting.weaponType().ordinal());
+        if (compare != 0) return compare;
+        compare = Integer.compare(skin, weaponSetting.skin());
+        if (compare != 0) return compare;
+        compare = Integer.compare(name.hashCode(), weaponSetting.name().hashCode());
+        if (compare != 0) return compare;
+        return -1;
     }
 }

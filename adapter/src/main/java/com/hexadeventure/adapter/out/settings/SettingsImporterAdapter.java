@@ -62,8 +62,8 @@ public class SettingsImporterAdapter implements SettingsImporter {
     
     @Override
     public Map<WeaponType, List<WeaponSetting>> importWeaponsByTypeAndThreshold(double threshold) {
-        Map<WeaponType, List<WeaponSetting>> weponsToReturn = new HashMap<>();
         Set<WeaponSetting> weapons = importWeaponsByThreshold(threshold);
+        Map<WeaponType, List<WeaponSetting>> weponsToReturn = new HashMap<>();
         for (WeaponSetting weapon : weapons) {
             if(!weponsToReturn.containsKey(weapon.weaponType())) {
                 weponsToReturn.put(weapon.weaponType(), new ArrayList<>());
