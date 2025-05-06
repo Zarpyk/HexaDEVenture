@@ -140,6 +140,21 @@ public class SettingsImporterTest {
     }
     
     @Test
+    public void givenJson_whenImportEnemyPatterns_thenHaveLoot() {
+        EnemyPattern[] enemyPatterns = settingsImporter.importEnemyPatterns(1);
+        
+        assertThat(enemyPatterns).isNotNull();
+        assertThat(enemyPatterns.length).isPositive();
+        
+        Optional<EnemyPattern> pattern = Arrays.stream(enemyPatterns).findFirst();
+        assertThat(pattern).isPresent();
+        
+        EnemyPattern enemyPattern = pattern.get();
+        assertThat(enemyPattern.loot()).isNotEmpty();
+        assertThat(enemyPattern.loot().length).isPositive();
+    }
+    
+    @Test
     public void givenThreshold_whenGetBossPatterns_thenReturnAllBossPatterns() {
         EnemyPattern[] enemyPatterns = settingsImporter.importBossPatterns();
         assertThat(enemyPatterns.length).isEqualTo(1);

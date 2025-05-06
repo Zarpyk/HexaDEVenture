@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hexadeventure.adapter.out.settings.json.ItemJson;
 import com.hexadeventure.adapter.out.settings.json.enemy.EnemyJson;
 import com.hexadeventure.adapter.out.settings.json.enemy.EnemyPatternJson;
+import com.hexadeventure.adapter.out.settings.json.enemy.LootJson;
 import com.hexadeventure.adapter.out.settings.json.food.FoodJson;
 import com.hexadeventure.adapter.out.settings.json.initial.InitialResourcesJson;
 import com.hexadeventure.adapter.out.settings.json.material.MaterialJson;
@@ -12,6 +13,7 @@ import com.hexadeventure.adapter.out.settings.json.weapon.WeaponDataJson;
 import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.model.inventory.characters.EnemyPattern;
 import com.hexadeventure.model.inventory.characters.EnemySetting;
+import com.hexadeventure.model.inventory.characters.Loot;
 import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.initial.InitialResources;
 import com.hexadeventure.model.inventory.materials.Material;
@@ -164,7 +166,8 @@ public class SettingsImporterAdapter implements SettingsImporter {
                 EnemySetting[][] enemiesArray = pattern.toModel(enemies,
                                                                 GameMap.COMBAT_TERRAIN_ROW_SIZE,
                                                                 GameMap.COMBAT_TERRAIN_COLUMN_SIZE);
-                enemyPatternsCache.add(new EnemyPattern(pattern.getMinThreshold(), enemiesArray));
+                Loot[] loot = Arrays.stream(pattern.getLoot()).map(LootJson::toModel).toArray(Loot[]::new);
+                enemyPatternsCache.add(new EnemyPattern(pattern.getMinThreshold(), enemiesArray, loot));
             }
             return enemyPatternsCache;
         } catch (IOException e) {

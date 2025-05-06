@@ -80,7 +80,7 @@ public class CombatTest {
         int row = 3;
         int column = 4;
         CombatTerrain combatTerrain = new CombatTerrain(row, column);
-        Loot[] lootArray = new Loot[]{new Loot(ItemType.WEAPON, "", 1)};
+        Loot[] lootArray = new Loot[]{new Loot(ItemType.WEAPON, "", 1, 1)};
         int lootSeed = 1234;
         
         combatTerrain.setLoot(lootArray, lootSeed);

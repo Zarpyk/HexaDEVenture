@@ -15,4 +15,5 @@ public class Loot {
     private ItemType type;
     private String id;
     private int count;
+    private double probability;
 }

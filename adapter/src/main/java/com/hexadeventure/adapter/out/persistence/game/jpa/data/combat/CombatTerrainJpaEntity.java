@@ -30,4 +30,12 @@ public class CombatTerrainJpaEntity {
     // Probably only for PostgreSQL
     @ColumnTransformer(write = "?::json")
     private String enemyTerrain;
+    
+    @Column(columnDefinition = "json")
+    // From: https://stackoverflow.com/a/77150431/11451105
+    // Probably only for PostgreSQL
+    @ColumnTransformer(write = "?::json")
+    private String loot;
+    
+    private int lootSeed;
 }

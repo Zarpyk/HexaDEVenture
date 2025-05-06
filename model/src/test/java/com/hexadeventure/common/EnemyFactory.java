@@ -17,7 +17,7 @@ public class EnemyFactory {
     public static final int TEST_MAX_HYPNOTIZATION_RESISTENCE = 2;
     
     public static final int TEST_LOOT_COUNT = 1;
-    
+    public static final int TEST_LOOT_PROBABILITY = 1;
     
     public static EnemySetting createEnemySetting() {
         return new EnemySetting(
@@ -33,13 +33,27 @@ public class EnemyFactory {
     }
     
     public static EnemyPattern createEnemyPattern() {
-        return new EnemyPattern(0, new EnemySetting[][]{
-                {createEnemySetting(), null, null, null},
-                {createEnemySetting(), null, null, null},
-                {createEnemySetting(), null, null, null},
-                }, new Loot[]{new Loot(ItemType.WEAPON, WeaponFactory.TEST_WEAPON_NAME, TEST_LOOT_COUNT),
-                              new Loot(ItemType.FOOD, ItemFactory.TEST_FOOD_NAME, TEST_LOOT_COUNT),
-                              new Loot(ItemType.POTION, ItemFactory.TEST_POTION_NAME, TEST_LOOT_COUNT),
-                              new Loot(ItemType.MATERIAL, ItemFactory.TEST_MATERIAL_NAME, TEST_LOOT_COUNT)});
+        return new EnemyPattern(0,
+                                new EnemySetting[][]{
+                                        {createEnemySetting(), null, null, null},
+                                        {createEnemySetting(), null, null, null},
+                                        {createEnemySetting(), null, null, null},
+                                        },
+                                new Loot[]{new Loot(ItemType.WEAPON,
+                                                    WeaponFactory.TEST_WEAPON_NAME,
+                                                    TEST_LOOT_COUNT,
+                                                    TEST_LOOT_PROBABILITY),
+                                           new Loot(ItemType.FOOD,
+                                                    ItemFactory.TEST_FOOD_NAME,
+                                                    TEST_LOOT_COUNT,
+                                                    TEST_LOOT_PROBABILITY),
+                                           new Loot(ItemType.POTION,
+                                                    ItemFactory.TEST_POTION_NAME,
+                                                    TEST_LOOT_COUNT,
+                                                    TEST_LOOT_PROBABILITY),
+                                           new Loot(ItemType.MATERIAL,
+                                                    ItemFactory.TEST_MATERIAL_NAME,
+                                                    TEST_LOOT_COUNT,
+                                                    TEST_LOOT_PROBABILITY)});
     }
 }

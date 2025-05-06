@@ -12,10 +12,7 @@ import com.hexadeventure.model.combat.CombatTerrain;
 import com.hexadeventure.model.combat.TurnInfo;
 import com.hexadeventure.model.inventory.Item;
 import com.hexadeventure.model.inventory.ItemType;
-import com.hexadeventure.model.inventory.characters.CharacterCombatInfo;
-import com.hexadeventure.model.inventory.characters.CharacterStat;
-import com.hexadeventure.model.inventory.characters.CharacterStatusChange;
-import com.hexadeventure.model.inventory.characters.PlayableCharacter;
+import com.hexadeventure.model.inventory.characters.*;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.user.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -690,6 +687,39 @@ public class CombatTest {
         assertThat(items.stream().anyMatch(item -> item.getType() == ItemType.FOOD)).isTrue();
         assertThat(items.stream().anyMatch(item -> item.getType() == ItemType.POTION)).isTrue();
         assertThat(items.stream().anyMatch(item -> item.getType() == ItemType.MATERIAL)).isTrue();
+    }
+    
+    @Test
+    public void givenCharactersAndEnemies_whenNoProbability_thenIgnoreLoot() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        // Create an empty game map
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        map.setInCombat(true);
+        
+        // Create characters and enemies
+        PlayableCharacter character = PlayableCharacterFactory.createMeleeCharacter(9999);
+        character.getWeapon().setDamage(PlayableCharacterFactory.TEST_CHARACTER_HEALTH * 9999);
+        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
+        
+        // Place characters and enemies on the combat terrain
+        map.getCombatTerrain().placeCharacter(0, 0, character);
+        map.getCombatTerrain().placeEnemy(0, 0, enemy);
+        Loot[] loot = EnemyFactory.createEnemyPattern().loot();
+        for (Loot item : loot) {
+            item.setProbability(0);
+        }
+        map.getCombatTerrain().setLoot(loot, 1234);
+        
+        // Execute the method
+        combatService.startAutoCombat(TEST_USER_EMAIL);
+        
+        Collection<Item> items = map.getInventory().getItems().values();
+        assertThat(items.stream().anyMatch(item -> item.getType() == ItemType.WEAPON)).isFalse();
+        assertThat(items.stream().anyMatch(item -> item.getType() == ItemType.FOOD)).isFalse();
+        assertThat(items.stream().anyMatch(item -> item.getType() == ItemType.POTION)).isFalse();
+        assertThat(items.stream().anyMatch(item -> item.getType() == ItemType.MATERIAL)).isFalse();
     }
     //endregion
     

@@ -154,6 +154,7 @@ public class CombatService implements CombatUseCase {
         if(lootArray != null) {
             SplittableRandom random = new SplittableRandom(gameMap.getCombatTerrain().getLootSeed());
             for (Loot loot : lootArray) {
+                if (random.nextDouble() > loot.getProbability()) continue;
                 addLootToInventory(loot, gameMap, random);
             }
         }

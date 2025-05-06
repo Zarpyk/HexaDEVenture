@@ -13,8 +13,9 @@ public class LootJson {
     private ItemType type;
     private String id;
     private int count;
+    private double probability;
     
     public Loot toModel() {
-        return new Loot(type, id, count);
+        return new Loot(type, id, count, probability);
     }
 }

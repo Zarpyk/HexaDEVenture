@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.hexadeventure.model.combat.CombatTerrain;
+import com.hexadeventure.model.inventory.characters.Loot;
 import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 
 public class CombatTerrainJpaMapper {
@@ -37,6 +38,11 @@ public class CombatTerrainJpaMapper {
             String enemiesJson = objectMapper.writeValueAsString(model.getEnemyTerrain());
             entity.setEnemyTerrain(enemiesJson);
             
+            String lootJson = objectMapper.writeValueAsString(model.getLoot());
+            entity.setLoot(lootJson);
+            
+            entity.setLootSeed(model.getLootSeed());
+            
             return entity;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -49,7 +55,9 @@ public class CombatTerrainJpaMapper {
                                                                   PlayableCharacter[][].class);
             PlayableCharacter[][] enemies = objectMapper.readValue(entity.getEnemyTerrain(),
                                                                    PlayableCharacter[][].class);
-            return new CombatTerrain(entity.getId(), entity.getRowSize(), entity.getColumnSize(), player, enemies);
+            Loot[] loot = objectMapper.readValue(entity.getLoot(), Loot[].class);
+            return new CombatTerrain(entity.getId(), entity.getRowSize(), entity.getColumnSize(), player, enemies,
+                                     loot, entity.getLootSeed());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
