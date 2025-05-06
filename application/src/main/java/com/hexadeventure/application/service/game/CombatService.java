@@ -9,10 +9,10 @@ import com.hexadeventure.model.combat.CombatProcess;
 import com.hexadeventure.model.combat.CombatTerrain;
 import com.hexadeventure.model.combat.TurnInfo;
 import com.hexadeventure.model.inventory.Inventory;
+import com.hexadeventure.model.inventory.characters.CharacterCombatInfo;
 import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import com.hexadeventure.model.map.GameMap;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CombatService implements CombatUseCase {
@@ -80,11 +80,43 @@ public class CombatService implements CombatUseCase {
         if(!gameMap.isInCombat()) throw new CombatNotStartedException();
         
         CombatTerrain combatTerrain = gameMap.getCombatTerrain();
-        List<TurnInfo> turnInfos = new ArrayList<>();
         
+        // Process the combat
         CombatProcessor combatProcessor = new CombatProcessor(combatTerrain);
+        combatProcessor.processTurn();
         
-        return null;
+        // Update the combat info
+        boolean noCharacterRemain = true;
+        for (CharacterCombatInfo character : combatProcessor.getCharacters()) {
+            if(character.isDead()) {
+                combatTerrain.removeCharacter(character.getRow(), character.getColumn());
+            } else {
+                character.getCharacter().getChangedStats().updateStats(character);
+                noCharacterRemain = false;
+            }
+        }
+        boolean noEnemyRemain = true;
+        for (CharacterCombatInfo enemy : combatProcessor.getEnemies()) {
+            if(enemy.isDead()) {
+                combatTerrain.removeEnemy(enemy.getRow(), enemy.getColumn());
+            } else {
+                enemy.getCharacter().getChangedStats().updateStats(enemy);
+                noEnemyRemain = false;
+            }
+        }
+        
+        if(noCharacterRemain || noEnemyRemain) {
+            gameMap.setInCombat(false);
+            for (CharacterCombatInfo character : combatProcessor.getCharacters()) {
+                if(character.isDead()) continue;
+                gameMap.getInventory().addCharacter(character.getCharacter());
+            }
+        }
+        
+        gameMapRepository.save(gameMap);
+        
+        List<TurnInfo> turnInfos = combatProcessor.getTurnInfos();
+        return new CombatProcess(turnInfos);
     }
     
     private static void checkParams(int row, int column, CombatTerrain combatTerrain) {

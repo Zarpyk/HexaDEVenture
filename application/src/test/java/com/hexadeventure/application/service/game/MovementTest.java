@@ -9,6 +9,7 @@ import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.application.service.common.MapFactory;
 import com.hexadeventure.application.service.common.UserFactory;
+import com.hexadeventure.model.enemies.Enemy;
 import com.hexadeventure.model.inventory.Item;
 import com.hexadeventure.model.inventory.ItemType;
 import com.hexadeventure.model.map.ChunkData;
@@ -191,8 +192,30 @@ public class MovementTest {
         assertThat(last.position().x).isEqualTo(enemyMovement.position().x);
         assertThat(last.position().y).isEqualTo(enemyMovement.position().y);
         
-        assertThat(gameMap.getEnemy(new Vector2(last.position().x, last.position().y))).isNotNull();
         assertThat(gameMap.isInCombat()).isTrue();
+    }
+    
+    @Test
+    public void givenPositionWithPathWithEnemy_whenMoveToSamePositionAsPlayer_thenEnemyIsRemovedFromMap() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.ENEMY_MAP_ID);
+        
+        GameMap gameMap = MapFactory.createEnemyGameMap(gameMapRepository,
+                                                        aStarPathfinder,
+                                                        settingsImporter);
+        
+        MovementResponse move = gameService.move(TEST_USER_EMAIL, MapFactory.ENEMY_END_POSITION);
+        
+        List<MovementAction> actions = move.actions();
+        
+        MovementAction last = actions.getLast();
+        EnemyMovement enemyMovement = last.enemyMovements().stream().findFirst().orElse(null);
+        assertThat(enemyMovement).isNotNull();
+        assertThat(last.position().x).isEqualTo(enemyMovement.position().x);
+        assertThat(last.position().y).isEqualTo(enemyMovement.position().y);
+        
+        Enemy enemy = gameMap.getEnemy(enemyMovement.position());
+        assertThat(enemy).isNull();
     }
     
     @Test

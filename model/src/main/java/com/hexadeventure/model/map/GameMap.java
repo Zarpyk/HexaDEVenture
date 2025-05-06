@@ -119,6 +119,11 @@ public class GameMap {
         chunks.get(chunkPosition).removeEnemy(position);
     }
     
+    public void removeEnemy(Vector2 combatPosition) {
+        Vector2C chunkPosition = Chunk.getChunkPosition(combatPosition);
+        chunks.get(chunkPosition).removeEnemy(combatPosition);
+    }
+    
     @Override
     public boolean equals(Object o) {
         if(!(o instanceof GameMap gameMap)) return false;

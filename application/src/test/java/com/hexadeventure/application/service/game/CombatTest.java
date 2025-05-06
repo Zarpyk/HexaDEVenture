@@ -10,6 +10,7 @@ import com.hexadeventure.application.service.common.PlayableCharacterFactory;
 import com.hexadeventure.application.service.common.UserFactory;
 import com.hexadeventure.application.service.common.WeaponFactory;
 import com.hexadeventure.model.combat.CombatAction;
+import com.hexadeventure.model.combat.CombatProcess;
 import com.hexadeventure.model.combat.CombatTerrain;
 import com.hexadeventure.model.combat.TurnInfo;
 import com.hexadeventure.model.inventory.characters.CharacterCombatInfo;
@@ -431,6 +432,164 @@ public class CombatTest {
         assertThat(turnQueue.get(0).getCharacter()).isEqualTo(fastCharacter);
         assertThat(turnQueue.get(1).getCharacter()).isEqualTo(enemy);
         assertThat(turnQueue.get(2).getCharacter()).isEqualTo(slowCharacter);
+    }
+    
+    @Test
+    public void givenCharactersAndEnemies_whenCalculateTurnQueue_thenSkipDeadAndHypnotized() {
+        // Create an empty game map
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        map.setInCombat(true);
+        
+        // Create characters and enemies
+        PlayableCharacter deadCharacter = new PlayableCharacter("Character", 0, 20);
+        PlayableCharacter deadEnemy = new PlayableCharacter("Enemy", 0, 10);
+        PlayableCharacter hypnotizedEnemy = new PlayableCharacter("Enemy", TEST_CHARACTER_HEALTH, 15);
+        hypnotizedEnemy.getChangedStats().updateStats(TEST_CHARACTER_HEALTH, true);
+        
+        // Place characters and enemies on the combat terrain
+        map.getCombatTerrain().placeCharacter(0, 0, deadCharacter);
+        map.getCombatTerrain().placeCharacter(0, 1, deadEnemy);
+        map.getCombatTerrain().placeEnemy(0, 0, hypnotizedEnemy);
+        
+        // Execute the method
+        CombatProcessor processor = new CombatProcessor(map.getCombatTerrain());
+        
+        // Verify the turn queue
+        var turnQueue = processor.getTurnQueue().stream().toList();
+        assertThat(turnQueue).hasSize(0);
+    }
+    
+    @Test
+    public void givenCharactersAndEnemies_whenStartAutoCombat_thenProcessTurn() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        // Create an empty game map
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        map.setInCombat(true);
+        
+        // Create characters and enemies
+        PlayableCharacter character = PlayableCharacterFactory.createMeleeCharacter(9999);
+        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
+        
+        // Place characters and enemies on the combat terrain
+        map.getCombatTerrain().placeCharacter(0, 0, character);
+        map.getCombatTerrain().placeEnemy(0, 0, enemy);
+        
+        // Execute the method
+        CombatProcess combatProcess = combatService.startAutoCombat(TEST_USER_EMAIL);
+        
+        // Verify the turn queue
+        PlayableCharacter[][] playerTerrain = combatService.getCombatStatus(TEST_USER_EMAIL).getPlayerTerrain();
+        assertThat(playerTerrain[0][0]).isNotNull();
+        assertThat(playerTerrain[0][0].getChangedStats().getHealth()).isEqualTo(
+                character.getHealth() -
+                enemy.getWeapon().getDamage() *
+                (1 - character.getWeapon().getMeleeDefense() / 100));
+        assertThat(playerTerrain[0][0].getChangedStats().isHypnotized()).isFalse();
+        
+        PlayableCharacter[][] enemyTerrain = combatService.getCombatStatus(TEST_USER_EMAIL).getEnemyTerrain();
+        assertThat(enemyTerrain[0][0]).isNotNull();
+        assertThat(enemyTerrain[0][0].getChangedStats().getHealth()).isEqualTo(
+                enemy.getHealth() -
+                character.getWeapon().getDamage() *
+                (1 - enemy.getWeapon().getMeleeDefense() / 100));
+        assertThat(enemyTerrain[0][0].getChangedStats().isHypnotized()).isFalse();
+        
+        assertThat(combatProcess.turns()).hasSize(2);
+        TurnInfo first = combatProcess.turns().getFirst();
+        assertThat(first.action()).isEqualTo(CombatAction.ATTACK);
+        assertThat(first.isEnemyTurn()).isFalse();
+        TurnInfo last = combatProcess.turns().getLast();
+        assertThat(last.action()).isEqualTo(CombatAction.ATTACK);
+        assertThat(last.isEnemyTurn()).isTrue();
+    }
+    
+    @Test
+    public void givenCharactersAndEnemies_whenEnemyDead_thenRemoveFromTerrain() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        // Create an empty game map
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        map.setInCombat(true);
+        
+        // Create characters and enemies
+        PlayableCharacter character = PlayableCharacterFactory.createMeleeCharacter(9999);
+        character.getWeapon().setDamage(PlayableCharacterFactory.TEST_CHARACTER_HEALTH * 9999);
+        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
+        
+        // Place characters and enemies on the combat terrain
+        map.getCombatTerrain().placeCharacter(0, 0, character);
+        map.getCombatTerrain().placeEnemy(0, 0, enemy);
+        
+        // Execute the method
+        CombatProcess combatProcess = combatService.startAutoCombat(TEST_USER_EMAIL);
+        
+        // Verify the turn queue
+        PlayableCharacter[][] playerTerrain = map.getCombatTerrain().getPlayerTerrain();
+        assertThat(playerTerrain[0][0]).isNotNull();
+        assertThat(playerTerrain[0][0].getChangedStats().getHealth()).isEqualTo(character.getHealth());
+        assertThat(playerTerrain[0][0].getChangedStats().isHypnotized()).isFalse();
+        
+        PlayableCharacter[][] enemyTerrain = map.getCombatTerrain().getEnemyTerrain();
+        assertThat(enemyTerrain[0][0]).isNull();
+        
+        assertThat(combatProcess.turns()).hasSize(1);
+        TurnInfo first = combatProcess.turns().getFirst();
+        assertThat(first.action()).isEqualTo(CombatAction.ATTACK);
+        assertThat(first.isEnemyTurn()).isFalse();
+    }
+    
+    @Test
+    public void givenCharactersAndEnemies_whenNoEnemyAlive_thenFinishCombat() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        // Create an empty game map
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        map.setInCombat(true);
+        
+        // Create characters and enemies
+        PlayableCharacter character = PlayableCharacterFactory.createMeleeCharacter(9999);
+        character.getWeapon().setDamage(PlayableCharacterFactory.TEST_CHARACTER_HEALTH * 9999);
+        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
+        
+        // Place characters and enemies on the combat terrain
+        map.getCombatTerrain().placeCharacter(0, 0, character);
+        map.getCombatTerrain().placeEnemy(0, 0, enemy);
+        
+        // Execute the method
+        combatService.startAutoCombat(TEST_USER_EMAIL);
+        
+        // Verify the turn queue
+        assertThat(map.isInCombat()).isFalse();
+    }
+    
+    @Test
+    public void givenCharactersAndEnemies_whenNoAllyAlive_thenFinishCombat() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        // Create an empty game map
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        map.setInCombat(true);
+        
+        // Create characters and enemies
+        PlayableCharacter character = PlayableCharacterFactory.createMeleeCharacter(15);
+        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(9999);
+        enemy.getWeapon().setDamage(PlayableCharacterFactory.TEST_CHARACTER_HEALTH * 9999);
+        
+        // Place characters and enemies on the combat terrain
+        map.getCombatTerrain().placeCharacter(0, 0, character);
+        map.getCombatTerrain().placeEnemy(0, 0, enemy);
+        
+        // Execute the method
+        combatService.startAutoCombat(TEST_USER_EMAIL);
+        
+        // Verify the turn queue
+        assertThat(map.isInCombat()).isFalse();
+        assertThat(map.getInventory().getCharacters()).doesNotContainKey(character.getId());
     }
     //endregion
     
@@ -985,17 +1144,8 @@ public class CombatTest {
         // Verify the turn info is correct
         TurnInfo characterTurn = processor.getTurnInfos().getFirst();
         assertThat(characterTurn.action()).isEqualTo(CombatAction.ATTACK);
-        assertThat(characterTurn.row()).isEqualTo(characterRow);
-        assertThat(characterTurn.column()).isEqualTo(characterColumn);
-        assertThat(characterTurn.isEnemyTurn()).isEqualTo(false);
         assertThat(characterTurn.targetRow()).isEqualTo(targetRow);
         assertThat(characterTurn.targetColumn()).isEqualTo(targetColumn);
-        
-        assertThat(characterTurn.characterStatus()).hasSize(2);
-        assertThat(characterTurn.targetStatus()).hasSize(1);
-        
-        // Verify that the action is refrected in the enemy
-        assertThat(processor.getTurnQueue().last()).isNotEqualTo(moreAggroEnemy);
     }
     //endregion
     

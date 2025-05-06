@@ -4,8 +4,8 @@ import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import com.hexadeventure.model.inventory.weapons.Weapon;
 
 public class PlayableCharacterFactory {
-    private static final int TEST_CHARACTER_HEALTH = 100;
-    private static final String TEST_CHARACTER_NAME = "Test Character";
+    public static final int TEST_CHARACTER_HEALTH = 100;
+    public static final String TEST_CHARACTER_NAME = "Test Character";
     
     public static PlayableCharacter createMeleeCharacter(int speed) {
         PlayableCharacter character = new PlayableCharacter(TEST_CHARACTER_NAME, TEST_CHARACTER_HEALTH, speed);

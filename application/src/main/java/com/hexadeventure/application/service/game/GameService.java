@@ -167,6 +167,8 @@ public class GameService implements GameUseCase {
                 mapChunks = gameMapRepository.findMapChunks(gameMap.getId(), chunkArroundPlayer);
                 gameMap.addChunks(mapChunks, false);
             }
+            
+            Vector2 combatPosition = null;
             for (Chunk arroundChunk : mapChunks.values()) {
                 for (Enemy enemy : arroundChunk.getEnemies().values()) {
                     Queue<Vector2> enemyPath = aStarPathfinder.generatePath(enemy.getPosition(),
@@ -184,6 +186,7 @@ public class GameService implements GameUseCase {
                         enemyMovement = new EnemyMovement(position);
                         startCombat = true;
                         gameMap.setInCombat(true);
+                        combatPosition = position;
                     } else {
                         Vector2 enemyPosition = null;
                         for (int i = 0; i < Enemy.MOVEMENT_SPEED; i++) {
@@ -199,6 +202,8 @@ public class GameService implements GameUseCase {
                 }
                 if(startCombat) break;
             }
+            
+            if(combatPosition != null) gameMap.removeEnemy(combatPosition);
             
             MovementAction movementAction = new MovementAction(position, resourceAction, enemyMovements);
             actions.add(movementAction);

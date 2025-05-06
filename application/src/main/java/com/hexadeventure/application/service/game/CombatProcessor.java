@@ -3,6 +3,7 @@ package com.hexadeventure.application.service.game;
 import com.hexadeventure.model.combat.CombatAction;
 import com.hexadeventure.model.combat.CombatTerrain;
 import com.hexadeventure.model.combat.TurnInfo;
+import com.hexadeventure.model.inventory.characters.ChangedStats;
 import com.hexadeventure.model.inventory.characters.CharacterCombatInfo;
 import com.hexadeventure.model.inventory.characters.CharacterStatusChange;
 import com.hexadeventure.model.inventory.characters.PlayableCharacter;
@@ -26,11 +27,11 @@ public class CombatProcessor {
     
     @Getter
     private final TreeSet<CharacterCombatInfo> turnQueue = new TreeSet<>(CharacterCombatInfo::compareBySpeed);
+    @Getter
     private final TreeSet<CharacterCombatInfo> characters = new TreeSet<>(CharacterCombatInfo::compareByAggro);
+    @Getter
     private final TreeSet<CharacterCombatInfo> enemies = new TreeSet<>(CharacterCombatInfo::compareByAggro);
     
-    @Getter
-    private final List<CharacterCombatInfo> deadCharacters = new ArrayList<>();
     
     public CombatProcessor(CombatTerrain combatTerrain) {
         this.combatTerrain = combatTerrain;
@@ -41,49 +42,43 @@ public class CombatProcessor {
         for (int row = 0; row < combatTerrain.getRowSize(); row++) {
             for (int column = 0; column < combatTerrain.getColumnSize(); column++) {
                 PlayableCharacter character = combatTerrain.getCharacterAt(row, column);
-                if(character != null) {
+                if(character != null && character.getChangedStats().getHealth() > 0) {
                     CharacterCombatInfo c = new CharacterCombatInfo(character, row, column, false);
                     turnQueue.add(c);
                     characters.add(c);
                 }
                 PlayableCharacter enemy = combatTerrain.getEnemyTerrain()[row][column];
                 if(enemy != null) {
-                    CharacterCombatInfo e = new CharacterCombatInfo(enemy, row, column, true);
-                    turnQueue.add(e);
-                    enemies.add(e);
+                    ChangedStats enemyChangedStats = enemy.getChangedStats();
+                    if(enemyChangedStats.getHealth() > 0 && !enemyChangedStats.isHypnotized()) {
+                        CharacterCombatInfo e = new CharacterCombatInfo(enemy, row, column, true);
+                        turnQueue.add(e);
+                        enemies.add(e);
+                    }
                 }
             }
         }
     }
     
     public CharacterCombatInfo getFirstCharacter() {
-        CharacterCombatInfo character = characters.first();
-        while (character.isDead()) {
-            deadCharacters.add(character);
-            characters.remove(character);
-            if(characters.isEmpty()) return null;
-            character = characters.first();
+        for (CharacterCombatInfo character : characters) {
+            if(character.isDead()) continue;
+            return character;
         }
-        return character;
+        return null;
     }
     
     public CharacterCombatInfo getFirstEnemy() {
-        CharacterCombatInfo enemy = enemies.first();
-        while (enemy.isDead()) {
-            enemies.remove(enemy);
-            if(enemies.isEmpty()) return null;
-            enemy = enemies.first();
+        for (CharacterCombatInfo enemy : enemies) {
+            if(enemy.isDead() || enemy.isHypnotized()) continue;
+            return enemy;
         }
-        return enemy;
+        return null;
     }
     
     public void processTurn() {
-        List<CharacterCombatInfo> characterToRemove = new ArrayList<>();
         for (CharacterCombatInfo character : turnQueue) {
-            if(character.isDead()) {
-                characterToRemove.add(character);
-                continue;
-            }
+            if(character.isDead() || character.isHypnotized()) continue;
             switch (character.getWeaponType()) {
                 case MELEE -> processMelee(character);
                 case RANGED -> processRanged(character);
@@ -91,12 +86,6 @@ public class CombatProcessor {
                 case HEALER -> processHealer(character);
                 case HYPNOTIZER -> processHypnotizer(character);
             }
-        }
-        for (CharacterCombatInfo character : characterToRemove) {
-            if(!character.isEnemy()) deadCharacters.add(character);
-            turnQueue.remove(character);
-            characters.remove(character);
-            enemies.remove(character);
         }
     }
     
@@ -245,7 +234,8 @@ public class CombatProcessor {
     }
     
     private void processFirstRowHypnotizer(CharacterCombatInfo character) {
-        CharacterCombatInfo target = character.isEnemy() ? getFirstCharacter() : getFirstEnemy();
+        // Enemy can't be hypnotizer
+        CharacterCombatInfo target = getFirstEnemy();
         processHypnotizerTurn(character, target, character.getAggroGeneration());
     }
     

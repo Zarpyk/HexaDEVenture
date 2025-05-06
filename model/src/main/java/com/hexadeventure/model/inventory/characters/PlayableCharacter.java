@@ -18,6 +18,7 @@ public class PlayableCharacter {
     @Setter
     private double hypnotizationResistence;
     private Weapon weapon;
+    private final ChangedStats changedStats;
     
     public PlayableCharacter(String name, double health, double speed) {
         this.id = UUID.randomUUID().toString();
@@ -25,6 +26,9 @@ public class PlayableCharacter {
         this.health = health;
         this.speed = speed;
         this.weapon = new Weapon(Weapon.DEFAULT_WEAPON);
+        
+        changedStats = new ChangedStats();
+        changedStats.updateStats(health, false);
     }
     
     public PlayableCharacter(String name, double health, double speed, double hypnotizationResistence) {

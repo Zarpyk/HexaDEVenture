@@ -145,7 +145,7 @@ public class CharacterCombatInfo {
     }
     
     public boolean isDead() {
-        return this.health <= 0;
+        return this.health <= 0 || this.isHypnotized;
     }
     
     public CharacterStatusChange reduceCooldown() {
