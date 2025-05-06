@@ -112,6 +112,12 @@ public class CombatService implements CombatUseCase {
                 if(character.isDead()) continue;
                 gameMap.getInventory().addCharacter(character.getCharacter());
             }
+            for (CharacterCombatInfo enemy : combatProcessor.getEnemies()) {
+                if(!enemy.isHypnotized()) continue;
+                PlayableCharacter character = enemy.getCharacter();
+                character.getChangedStats().updateStats(character.getHealth(), false);
+                gameMap.getInventory().addCharacter(character);
+            }
         }
         
         gameMapRepository.save(gameMap);

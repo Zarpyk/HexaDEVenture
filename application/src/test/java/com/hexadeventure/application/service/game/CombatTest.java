@@ -628,6 +628,38 @@ public class CombatTest {
         assertThat(map.isInCombat()).isFalse();
         assertThat(map.getInventory().getCharacters()).doesNotContainKey(character.getId());
     }
+    
+    @Test
+    public void givenCharactersAndEnemies_whenFinishCombatWithEnemyHypnotized_thenAddAllCharacterToInventory() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        // Create an empty game map
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        map.setInCombat(true);
+        
+        // Create characters and enemies
+        PlayableCharacter character = PlayableCharacterFactory.createHypnotizerCharacter(999);
+        character.getWeapon().setHypnotizationPower(100);
+        PlayableCharacter melee = PlayableCharacterFactory.createMeleeCharacter(9999);
+        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
+        enemy.setHypnotizationResistence(0);
+        
+        // Place characters and enemies on the combat terrain
+        map.getCombatTerrain().placeCharacter(0, 0, character);
+        map.getCombatTerrain().placeCharacter(0, 1, melee);
+        map.getCombatTerrain().placeEnemy(0, 0, enemy);
+        
+        // Execute the method
+        combatService.startAutoCombat(TEST_USER_EMAIL);
+        
+        assertThat(map.getInventory().getCharacters()).containsKey(character.getId());
+        assertThat(map.getInventory().getCharacters()).containsKey(melee.getId());
+        assertThat(map.getInventory().getCharacters()).containsKey(enemy.getId());
+        PlayableCharacter addedEnemy = map.getInventory().getCharacters().get(enemy.getId());
+        assertThat(addedEnemy.getChangedStats().getHealth()).isEqualTo(addedEnemy.getHealth());
+        assertThat(addedEnemy.getChangedStats().isHypnotized()).isFalse();
+    }
     //endregion
     
     //region MeleeCharacter
