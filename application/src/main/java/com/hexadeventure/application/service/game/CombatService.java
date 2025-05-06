@@ -106,15 +106,19 @@ public class CombatService implements CombatUseCase {
             }
         }
         
+        // Check if combat finished
         if(noCharacterRemain || noEnemyRemain) {
             gameMap.setInCombat(false);
+            // Add characters back to inventory if they are not dead
             for (CharacterCombatInfo character : combatProcessor.getCharacters()) {
                 if(character.isDead()) continue;
                 gameMap.getInventory().addCharacter(character.getCharacter());
             }
+            // Add enemies to inventory if they are hypnotized
             for (CharacterCombatInfo enemy : combatProcessor.getEnemies()) {
                 if(!enemy.isHypnotized()) continue;
                 PlayableCharacter character = enemy.getCharacter();
+                // Regen enemy health
                 character.getChangedStats().updateStats(character.getHealth(), false);
                 gameMap.getInventory().addCharacter(character);
             }
