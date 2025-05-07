@@ -9,6 +9,7 @@ import com.hexadeventure.adapter.out.settings.json.food.FoodJson;
 import com.hexadeventure.adapter.out.settings.json.initial.InitialResourcesJson;
 import com.hexadeventure.adapter.out.settings.json.material.MaterialJson;
 import com.hexadeventure.adapter.out.settings.json.potion.PotionJson;
+import com.hexadeventure.adapter.out.settings.json.recipe.RecipeJson;
 import com.hexadeventure.adapter.out.settings.json.weapon.WeaponDataJson;
 import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.model.inventory.characters.EnemyPattern;
@@ -18,6 +19,7 @@ import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.initial.InitialResources;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
+import com.hexadeventure.model.inventory.recipes.Recipe;
 import com.hexadeventure.model.inventory.weapons.WeaponSetting;
 import com.hexadeventure.model.inventory.weapons.WeaponType;
 import com.hexadeventure.model.map.GameMap;
@@ -44,6 +46,8 @@ public class SettingsImporterAdapter implements SettingsImporter {
     private static final String ENEMIES_JSON = "enemies.json";
     private static final String ENEMY_PATTERNS_JSON = "enemy_patterns.json";
     
+    private static final String RECIPES_JSON = "recipes.json";
+    
     private static final ObjectMapper objectMapper = new ObjectMapper();
     
     private static final Map<String, WeaponSetting> weaponsCache = new HashMap<>();
@@ -54,6 +58,7 @@ public class SettingsImporterAdapter implements SettingsImporter {
     private static final InitialResources initialResources = new InitialResources();
     private static final Map<String, EnemySetting> enemiesCache = new HashMap<>();
     private static final Set<EnemyPattern> enemyPatternsCache = new TreeSet<>();
+    private static final Map<String, Recipe> recipesCache = new HashMap<>();
     
     @Override
     public Map<String, WeaponSetting> importWeapons() {
@@ -122,6 +127,7 @@ public class SettingsImporterAdapter implements SettingsImporter {
         }
     }
     
+    @Override
     public EnemyPattern[] importEnemyPatterns(double threshold) {
         Set<EnemyPattern> enemyPatterns = importEnemyPatterns();
         Set<EnemyPattern> enemyPatternsToReturn = new HashSet<>();
@@ -135,6 +141,7 @@ public class SettingsImporterAdapter implements SettingsImporter {
         return enemyPatternsToReturn.toArray(EnemyPattern[]::new);
     }
     
+    @Override
     public EnemyPattern[] importBossPatterns() {
         Set<EnemyPattern> enemyPatterns = importEnemyPatterns();
         Set<EnemyPattern> enemyPatternsToReturn = new HashSet<>();
@@ -146,6 +153,24 @@ public class SettingsImporterAdapter implements SettingsImporter {
             }
         }
         return enemyPatternsToReturn.toArray(EnemyPattern[]::new);
+    }
+    
+    @Override
+    public Map<String, Recipe> importRecipes() {
+        if(!recipesCache.isEmpty()) return recipesCache;
+        try {
+            // From: https://stackoverflow.com/a/49468282/11451105
+            File file = ResourceUtils.getFile("classpath:" + RECIPES_JSON);
+            InputStream inputStream = new FileInputStream(file);
+            
+            RecipeJson[] json = objectMapper.readValue(inputStream, RecipeJson[].class);
+            Recipe[] model = Arrays.stream(json).map(RecipeJson::toModel)
+                                   .toArray(Recipe[]::new);
+            for (Recipe recipe : model) recipesCache.put(recipe.getResultID(), recipe);
+            return recipesCache;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     
     @SuppressWarnings("SameReturnValue")

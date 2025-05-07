@@ -1,10 +1,13 @@
 package com.hexadeventure.application.port.out.settings;
 
+import com.hexadeventure.model.inventory.Item;
+import com.hexadeventure.model.inventory.ItemType;
 import com.hexadeventure.model.inventory.characters.EnemyPattern;
 import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.initial.InitialResources;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
+import com.hexadeventure.model.inventory.recipes.Recipe;
 import com.hexadeventure.model.inventory.weapons.WeaponSetting;
 import com.hexadeventure.model.inventory.weapons.WeaponType;
 import com.hexadeventure.model.map.resources.ResourceType;
@@ -21,4 +24,5 @@ public interface SettingsImporter {
     InitialResources importInitialResources();
     EnemyPattern[] importEnemyPatterns(double threshold);
     EnemyPattern[] importBossPatterns();
+    Map<String, Recipe> importRecipes();
 }

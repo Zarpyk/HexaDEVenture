@@ -1,0 +1,19 @@
+[
+  {
+    "resultID": "Sword",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "STONE",
+        "type": "MATERIAL",
+        "amount": 2
+      },
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 1
+      }
+    ]
+  }
+]

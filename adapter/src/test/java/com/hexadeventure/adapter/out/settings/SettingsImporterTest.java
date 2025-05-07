@@ -5,6 +5,7 @@ import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.initial.InitialResources;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
+import com.hexadeventure.model.inventory.recipes.Recipe;
 import com.hexadeventure.model.inventory.weapons.WeaponSetting;
 import com.hexadeventure.model.inventory.weapons.WeaponType;
 import com.hexadeventure.model.map.resources.ResourceType;
@@ -170,5 +171,22 @@ public class SettingsImporterTest {
     public void givenThreshold_whenGetBossPatterns_thenReturnAllBossPatterns() {
         EnemyPattern[] enemyPatterns = settingsImporter.importBossPatterns();
         assertThat(enemyPatterns.length).isEqualTo(1);
+    }
+    
+    @Test
+    public void givenJson_whenImportRecipes_thenReturnRecipes() {
+        Map<String, Recipe> recipes = settingsImporter.importRecipes();
+        
+        assertThat(recipes).isNotNull();
+        assertThat(recipes.size()).isPositive();
+        
+        Optional<Recipe> optionalRecipe = recipes.values().stream().findFirst();
+        assertThat(optionalRecipe).isPresent();
+        
+        Recipe recipe = optionalRecipe.get();
+        assertThat(recipe.getResultID()).isNotBlank();
+        assertThat(recipe.getResultType()).isNotNull();
+        assertThat(recipe.getResultAmount()).isPositive();
+        assertThat(recipe.getMaterials()).isNotEmpty();
     }
 }
