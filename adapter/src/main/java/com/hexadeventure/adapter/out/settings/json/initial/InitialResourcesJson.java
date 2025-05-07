@@ -1,5 +1,7 @@
 package com.hexadeventure.adapter.out.settings.json.initial;
 
+import com.hexadeventure.adapter.out.settings.json.material.MaterialJson;
+import com.hexadeventure.model.inventory.initial.InitialCharacter;
 import com.hexadeventure.model.inventory.initial.InitialResourceTypeIdResourceData;
 import com.hexadeventure.model.inventory.initial.InitialResources;
 import com.hexadeventure.model.inventory.initial.InitialStringIdResourceData;
@@ -14,16 +16,16 @@ import java.util.Arrays;
 @Setter
 @NoArgsConstructor
 public class InitialResourcesJson {
+    private InitialCharacterJson[] initialCharacters;
     private InitialStringIDResourceJson[] initialWeapons;
     private InitialStringIDResourceJson[] initialFood;
     private InitialStringIDResourceJson[] initialPotions;
     private InitialMaterialTypeIDResourceJson[] initialMaterials;
     
-    public static ResourceType getID(com.hexadeventure.adapter.out.settings.json.material.MaterialJson materialJson) {
-        return ResourceType.values()[materialJson.getMaterialType().ordinal()];
-    }
-    
     public InitialResources toModel() {
+        InitialCharacter[] characters = Arrays.stream(initialCharacters)
+                                              .map(InitialCharacterJson::toModel)
+                                              .toArray(InitialCharacter[]::new);
         InitialStringIdResourceData[] weapons = Arrays.stream(initialWeapons)
                                                       .map(InitialStringIDResourceJson::toModel)
                                                       .toArray(InitialStringIdResourceData[]::new);
@@ -41,6 +43,7 @@ public class InitialResourcesJson {
                                                               .toArray(InitialResourceTypeIdResourceData[]::new);
         
         InitialResources initialResources = new InitialResources();
+        initialResources.setInitialCharacters(characters);
         initialResources.setInitialWeapons(weapons);
         initialResources.setInitialFoods(foods);
         initialResources.setInitialPotions(potions);

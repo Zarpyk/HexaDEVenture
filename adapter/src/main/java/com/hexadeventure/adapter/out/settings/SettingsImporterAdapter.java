@@ -111,6 +111,7 @@ public class SettingsImporterAdapter implements SettingsImporter {
             
             InitialResourcesJson json = objectMapper.readValue(inputStream, InitialResourcesJson.class);
             InitialResources model = json.toModel();
+            initialResources.setInitialCharacters(model.getInitialCharacters());
             initialResources.setInitialWeapons(model.getInitialWeapons());
             initialResources.setInitialFoods(model.getInitialFoods());
             initialResources.setInitialPotions(model.getInitialPotions());

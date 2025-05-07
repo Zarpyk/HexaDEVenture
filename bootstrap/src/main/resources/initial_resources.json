@@ -1,15 +1,49 @@
 {
+  "initialCharacters": [
+    {
+      "name": "Hero",
+      "minHealth": 200,
+      "maxHealth": 300,
+      "minSpeed": 75,
+      "maxSpeed": 150
+    },
+    {
+      "name": "Adventurer",
+      "minHealth": 50,
+      "maxHealth": 150,
+      "minSpeed": 50,
+      "maxSpeed": 125
+    },
+    {
+      "name": "Guardian",
+      "minHealth": 150,
+      "maxHealth": 400,
+      "minSpeed": 10,
+      "maxSpeed": 75
+    },
+    {
+      "name": "Mage",
+      "minHealth": 100,
+      "maxHealth": 250,
+      "minSpeed": 10,
+      "maxSpeed": 50
+    }
+  ],
   "initialWeapons": [
     {
-      "id": "Sword",
+      "id": "Large Sword",
       "count": 1
     },
     {
-      "id": "Crossbow",
+      "id": "Heavy Crossbow",
       "count": 1
     },
     {
-      "id": "Circular Shield",
+      "id": "Basic Shield",
+      "count": 1
+    },
+    {
+      "id": "Hypnotization Wand",
       "count": 1
     }
   ],

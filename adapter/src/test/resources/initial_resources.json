@@ -1,4 +1,13 @@
 {
+  "initialCharacters": [
+    {
+      "name": "Hero",
+      "minHealth": 200,
+      "maxHealth": 300,
+      "minSpeed": 75,
+      "maxSpeed": 150
+    }
+  ],
   "initialWeapons": [
     {
       "id": "Sword",

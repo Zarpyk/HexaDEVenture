@@ -156,6 +156,7 @@ public class StartGameTest {
         verify(gameMapRepository).save(captor.capture());
         
         GameMap gameMap = captor.getValue();
+        assertThat(gameMap.getInventory().getCharacters()).isNotEmpty();
         for (Item item : gameMap.getInventory().getItems().values()) {
             if(item instanceof Weapon weapon) {
                 assertThat(weapon.getName()).isEqualTo(ItemFactory.TEST_WEAPON_NAME);

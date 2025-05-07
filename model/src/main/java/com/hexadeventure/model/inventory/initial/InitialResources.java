@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class InitialResources {
+    private InitialCharacter[] initialCharacters;
     private InitialStringIdResourceData[] initialWeapons;
     private InitialStringIdResourceData[] initialFoods;
     private InitialStringIdResourceData[] initialPotions;

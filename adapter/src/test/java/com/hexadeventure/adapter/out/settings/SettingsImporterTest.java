@@ -112,6 +112,7 @@ public class SettingsImporterTest {
         InitialResources initialResources = settingsImporter.importInitialResources();
         
         assertThat(initialResources).isNotNull();
+        assertThat(initialResources.getInitialCharacters().length).isPositive();
         assertThat(initialResources.getInitialWeapons().length).isPositive();
         assertThat(initialResources.getInitialFoods().length).isPositive();
         assertThat(initialResources.getInitialPotions().length).isPositive();

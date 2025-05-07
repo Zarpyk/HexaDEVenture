@@ -11,7 +11,9 @@ import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.application.service.common.Utilities;
 import com.hexadeventure.model.enemies.Enemy;
+import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import com.hexadeventure.model.inventory.foods.Food;
+import com.hexadeventure.model.inventory.initial.InitialCharacter;
 import com.hexadeventure.model.inventory.initial.InitialResourceTypeIdResourceData;
 import com.hexadeventure.model.inventory.initial.InitialResources;
 import com.hexadeventure.model.inventory.initial.InitialStringIdResourceData;
@@ -83,6 +85,13 @@ public class GameService implements GameUseCase {
         Map<ResourceType, Material> materials = settingsImporter.importMaterials();
         
         SplittableRandom random = new SplittableRandom(map.getSeed());
+        
+        for (InitialCharacter characterData : initialResources.getInitialCharacters()) {
+            int health = random.nextInt(characterData.getMinHealth(), characterData.getMaxHealth() + 1);
+            int speed = random.nextInt(characterData.getMinSpeed(), characterData.getMaxSpeed() + 1);
+            PlayableCharacter playableCharacter = new PlayableCharacter(characterData.getName(), health, speed);
+            map.getInventory().addCharacter(playableCharacter);
+        }
         
         for (InitialStringIdResourceData weaponsData : initialResources.getInitialWeapons()) {
             WeaponSetting weaponSetting = weapons.get(weaponsData.getId());

@@ -3,6 +3,7 @@ package com.hexadeventure.application.service.common;
 import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.model.inventory.characters.EnemyPattern;
 import com.hexadeventure.model.inventory.foods.Food;
+import com.hexadeventure.model.inventory.initial.InitialCharacter;
 import com.hexadeventure.model.inventory.initial.InitialResourceTypeIdResourceData;
 import com.hexadeventure.model.inventory.initial.InitialResources;
 import com.hexadeventure.model.inventory.initial.InitialStringIdResourceData;
@@ -62,7 +63,10 @@ public class ItemFactory {
         when(settingsImporter.importBossPatterns()).thenReturn(enemyPatterns);
     }
     
+    @SuppressWarnings("ExtractMethodRecommender")
     private static InitialResources getInitialResources() {
+        InitialCharacter[] initialCharacters = new InitialCharacter[]{
+                new InitialCharacter("Hero", 1, 1, 1, 1)};
         InitialStringIdResourceData[] initialWeapons = new InitialStringIdResourceData[]{
                 new InitialStringIdResourceData(TEST_WEAPON_NAME, 1)};
         InitialStringIdResourceData[] initialFoods = new InitialStringIdResourceData[]{
@@ -73,6 +77,7 @@ public class ItemFactory {
                 new InitialResourceTypeIdResourceData(TEST_MATERIAL_TYPE, 1)};
         
         InitialResources initialResources = new InitialResources();
+        initialResources.setInitialCharacters(initialCharacters);
         initialResources.setInitialWeapons(initialWeapons);
         initialResources.setInitialFoods(initialFoods);
         initialResources.setInitialPotions(initialPotions);
