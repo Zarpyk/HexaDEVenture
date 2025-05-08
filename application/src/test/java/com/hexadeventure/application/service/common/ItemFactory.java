@@ -28,13 +28,18 @@ import static org.mockito.Mockito.when;
 
 public class ItemFactory {
     public static final String TEST_WEAPON_NAME = "Sword";
+    public static final String TEST_RANDOM_WEAPON_NAME = "Random Sword";
     public static final String TEST_FOOD_NAME = "Apple";
     public static final String TEST_POTION_NAME = "Health Potion";
     public static final ResourceType TEST_MATERIAL_TYPE = ResourceType.WOOD;
     
     public static final String TEST_RECIPE_NAME = "TestRecipe";
     public static final int TEST_RECIPE_COUNT = 20;
-    public static final Object TEST_RECIPE_MATERIAL = TEST_MATERIAL_TYPE;
+    public static final int TEST_EXTRA_RECIPE_COUNT = 4;
+    public static final int TEST_WEAPON_RECIPE_INDEX = TEST_RECIPE_COUNT;
+    public static final int TEST_FOOD_RECIPE_INDEX = TEST_RECIPE_COUNT + 1;
+    public static final int TEST_POTION_RECIPE_INDEX = TEST_RECIPE_COUNT + 2;
+    public static final int TEST_MATERIAL_RECIPE_INDEX = TEST_RECIPE_COUNT + 3;
     
     public static void setupSettingsImporter(SettingsImporter settingsImporter) {
         when(settingsImporter.importInitialResources()).thenReturn(getInitialResources());
@@ -44,12 +49,32 @@ public class ItemFactory {
         Map<String, Potion> potionsCache = new HashMap<>();
         Map<ResourceType, Material> materialsCache = new HashMap<>();
         
-        WeaponSetting weaponSetting = new WeaponSetting(TEST_WEAPON_NAME, 1, 0, 1, WeaponType.MELEE, 1, 1,
-                                                        1, 1, 1, 1,
-                                                        1, 1, AggroGenType.ATTACK, 1,
-                                                        1, 1, 1, 1,
-                                                        1, 1, 1);
+        WeaponSetting weaponSetting = new WeaponSetting(TEST_WEAPON_NAME, 1,
+                                                        0, 1, WeaponType.MELEE,
+                                                        1, 1,
+                                                        1, 1,
+                                                        1, 1,
+                                                        1, 1, AggroGenType.ATTACK,
+                                                        1,
+                                                        1, 1,
+                                                        1,
+                                                        1, 1,
+                                                        1, 1);
         weaponsCache.put(TEST_WEAPON_NAME, weaponSetting);
+        WeaponSetting randomWeapon = new WeaponSetting(TEST_RANDOM_WEAPON_NAME, 1,
+                                                       0, 1,
+                                                       WeaponType.MELEE,
+                                                       1, Integer.MAX_VALUE - 1,
+                                                       1, Integer.MAX_VALUE - 1,
+                                                       1, Integer.MAX_VALUE - 1,
+                                                       1, Integer.MAX_VALUE - 1,
+                                                       AggroGenType.ATTACK,
+                                                       1,
+                                                       1, Integer.MAX_VALUE - 1,
+                                                       1,
+                                                       1, Integer.MAX_VALUE - 1,
+                                                       1, Integer.MAX_VALUE - 1);
+        weaponsCache.put(TEST_RANDOM_WEAPON_NAME, randomWeapon);
         
         Food food = new Food(TEST_FOOD_NAME, 1, 1);
         foodsCache.put(TEST_FOOD_NAME, food);
@@ -107,6 +132,17 @@ public class ItemFactory {
             Recipe recipe = new Recipe(recipeName, ItemType.WEAPON, 1, recipeResources);
             recipes.add(recipe);
         }
+        
+        // Add real recipes
+        Recipe recipe = new Recipe(TEST_RANDOM_WEAPON_NAME, ItemType.WEAPON, 1, recipeResources);
+        recipes.add(recipe);
+        recipe = new Recipe(TEST_FOOD_NAME, ItemType.FOOD, 1, recipeResources);
+        recipes.add(recipe);
+        recipe = new Recipe(TEST_POTION_NAME, ItemType.POTION, 1, recipeResources);
+        recipes.add(recipe);
+        recipe = new Recipe(TEST_MATERIAL_TYPE.toString(), ItemType.MATERIAL, 1, recipeResources);
+        recipes.add(recipe);
+        
         return recipes;
     }
 }

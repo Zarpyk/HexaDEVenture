@@ -1,7 +1,6 @@
 package com.hexadeventure.application.service.game;
 
-import com.hexadeventure.application.exceptions.GameNotStartedException;
-import com.hexadeventure.application.exceptions.InvalidSearchException;
+import com.hexadeventure.application.exceptions.*;
 import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
@@ -69,7 +68,8 @@ public class InventoryTest {
         assertThatExceptionOfType(InvalidSearchException.class)
                 .isThrownBy(() -> inventoryService.getRecipes(UserFactory.EMAIL,
                                                               1,
-                                                              ItemFactory.TEST_RECIPE_COUNT + 1));
+                                                              ItemFactory.TEST_RECIPE_COUNT +
+                                                              ItemFactory.TEST_EXTRA_RECIPE_COUNT + 1));
         assertThatExceptionOfType(InvalidSearchException.class)
                 .isThrownBy(() -> inventoryService.getRecipes(UserFactory.EMAIL,
                                                               2,
@@ -124,5 +124,133 @@ public class InventoryTest {
         
         assertThatExceptionOfType(GameNotStartedException.class)
                 .isThrownBy(() -> inventoryService.getRecipes(UserFactory.EMAIL, 1, 10));
+    }
+    
+    @Test
+    public void givenNegativeCount_whenCraft_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        
+        assertThatExceptionOfType(SizeException.class)
+                .isThrownBy(() -> inventoryService.craft(UserFactory.EMAIL, 0, -1));
+    }
+    
+    @Test
+    public void givenInvalidRecipeIndex_whenCraft_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        
+        assertThatExceptionOfType(InvalidRecipeException.class)
+                .isThrownBy(() -> inventoryService.craft(UserFactory.EMAIL, -1, 10));
+        assertThatExceptionOfType(InvalidRecipeException.class)
+                .isThrownBy(() -> inventoryService.craft(UserFactory.EMAIL,
+                                                         ItemFactory.TEST_RECIPE_COUNT +
+                                                         ItemFactory.TEST_EXTRA_RECIPE_COUNT,
+                                                         10));
+    }
+    
+    @Test
+    public void givenNoStartGameUser_whenCraft_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(null);
+        
+        MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        
+        assertThatExceptionOfType(GameNotStartedException.class)
+                .isThrownBy(() -> inventoryService.craft(UserFactory.EMAIL, 0, 10));
+    }
+    
+    @Test
+    public void givenInvalidCount_whenCraft_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        Map<ResourceType, Material> materials = settingsImporter.importMaterials();
+        int craftableCount = 10;
+        map.getInventory().addItem(materials.get(ItemFactory.TEST_MATERIAL_TYPE), craftableCount);
+        
+        assertThatExceptionOfType(NotEnoughtResourcesException.class)
+                .isThrownBy(() -> inventoryService.craft(UserFactory.EMAIL, 0, craftableCount + 1));
+    }
+    
+    @Test
+    public void givenWeaponRecipe_whenCraft_thenCraftTheItems() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        Map<ResourceType, Material> materials = settingsImporter.importMaterials();
+        int craftableCount = 10;
+        map.getInventory().addItem(materials.get(ItemFactory.TEST_MATERIAL_TYPE), craftableCount);
+        
+        int recipeIndex = ItemFactory.TEST_WEAPON_RECIPE_INDEX;
+        inventoryService.craft(UserFactory.EMAIL, recipeIndex, craftableCount - 1);
+        
+        assertThat(map.getInventory().getItems().get(ItemFactory.TEST_MATERIAL_TYPE.toString()).getCount())
+                .isEqualTo(craftableCount - (craftableCount - 1));
+        assertThat(map.getInventory().getItems()).hasSize(craftableCount);
+        assertThat(map.getInventory().getItems().get(ItemFactory.TEST_MATERIAL_TYPE.toString()).getCount())
+                .isEqualTo(1);
+    }
+    
+    @Test
+    public void givenFoodRecipe_whenCraft_thenCraftTheItems() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        Map<ResourceType, Material> materials = settingsImporter.importMaterials();
+        int craftableCount = 10;
+        map.getInventory().addItem(materials.get(ItemFactory.TEST_MATERIAL_TYPE), craftableCount);
+        
+        int recipeIndex = ItemFactory.TEST_FOOD_RECIPE_INDEX;
+        inventoryService.craft(UserFactory.EMAIL, recipeIndex, craftableCount - 1);
+        
+        assertThat(map.getInventory().getItems().get(ItemFactory.TEST_MATERIAL_TYPE.toString()).getCount())
+                .isEqualTo(craftableCount - (craftableCount - 1));
+        assertThat(map.getInventory().getItems().get(ItemFactory.TEST_FOOD_NAME).getCount())
+                .isEqualTo(craftableCount - 1);
+    }
+    
+    @Test
+    public void givenPotionRecipe_whenCraft_thenCraftTheItems() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        Map<ResourceType, Material> materials = settingsImporter.importMaterials();
+        int craftableCount = 10;
+        map.getInventory().addItem(materials.get(ItemFactory.TEST_MATERIAL_TYPE), craftableCount);
+        
+        int recipeIndex = ItemFactory.TEST_POTION_RECIPE_INDEX;
+        inventoryService.craft(UserFactory.EMAIL, recipeIndex, craftableCount - 1);
+        
+        assertThat(map.getInventory().getItems().get(ItemFactory.TEST_MATERIAL_TYPE.toString()).getCount())
+                .isEqualTo(craftableCount - (craftableCount - 1));
+        assertThat(map.getInventory().getItems().get(ItemFactory.TEST_POTION_NAME).getCount())
+                .isEqualTo(craftableCount - 1);
+    }
+    
+    public void givenMaterialRecipe_whenCraft_thenCraftTheItems() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        Map<ResourceType, Material> materials = settingsImporter.importMaterials();
+        int craftableCount = 10;
+        map.getInventory().addItem(materials.get(ItemFactory.TEST_MATERIAL_TYPE), craftableCount);
+        
+        int recipeIndex = ItemFactory.TEST_MATERIAL_RECIPE_INDEX;
+        inventoryService.craft(UserFactory.EMAIL, recipeIndex, craftableCount - 1);
+        
+        assertThat(map.getInventory().getItems().get(ItemFactory.TEST_MATERIAL_TYPE.toString()).getCount())
+                .isEqualTo(craftableCount - (craftableCount - 1));
+        assertThat(map.getInventory().getItems().get(ItemFactory.TEST_MATERIAL_TYPE.toString()).getCount())
+                .isEqualTo(craftableCount - 1);
     }
 }

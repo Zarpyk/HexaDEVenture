@@ -1,7 +1,7 @@
 package com.hexadeventure.application.service.game;
 
 import com.hexadeventure.application.exceptions.GameStartedException;
-import com.hexadeventure.application.exceptions.MapSizeException;
+import com.hexadeventure.application.exceptions.SizeException;
 import com.hexadeventure.application.port.out.noise.NoiseGenerator;
 import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
@@ -132,9 +132,9 @@ public class StartGameTest {
     public void givenSmallSize_whenCreateNewMap_thenThrowException(int size) {
         UserFactory.createTestUser(userRepository);
         
-        assertThatExceptionOfType(MapSizeException.class).isThrownBy(() -> gameService.startGame(TEST_USER_EMAIL,
-                                                                                                 TEST_SEED,
-                                                                                                 size));
+        assertThatExceptionOfType(SizeException.class).isThrownBy(() -> gameService.startGame(TEST_USER_EMAIL,
+                                                                                              TEST_SEED,
+                                                                                              size));
     }
     
     @ParameterizedTest(name = "Given size {0} when create new map then throw exception")
@@ -142,9 +142,9 @@ public class StartGameTest {
     public void givenNotMultipleOfChunkSize_whenCreateNewMap_thenThrowException(int size) {
         UserFactory.createTestUser(userRepository);
         
-        assertThatExceptionOfType(MapSizeException.class).isThrownBy(() -> gameService.startGame(TEST_USER_EMAIL,
-                                                                                                 TEST_SEED,
-                                                                                                 size));
+        assertThatExceptionOfType(SizeException.class).isThrownBy(() -> gameService.startGame(TEST_USER_EMAIL,
+                                                                                              TEST_SEED,
+                                                                                              size));
     }
     
     @Test

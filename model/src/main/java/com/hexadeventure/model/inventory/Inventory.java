@@ -34,12 +34,12 @@ public class Inventory {
         }
     }
     
-    public void removeItem(Item item) {
+    public void removeItem(Item item, int count) {
         Item itemObj = items.get(item.getId());
         if(itemObj != null) {
-            int count = itemObj.getCount() - 1;
-            if(count <= 0) items.remove(item.getId());
-            else itemObj.setCount(count);
+            int finalCount = itemObj.getCount() - count;
+            if(finalCount <= 0) items.remove(item.getId());
+            else itemObj.setCount(finalCount);
         }
     }
     

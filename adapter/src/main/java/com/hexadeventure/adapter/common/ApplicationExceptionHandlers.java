@@ -19,7 +19,8 @@ public class ApplicationExceptionHandlers {
                        CombatNotStartedException.class,
                        PositionEmptyException.class,
                        PositionOccupiedException.class,
-                       CharacterNotFoundException.class})
+                       CharacterNotFoundException.class,
+                       NotEnoughtResourcesException.class})
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     private String methodNotAllowedExceptionHandler(Exception ex) {
         return ex.getMessage();
@@ -33,9 +34,10 @@ public class ApplicationExceptionHandlers {
     }
     
     @ResponseBody
-    @ExceptionHandler({MapSizeException.class,
+    @ExceptionHandler({SizeException.class,
                        InvalidPositionException.class,
-                       InvalidSearchException.class})
+                       InvalidSearchException.class,
+                       InvalidRecipeException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private String badRequestExceptionHandler(Exception ex) {
         return ex.getMessage();

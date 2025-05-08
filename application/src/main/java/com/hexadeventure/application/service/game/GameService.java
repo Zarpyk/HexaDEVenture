@@ -2,7 +2,7 @@ package com.hexadeventure.application.service.game;
 
 import com.hexadeventure.application.exceptions.GameInCombatException;
 import com.hexadeventure.application.exceptions.GameStartedException;
-import com.hexadeventure.application.exceptions.MapSizeException;
+import com.hexadeventure.application.exceptions.SizeException;
 import com.hexadeventure.application.port.in.game.GameUseCase;
 import com.hexadeventure.application.port.out.noise.NoiseGenerator;
 import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
@@ -64,10 +64,10 @@ public class GameService implements GameUseCase {
         assert user.isPresent();
         if(user.get().getMapId() != null) throw new GameStartedException();
         if(size < MIN_MAP_SIZE) {
-            throw new MapSizeException("Map size must be greater than " + MIN_MAP_SIZE);
+            throw new SizeException("Map size must be greater than " + MIN_MAP_SIZE);
         }
         if(size % 16 != 0) {
-            throw new MapSizeException("Map size must be a multiple of 16");
+            throw new SizeException("Map size must be a multiple of 16");
         }
         MapGenerator mapGenerator = new MapGenerator(noiseGenerator, aStarPathfinder, settingsImporter);
         GameMap map = mapGenerator.initialMapGeneration(email, seed, size);

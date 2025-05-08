@@ -86,7 +86,7 @@ public class InventoryTest {
         Weapon weapon = new Weapon(TEST_WEAPON_NAME, WeaponType.MELEE, 1);
         
         inventory.addItem(weapon);
-        inventory.removeItem(weapon);
+        inventory.removeItem(weapon, 1);
         
         assertThat(inventory.getItems()).isEmpty();
     }
@@ -98,7 +98,7 @@ public class InventoryTest {
         
         inventory.addItem(weapon);
         inventory.addItem(weapon);
-        inventory.removeItem(weapon);
+        inventory.removeItem(weapon, 1);
         
         assertThat(inventory.getItems().get(weapon.getId()).getCount()).isEqualTo(1);
     }
