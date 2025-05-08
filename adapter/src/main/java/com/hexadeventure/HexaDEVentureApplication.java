@@ -2,6 +2,7 @@ package com.hexadeventure;
 
 import com.hexadeventure.application.port.in.game.CombatUseCase;
 import com.hexadeventure.application.port.in.game.GameUseCase;
+import com.hexadeventure.application.port.in.game.InventoryUseCase;
 import com.hexadeventure.application.port.in.login.RegisterUseCase;
 import com.hexadeventure.application.port.out.noise.NoiseGenerator;
 import com.hexadeventure.application.port.out.pathfinder.AStarPathfinder;
@@ -10,6 +11,7 @@ import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.application.service.game.CombatService;
 import com.hexadeventure.application.service.game.GameService;
+import com.hexadeventure.application.service.game.InventoryService;
 import com.hexadeventure.application.service.register.RegisterService;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +35,6 @@ public class HexaDEVentureApplication {
         this.settingsImporter = settingsImporter;
     }
     
-    
     @Bean
     public RegisterUseCase registerUseCase() {
         return new RegisterService(userRepository, gameMapRepository);
@@ -47,5 +48,10 @@ public class HexaDEVentureApplication {
     @Bean
     public CombatUseCase combatUseCase() {
         return new CombatService(userRepository, gameMapRepository, settingsImporter);
+    }
+    
+    @Bean
+    public InventoryUseCase inventoryUseCase() {
+        return new InventoryService(userRepository, gameMapRepository, settingsImporter);
     }
 }

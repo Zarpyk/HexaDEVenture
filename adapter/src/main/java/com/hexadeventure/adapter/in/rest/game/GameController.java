@@ -1,8 +1,9 @@
 package com.hexadeventure.adapter.in.rest.game;
 
-import com.hexadeventure.adapter.in.rest.game.map.ChunkDataDTO;
-import com.hexadeventure.adapter.in.rest.game.movement.MovementResponseDTO;
-import com.hexadeventure.adapter.in.rest.game.map.Vector2DTO;
+import com.hexadeventure.adapter.in.rest.game.dto.in.StartGameDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.map.ChunkDataDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.movement.MovementResponseDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.map.Vector2DTO;
 import com.hexadeventure.application.port.in.game.GameUseCase;
 import com.hexadeventure.model.movement.MovementResponse;
 import org.springframework.http.HttpStatus;

@@ -34,7 +34,8 @@ public class ApplicationExceptionHandlers {
     
     @ResponseBody
     @ExceptionHandler({MapSizeException.class,
-                       InvalidPositionException.class})
+                       InvalidPositionException.class,
+                       InvalidSearchException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private String badRequestExceptionHandler(Exception ex) {
         return ex.getMessage();

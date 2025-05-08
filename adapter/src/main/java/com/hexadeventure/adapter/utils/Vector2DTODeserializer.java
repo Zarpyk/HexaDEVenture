@@ -2,7 +2,7 @@ package com.hexadeventure.adapter.utils;
 
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.KeyDeserializer;
-import com.hexadeventure.adapter.in.rest.game.map.Vector2DTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.map.Vector2DTO;
 
 public class Vector2DTODeserializer extends KeyDeserializer {
     @Override

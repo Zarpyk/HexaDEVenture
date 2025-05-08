@@ -1,6 +1,6 @@
-package com.hexadeventure.adapter.in.rest.game.movement;
+package com.hexadeventure.adapter.in.rest.game.dto.out.movement;
 
-import com.hexadeventure.adapter.in.rest.game.map.Vector2DTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.map.Vector2DTO;
 import com.hexadeventure.model.movement.EnemyMovement;
 
 public record EnemyMovementDTO(Vector2DTO position) {

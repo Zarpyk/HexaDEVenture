@@ -24,5 +24,5 @@ public interface SettingsImporter {
     InitialResources importInitialResources();
     EnemyPattern[] importEnemyPatterns(double threshold);
     EnemyPattern[] importBossPatterns();
-    Map<String, Recipe> importRecipes();
+    List<Recipe> importRecipes();
 }

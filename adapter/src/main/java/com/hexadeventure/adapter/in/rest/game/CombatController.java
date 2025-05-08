@@ -1,7 +1,9 @@
 package com.hexadeventure.adapter.in.rest.game;
 
-import com.hexadeventure.adapter.in.rest.game.combat.CombatProcessDTO;
-import com.hexadeventure.adapter.in.rest.game.combat.CombatInfoDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.combat.CombatProcessDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.combat.CombatInfoDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.in.PlaceCharacterDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.in.RemoveCharacterDTO;
 import com.hexadeventure.application.port.in.game.CombatUseCase;
 import com.hexadeventure.model.combat.CombatProcess;
 import com.hexadeventure.model.combat.CombatTerrain;

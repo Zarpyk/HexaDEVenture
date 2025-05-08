@@ -9,5 +9,5 @@ import lombok.Getter;
 public class RecipeResource {
     private String id;
     private ItemType type;
-    private int amount;
+    private int count;
 }

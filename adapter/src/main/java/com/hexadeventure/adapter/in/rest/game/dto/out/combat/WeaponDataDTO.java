@@ -1,4 +1,4 @@
-package com.hexadeventure.adapter.in.rest.game.combat;
+package com.hexadeventure.adapter.in.rest.game.dto.out.combat;
 
 import com.hexadeventure.model.inventory.weapons.Weapon;
 import com.hexadeventure.model.inventory.weapons.WeaponType;

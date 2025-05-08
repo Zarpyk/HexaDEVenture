@@ -16,12 +16,14 @@ public class Material extends Item {
     public Material(String name, int skin, ResourceType materialType) {
         super(name, ItemType.MATERIAL, skin);
         this.materialType = materialType;
-        setId(Integer.toString(hashCode()));
+        setId(materialType.toString());
     }
     
     @Override
-    public String toString() {
-        return super.toString() + " - " + hashCode();
+    public boolean equals(Object o) {
+        if(!(o instanceof Material material)) return false;
+        if(!super.equals(o)) return false;
+        return materialType == material.materialType;
     }
     
     @Override

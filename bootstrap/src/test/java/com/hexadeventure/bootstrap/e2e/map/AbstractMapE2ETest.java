@@ -1,6 +1,6 @@
 package com.hexadeventure.bootstrap.e2e.map;
 
-import com.hexadeventure.adapter.in.rest.game.StartGameDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.in.StartGameDTO;
 import com.hexadeventure.application.service.game.GameService;
 import com.hexadeventure.bootstrap.e2e.common.RestCommon;
 import com.hexadeventure.bootstrap.e2e.common.UserFactory;

@@ -8,6 +8,9 @@ import io.restassured.module.mockmvc.response.MockMvcResponse;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.principal;
 
@@ -28,6 +31,23 @@ public class RestCommon {
         if(withAuth) RestAssuredMockMvc.authentication = principal(new UserPrincipal());
         else RestAssuredMockMvc.authentication = null;
         return given().when().get(path);
+    }
+    
+    public static MockMvcResponse getWithParam(String path, String... params) {
+        return getWithParam(path, true, params);
+    }
+    
+    public static MockMvcResponse getWithParam(String path, boolean withAuth, String... params) {
+        if(params.length % 2 != 0) throw new IllegalArgumentException("Params must be in key-value pairs");
+        if(withAuth) RestAssuredMockMvc.authentication = principal(new UserPrincipal());
+        else RestAssuredMockMvc.authentication = null;
+        
+        Map<String, String> paramMap = new HashMap<>();
+        for (int i = 0; i < params.length; i += 2) {
+            paramMap.put(params[i], params[i + 1]);
+        }
+        
+        return given().params(paramMap).when().get(path);
     }
     
     public static MockMvcResponse post(String path) {

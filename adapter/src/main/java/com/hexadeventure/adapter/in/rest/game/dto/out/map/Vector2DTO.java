@@ -1,4 +1,4 @@
-package com.hexadeventure.adapter.in.rest.game.map;
+package com.hexadeventure.adapter.in.rest.game.dto.out.map;
 
 import com.hexadeventure.model.map.Vector2;
 import com.hexadeventure.model.map.Vector2C;

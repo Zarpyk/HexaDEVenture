@@ -2,6 +2,7 @@ package com.hexadeventure.adapter.in.rest.game;
 
 import com.hexadeventure.adapter.in.rest.common.RestCommon;
 import com.hexadeventure.adapter.in.rest.common.UserFactory;
+import com.hexadeventure.adapter.in.rest.game.dto.in.StartGameDTO;
 import com.hexadeventure.application.exceptions.GameStartedException;
 import com.hexadeventure.application.port.in.game.GameUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,7 @@ public class StartGameTest {
     }
     
     @Test
-    public void givenSeedAndSize_whenStartingGameWithoutStartedGame_thenReturn201() {
+    public void givenSeedAndSize_whenStartingGameWithoutStartedGame_thenReturnCreated() {
         doNothing().when(gameUseCase).startGame(UserFactory.EMAIL, TEST_SEED, TEST_SIZE);
         StartGameDTO body = new StartGameDTO(TEST_SEED, TEST_SIZE);
         RestCommon.postWithBody("/start", body, true)
@@ -31,7 +32,7 @@ public class StartGameTest {
     }
     
     @Test
-    public void givenSeedAndSize_whenStartingGameWithStartedGame_thenReturn405() {
+    public void givenSeedAndSize_whenStartingGameWithStartedGame_thenReturnMethodNotAllowed() {
         doThrow(new GameStartedException()).when(gameUseCase).startGame(UserFactory.EMAIL, TEST_SEED, TEST_SIZE);
         
         StartGameDTO body = new StartGameDTO(TEST_SEED, TEST_SIZE);

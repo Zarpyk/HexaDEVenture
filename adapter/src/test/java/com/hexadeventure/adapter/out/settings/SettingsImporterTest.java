@@ -175,12 +175,12 @@ public class SettingsImporterTest {
     
     @Test
     public void givenJson_whenImportRecipes_thenReturnRecipes() {
-        Map<String, Recipe> recipes = settingsImporter.importRecipes();
+        List<Recipe> recipes = settingsImporter.importRecipes();
         
         assertThat(recipes).isNotNull();
         assertThat(recipes.size()).isPositive();
         
-        Optional<Recipe> optionalRecipe = recipes.values().stream().findFirst();
+        Optional<Recipe> optionalRecipe = recipes.stream().findFirst();
         assertThat(optionalRecipe).isPresent();
         
         Recipe recipe = optionalRecipe.get();

@@ -1,4 +1,4 @@
-package com.hexadeventure.adapter.in.rest.game.movement;
+package com.hexadeventure.adapter.in.rest.game.dto.out.movement;
 
 import com.hexadeventure.model.movement.MovementResponse;
 

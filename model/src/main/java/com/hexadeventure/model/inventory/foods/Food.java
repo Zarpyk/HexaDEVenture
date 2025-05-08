@@ -14,22 +14,24 @@ public class Food extends Item {
     
     public Food(String name, int skin) {
         super(name, ItemType.FOOD, skin);
-        setId(Integer.toString(hashCode()));
+        setId(name);
     }
     
     public Food(String name, int skin, double healthPoints) {
         super(name, ItemType.FOOD, skin);
         this.healthPoints = healthPoints;
-        setId(Integer.toString(hashCode()));
+        setId(name);
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if(!(o instanceof Food food)) return false;
+        if(!super.equals(o)) return false;
+        return Double.compare(healthPoints, food.healthPoints) == 0;
     }
     
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), healthPoints);
-    }
-    
-    @Override
-    public String toString() {
-        return super.toString() + " - " + hashCode();
     }
 }

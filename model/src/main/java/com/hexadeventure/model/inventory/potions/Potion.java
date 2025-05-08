@@ -16,19 +16,21 @@ public class Potion extends Item {
     public Potion(String name, int skin, PotionType potionType) {
         super(name, ItemType.POTION, skin);
         this.potionType = potionType;
-        setId(Integer.toString(hashCode()));
+        setId(name);
     }
     
     public Potion(String name, int skin, double potionPower, PotionType potionType) {
         super(name, ItemType.POTION, skin);
         this.potionType = potionType;
         this.potionPower = potionPower;
-        setId(Integer.toString(hashCode()));
+        setId(name);
     }
     
     @Override
-    public String toString() {
-        return super.toString() + " - " + hashCode();
+    public boolean equals(Object o) {
+        if(!(o instanceof Potion potion)) return false;
+        if(!super.equals(o)) return false;
+        return Double.compare(potionPower, potion.potionPower) == 0 && potionType == potion.potionType;
     }
     
     @Override

@@ -58,7 +58,7 @@ public class SettingsImporterAdapter implements SettingsImporter {
     private static final InitialResources initialResources = new InitialResources();
     private static final Map<String, EnemySetting> enemiesCache = new HashMap<>();
     private static final Set<EnemyPattern> enemyPatternsCache = new TreeSet<>();
-    private static final Map<String, Recipe> recipesCache = new HashMap<>();
+    private static final List<Recipe> recipesCache = new ArrayList<>();
     
     @Override
     public Map<String, WeaponSetting> importWeapons() {
@@ -156,7 +156,7 @@ public class SettingsImporterAdapter implements SettingsImporter {
     }
     
     @Override
-    public Map<String, Recipe> importRecipes() {
+    public List<Recipe> importRecipes() {
         if(!recipesCache.isEmpty()) return recipesCache;
         try {
             // From: https://stackoverflow.com/a/49468282/11451105
@@ -164,9 +164,9 @@ public class SettingsImporterAdapter implements SettingsImporter {
             InputStream inputStream = new FileInputStream(file);
             
             RecipeJson[] json = objectMapper.readValue(inputStream, RecipeJson[].class);
-            Recipe[] model = Arrays.stream(json).map(RecipeJson::toModel)
-                                   .toArray(Recipe[]::new);
-            for (Recipe recipe : model) recipesCache.put(recipe.getResultID(), recipe);
+            List<Recipe> model = Arrays.stream(json).map(RecipeJson::toModel)
+                                       .toList();
+            recipesCache.addAll(model);
             return recipesCache;
         } catch (IOException e) {
             throw new RuntimeException(e);

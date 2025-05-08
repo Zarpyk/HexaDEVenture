@@ -2,8 +2,10 @@ package com.hexadeventure.adapter.in.rest.game;
 
 import com.hexadeventure.adapter.in.rest.common.RestCommon;
 import com.hexadeventure.adapter.in.rest.common.UserFactory;
-import com.hexadeventure.adapter.in.rest.game.combat.CombatInfoDTO;
-import com.hexadeventure.adapter.in.rest.game.combat.CombatProcessDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.in.PlaceCharacterDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.in.RemoveCharacterDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.combat.CombatInfoDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.combat.CombatProcessDTO;
 import com.hexadeventure.application.exceptions.*;
 import com.hexadeventure.application.port.in.game.CombatUseCase;
 import com.hexadeventure.model.combat.CombatAction;
@@ -61,7 +63,7 @@ public class CombatTest {
     
     //region CheckCombatStatus
     @Test
-    public void givenNoStartGameUser_whenCheckCombatStatus_thenReturn405() {
+    public void givenNoStartGameUser_whenCheckCombatStatus_thenReturnMethodNotAllowed() {
         doThrow(GameNotStartedException.class).when(combatUseCase).getCombatStatus(UserFactory.EMAIL);
         RestCommon.get("/game/combat", true)
                   .then()
@@ -69,7 +71,7 @@ public class CombatTest {
     }
     
     @Test
-    public void givenUserWithNoCombat_whenCheckCombatStatus_thenReturn405() {
+    public void givenUserWithNoCombat_whenCheckCombatStatus_thenReturnMethodNotAllowed() {
         doThrow(CombatNotStartedException.class).when(combatUseCase).getCombatStatus(UserFactory.EMAIL);
         RestCommon.get("/game/combat", true)
                   .then()
@@ -77,7 +79,7 @@ public class CombatTest {
     }
     
     @Test
-    public void givenUserWithCombat_whenCheckCombatStatus_thenReturnCombatStatusDTO() {
+    public void givenUserWithCombat_whenCheckCombatStatus_thenReturnOnWithDTO() {
         when(combatUseCase.getCombatStatus(UserFactory.EMAIL)).thenReturn(COMBAT_TERRAIN);
         RestCommon.get("/game/combat", true)
                   .then()
@@ -96,7 +98,7 @@ public class CombatTest {
     }
     
     @Test
-    public void givenNonEmptyPosition_whenPlaceCharacter_thenReturn405() {
+    public void givenNonEmptyPosition_whenPlaceCharacter_thenReturnMethodNotAllowed() {
         PlaceCharacterDTO placeCharacterDTO = new PlaceCharacterDTO(TEST_ROW, TEST_COLUMN, TEST_CHARACTER_ID);
         doThrow(PositionOccupiedException.class).when(combatUseCase).placeCharacter(UserFactory.EMAIL,
                                                                                     TEST_ROW,
@@ -108,7 +110,7 @@ public class CombatTest {
     }
     
     @Test
-    public void givenNonExistingCharacter_whenPlaceCharacter_thenReturn405() {
+    public void givenNonExistingCharacter_whenPlaceCharacter_thenReturnMethodNotAllowed() {
         PlaceCharacterDTO placeCharacterDTO = new PlaceCharacterDTO(TEST_ROW, TEST_COLUMN, TEST_CHARACTER_ID);
         doThrow(CharacterNotFoundException.class).when(combatUseCase).placeCharacter(UserFactory.EMAIL,
                                                                                      TEST_ROW,
@@ -120,7 +122,7 @@ public class CombatTest {
     }
     
     @Test
-    public void givenInvalidPosition_whenPlaceCharacter_thenReturn400() {
+    public void givenInvalidPosition_whenPlaceCharacter_thenReturnBadRequest() {
         PlaceCharacterDTO placeCharacterDTO = new PlaceCharacterDTO(-1, -1, TEST_CHARACTER_ID);
         doThrow(InvalidPositionException.class).when(combatUseCase).placeCharacter(UserFactory.EMAIL,
                                                                                    -1,
@@ -142,7 +144,7 @@ public class CombatTest {
     }
     
     @Test
-    public void givenPositionOnEmptyPosition_whenRemoveCharacter_thenReturn405() {
+    public void givenPositionOnEmptyPosition_whenRemoveCharacter_thenReturnMethodNotAllowed() {
         RemoveCharacterDTO removeCharacterDTO = new RemoveCharacterDTO(TEST_ROW, TEST_COLUMN);
         doThrow(PositionOccupiedException.class).when(combatUseCase).removeCharacter(UserFactory.EMAIL,
                                                                                      TEST_ROW,
@@ -153,7 +155,7 @@ public class CombatTest {
     }
     
     @Test
-    public void givenInvalidPosition_whenRemoveCharacter_thenReturn400() {
+    public void givenInvalidPosition_whenRemoveCharacter_thenReturnBadRequest() {
         RemoveCharacterDTO removeCharacterDTO = new RemoveCharacterDTO(-1, -1);
         doThrow(InvalidPositionException.class).when(combatUseCase).removeCharacter(UserFactory.EMAIL,
                                                                                     -1,
@@ -166,7 +168,7 @@ public class CombatTest {
     
     //region StartAutoCombat
     @Test
-    public void givenStartCombatUser_whenStartAutoCombat_thenReturnCombatInfo() {
+    public void givenStartCombatUser_whenStartAutoCombat_thenOkWithDTO() {
         when(combatUseCase.startAutoCombat(UserFactory.EMAIL)).thenReturn(COMBAT_INFO);
         RestCommon.post("/game/combat/start", true)
                   .then()

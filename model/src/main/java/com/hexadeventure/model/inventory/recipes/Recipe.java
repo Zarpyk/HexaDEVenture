@@ -1,14 +1,23 @@
 package com.hexadeventure.model.inventory.recipes;
 
 import com.hexadeventure.model.inventory.ItemType;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-@AllArgsConstructor
 public class Recipe {
-    private String resultID;
-    private ItemType resultType;
-    private int resultAmount;
-    private RecipeResource[] materials;
+    private final String resultID;
+    private final ItemType resultType;
+    private final int resultAmount;
+    private final RecipeResource[] materials;
+    
+    @Setter
+    private int craftableAmount;
+    
+    public Recipe(String resultID, ItemType resultType, int resultAmount, RecipeResource[] materials) {
+        this.resultID = resultID;
+        this.resultType = resultType;
+        this.resultAmount = resultAmount;
+        this.materials = materials;
+    }
 }
