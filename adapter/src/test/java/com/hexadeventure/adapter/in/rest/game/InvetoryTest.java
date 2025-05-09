@@ -2,15 +2,19 @@ package com.hexadeventure.adapter.in.rest.game;
 
 import com.hexadeventure.adapter.in.rest.common.RestCommon;
 import com.hexadeventure.adapter.in.rest.common.UserFactory;
+import com.hexadeventure.adapter.in.rest.game.dto.in.EquipWeaponDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.in.UnequipWeaponDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.InventoryDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.RecipesDTO;
-import com.hexadeventure.application.exceptions.InvalidRecipeException;
-import com.hexadeventure.application.exceptions.InvalidSearchException;
-import com.hexadeventure.application.exceptions.NotEnoughtResourcesException;
+import com.hexadeventure.application.exceptions.*;
 import com.hexadeventure.application.port.in.game.InventoryUseCase;
+import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.inventory.recipes.Recipe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+
+import java.util.HashMap;
 
 import static org.mockito.Mockito.*;
 
@@ -19,6 +23,10 @@ public class InvetoryTest {
     private static final int TEST_SIZE = 10;
     private static final int TEST_RECIPE_INDEX = 0;
     private static final int TEST_CRAFT_COUNT = 1;
+    
+    private static final String TEST_INVENTORY_ID = "testInventoryId";
+    public static final String TEST_CHARACTER_ID = "characterId";
+    public static final String TEST_WEAPON_ID = "weaponId";
     
     private final InventoryUseCase inventoryUseCase = mock(InventoryUseCase.class);
     
@@ -79,6 +87,65 @@ public class InvetoryTest {
         RestCommon.postWithParam("/craft",
                                  "recipeIndex", Integer.toString(-1),
                                  "count", Integer.toString(TEST_CRAFT_COUNT))
+                  .then()
+                  .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+    
+    @Test
+    public void givenUser_whenGetInventory_thenReturnOkWithDTO() {
+        when(inventoryUseCase.getInventory(UserFactory.EMAIL)).thenReturn(new Inventory(TEST_INVENTORY_ID,
+                                                                                        new HashMap<>(),
+                                                                                        new HashMap<>()));
+        RestCommon.get("/inventory")
+                  .then()
+                  .statusCode(HttpStatus.OK.value())
+                  .extract().body().as(InventoryDTO.class);
+    }
+    
+    @Test
+    public void givenDTO_whenEquipWeapon_thenReturnOk() {
+        EquipWeaponDTO equipWeaponDTO = new EquipWeaponDTO(TEST_CHARACTER_ID, TEST_WEAPON_ID);
+        RestCommon.postWithBody("/inventory/equip", equipWeaponDTO)
+                  .then()
+                  .statusCode(HttpStatus.OK.value());
+    }
+    
+    @Test
+    public void givenInvalidCharacter_whenEquipWeapon_thenReturnBadRequest() {
+        doThrow(InvalidCharacterException.class).when(inventoryUseCase).equipWeapon(UserFactory.EMAIL,
+                                                                                    "",
+                                                                                    TEST_WEAPON_ID);
+        EquipWeaponDTO equipWeaponDTO = new EquipWeaponDTO("", TEST_WEAPON_ID);
+        RestCommon.postWithBody("/inventory/equip", equipWeaponDTO)
+                  .then()
+                  .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+    
+    @Test
+    public void givenInvalidWeapon_whenEquipWeapon_thenReturnBadRequest() {
+        doThrow(InvalidItemException.class).when(inventoryUseCase).equipWeapon(UserFactory.EMAIL,
+                                                                               TEST_CHARACTER_ID,
+                                                                               "");
+        EquipWeaponDTO equipWeaponDTO = new EquipWeaponDTO(TEST_CHARACTER_ID, "");
+        RestCommon.postWithBody("/inventory/equip", equipWeaponDTO)
+                  .then()
+                  .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+    
+    @Test
+    public void givenDTO_whenUnequipWeapon_thenReturnOk() {
+        UnequipWeaponDTO unequipWeaponDTO = new UnequipWeaponDTO(TEST_CHARACTER_ID);
+        RestCommon.postWithBody("/inventory/unequip", unequipWeaponDTO)
+                  .then()
+                  .statusCode(HttpStatus.OK.value());
+    }
+    
+    @Test
+    public void givenInvalidCharacter_whenUnequipWeapon_thenReturnBadRequest() {
+        doThrow(InvalidCharacterException.class).when(inventoryUseCase).unequipWeapon(UserFactory.EMAIL,
+                                                                                      "");
+        UnequipWeaponDTO unequipWeaponDTO = new UnequipWeaponDTO("");
+        RestCommon.postWithBody("/inventory/unequip", unequipWeaponDTO)
                   .then()
                   .statusCode(HttpStatus.BAD_REQUEST.value());
     }

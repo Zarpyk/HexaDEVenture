@@ -1,9 +1,6 @@
 package com.hexadeventure.application.service.game;
 
-import com.hexadeventure.application.exceptions.InvalidRecipeException;
-import com.hexadeventure.application.exceptions.InvalidSearchException;
-import com.hexadeventure.application.exceptions.NotEnoughtResourcesException;
-import com.hexadeventure.application.exceptions.SizeException;
+import com.hexadeventure.application.exceptions.*;
 import com.hexadeventure.application.port.in.game.InventoryUseCase;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
@@ -11,6 +8,7 @@ import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.application.service.common.Utilities;
 import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.inventory.Item;
+import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.materials.Material;
 import com.hexadeventure.model.inventory.potions.Potion;
@@ -23,6 +21,7 @@ import com.hexadeventure.model.map.resources.ResourceType;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SplittableRandom;
 
 public class InventoryService implements InventoryUseCase {
@@ -89,6 +88,54 @@ public class InventoryService implements InventoryUseCase {
         }
         
         craftRecipeAndAddToInventory(count, recipe, inventory);
+        
+        gameMapRepository.save(gameMap);
+    }
+    
+    @Override
+    public Inventory getInventory(String email) {
+        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
+        return gameMap.getInventory();
+    }
+    
+    @Override
+    public void equipWeapon(String email, String characterId, String weaponId) {
+        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
+        Inventory inventory = gameMap.getInventory();
+        
+        if(characterId == null) throw new InvalidCharacterException();
+        if(weaponId == null) throw new InvalidItemException();
+        
+        Map<String, PlayableCharacter> characters = inventory.getCharacters();
+        PlayableCharacter character = characters.get(characterId);
+        if(character == null) throw new InvalidCharacterException();
+        
+        Map<String, Item> items = inventory.getItems();
+        Item weaponItem = items.get(weaponId);
+        if(!(weaponItem instanceof Weapon weapon)) throw new InvalidItemException();
+        
+        character.setWeapon(weapon);
+        inventory.removeItem(weaponItem, 1);
+        
+        gameMapRepository.save(gameMap);
+    }
+    
+    @Override
+    public void unequipWeapon(String email, String characterId) {
+        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
+        Inventory inventory = gameMap.getInventory();
+        
+        if(characterId == null) throw new InvalidCharacterException();
+        
+        Map<String, PlayableCharacter> characters = inventory.getCharacters();
+        PlayableCharacter character = characters.get(characterId);
+        if(character == null || Objects.equals(character.getWeapon().getName(), Weapon.DEFAULT_WEAPON.getName()))
+            throw new InvalidCharacterException();
+        
+        inventory.addItem(character.getWeapon());
+        character.setWeapon(null);
+        
+        gameMapRepository.save(gameMap);
     }
     
     private static int getCraftableAmount(Map<String, Item> inventoryItems,

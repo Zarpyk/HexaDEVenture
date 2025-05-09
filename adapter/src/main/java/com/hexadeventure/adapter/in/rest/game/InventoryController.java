@@ -1,13 +1,14 @@
 package com.hexadeventure.adapter.in.rest.game;
 
+import com.hexadeventure.adapter.in.rest.game.dto.in.EquipWeaponDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.in.UnequipWeaponDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.InventoryDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.RecipesDTO;
 import com.hexadeventure.application.port.in.game.InventoryUseCase;
+import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.inventory.recipes.Recipe;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -29,6 +30,24 @@ public class InventoryController {
     @PostMapping("/craft")
     public ResponseEntity<Void> craft(Principal principal, @RequestParam int recipeIndex, @RequestParam int count) {
         inventoryUseCase.craft(principal.getName(), recipeIndex, count);
+        return ResponseEntity.ok().build();
+    }
+    
+    @GetMapping("/inventory")
+    public ResponseEntity<InventoryDTO> getInventory(Principal principal) {
+        Inventory inventory = inventoryUseCase.getInventory(principal.getName());
+        return ResponseEntity.ok(InventoryDTO.fromModel(inventory));
+    }
+    
+    @PostMapping("inventory/equip")
+    public ResponseEntity<Void> equipWeapon(Principal principal, @RequestBody EquipWeaponDTO equipWeaponDTO) {
+        inventoryUseCase.equipWeapon(principal.getName(), equipWeaponDTO.characterId(), equipWeaponDTO.weaponId());
+        return ResponseEntity.ok().build();
+    }
+    
+    @PostMapping("inventory/unequip")
+    public ResponseEntity<Void> unequipWeapon(Principal principal, @RequestBody UnequipWeaponDTO unequipWeaponDTO) {
+        inventoryUseCase.unequipWeapon(principal.getName(), unequipWeaponDTO.characterId());
         return ResponseEntity.ok().build();
     }
 }

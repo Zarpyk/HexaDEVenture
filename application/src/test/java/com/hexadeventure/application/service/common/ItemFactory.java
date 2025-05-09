@@ -40,6 +40,7 @@ public class ItemFactory {
     public static final int TEST_FOOD_RECIPE_INDEX = TEST_RECIPE_COUNT + 1;
     public static final int TEST_POTION_RECIPE_INDEX = TEST_RECIPE_COUNT + 2;
     public static final int TEST_MATERIAL_RECIPE_INDEX = TEST_RECIPE_COUNT + 3;
+    public static final int TEST_MATERIAL_RECIPE_RESULT_COUNT = 2;
     
     public static void setupSettingsImporter(SettingsImporter settingsImporter) {
         when(settingsImporter.importInitialResources()).thenReturn(getInitialResources());
@@ -140,7 +141,10 @@ public class ItemFactory {
         recipes.add(recipe);
         recipe = new Recipe(TEST_POTION_NAME, ItemType.POTION, 1, recipeResources);
         recipes.add(recipe);
-        recipe = new Recipe(TEST_MATERIAL_TYPE.toString(), ItemType.MATERIAL, 1, recipeResources);
+        recipe = new Recipe(TEST_MATERIAL_TYPE.toString(),
+                            ItemType.MATERIAL,
+                            TEST_MATERIAL_RECIPE_RESULT_COUNT,
+                            recipeResources);
         recipes.add(recipe);
         
         return recipes;

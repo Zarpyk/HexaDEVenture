@@ -7,6 +7,10 @@ public class PlayableCharacterFactory {
     public static final int TEST_CHARACTER_HEALTH = 100;
     public static final String TEST_CHARACTER_NAME = "Test Character";
     
+    public static PlayableCharacter createNoWeaponCharacter(int speed) {
+        return new PlayableCharacter(TEST_CHARACTER_NAME, TEST_CHARACTER_HEALTH, speed);
+    }
+    
     public static PlayableCharacter createMeleeCharacter(int speed) {
         PlayableCharacter character = new PlayableCharacter(TEST_CHARACTER_NAME, TEST_CHARACTER_HEALTH, speed);
         character.setWeapon(WeaponFactory.createMeleeWeapon());
