@@ -140,7 +140,10 @@ public class CombatService implements CombatUseCase {
         // Add characters back to inventory if they are not dead
         for (CharacterCombatInfo character : combatProcessor.getCharacters()) {
             if(character.isDead()) continue;
-            gameMap.getInventory().addCharacter(character.getCharacter());
+            PlayableCharacter playableCharacter = character.getCharacter();
+            playableCharacter.getChangedStats().resetBoosts();
+            playableCharacter.getChangedStats().updateStats(character);
+            gameMap.getInventory().addCharacter(playableCharacter);
         }
         // Add enemies to inventory if they are hypnotized
         for (CharacterCombatInfo enemy : combatProcessor.getEnemies()) {
@@ -154,7 +157,7 @@ public class CombatService implements CombatUseCase {
         if(lootArray != null) {
             SplittableRandom random = new SplittableRandom(gameMap.getCombatTerrain().getLootSeed());
             for (Loot loot : lootArray) {
-                if (random.nextDouble() > loot.getProbability()) continue;
+                if(random.nextDouble() > loot.getProbability()) continue;
                 addLootToInventory(loot, gameMap, random);
             }
         }

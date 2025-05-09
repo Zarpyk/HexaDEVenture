@@ -2,6 +2,7 @@ package com.hexadeventure.adapter.in.rest.game;
 
 import com.hexadeventure.adapter.in.rest.game.dto.in.EquipWeaponDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.in.UnequipWeaponDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.in.UseItemDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.InventoryDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.RecipesDTO;
 import com.hexadeventure.application.port.in.game.InventoryUseCase;
@@ -48,6 +49,12 @@ public class InventoryController {
     @PostMapping("inventory/unequip")
     public ResponseEntity<Void> unequipWeapon(Principal principal, @RequestBody UnequipWeaponDTO unequipWeaponDTO) {
         inventoryUseCase.unequipWeapon(principal.getName(), unequipWeaponDTO.characterId());
+        return ResponseEntity.ok().build();
+    }
+    
+    @PostMapping("inventory/use")
+    public ResponseEntity<Void> useItem(Principal principal, @RequestBody UseItemDTO useItemDTO) {
+        inventoryUseCase.useItem(principal.getName(), useItemDTO.characterId(), useItemDTO.itemId());
         return ResponseEntity.ok().build();
     }
 }

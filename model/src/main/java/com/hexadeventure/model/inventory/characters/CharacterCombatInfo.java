@@ -17,6 +17,7 @@ public class CharacterCombatInfo {
     public static final double SECOND_ROW_SPEED = 0.75;
     public static final double THIRD_ROW_SPEED = 0.5;
     
+    public static final double MAX_DEFFENSE = 75;
     
     private PlayableCharacter character;
     private final int row;
@@ -48,14 +49,16 @@ public class CharacterCombatInfo {
         
         this.id = character.getId();
         this.name = character.getName();
-        this.health = character.getChangedStats().getHealth();
-        this.speed = character.getSpeed();
+        this.health = character.getChangedStats().getHealth() + character.getChangedStats().getBoostHealth();
+        this.speed = character.getSpeed() + character.getChangedStats().getBoostSpeed();
         this.hypnotizationResistance = character.getHypnotizationResistence();
         this.isHypnotized = character.getChangedStats().isHypnotized();
         this.weaponType = character.getWeapon().getWeaponType();
-        this.damage = character.getWeapon().getDamage();
-        this.meleeDefense = character.getWeapon().getMeleeDefense();
-        this.rangedDefense = character.getWeapon().getRangedDefense();
+        this.damage = character.getWeapon().getDamage() + character.getChangedStats().getBoostStrength();
+        this.meleeDefense = character.getWeapon().getMeleeDefense() + character.getChangedStats().getBoostDefense();
+        this.meleeDefense = Math.min(this.meleeDefense, MAX_DEFFENSE);
+        this.rangedDefense = character.getWeapon().getRangedDefense() + character.getChangedStats().getBoostDefense();
+        this.rangedDefense = Math.min(this.rangedDefense, MAX_DEFFENSE);
         this.cooldown = 0;
         this.aggroGeneration = character.getWeapon().getAggroGeneration();
         this.currentAggro = character.getWeapon().getInitialAggro();

@@ -405,7 +405,7 @@ public class CombatTest {
     }
     //endregion
     
-    //region CombatProcessor
+    //region StartAutoCombat + CombatProcessor
     @Test
     public void givenCharactersAndEnemies_whenCalculateTurnQueue_thenOrderBySpeed() {
         // Create an empty game map
@@ -603,6 +603,34 @@ public class CombatTest {
     }
     
     @Test
+    public void givenCharactersAndEnemies_whenCharacterDamaged_thenUpdateStats() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        // Create an empty game map
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        map.setInCombat(true);
+        
+        // Create characters and enemies
+        PlayableCharacter character = PlayableCharacterFactory.createMeleeCharacter(9999);
+        character.getWeapon().setDamage(PlayableCharacterFactory.TEST_CHARACTER_HEALTH);
+        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
+        
+        // Place characters and enemies on the combat terrain
+        map.getCombatTerrain().placeCharacter(0, 0, character);
+        map.getCombatTerrain().placeEnemy(0, 0, enemy);
+        
+        // Execute the method
+        combatService.startAutoCombat(TEST_USER_EMAIL);
+        combatService.startAutoCombat(TEST_USER_EMAIL);
+        
+        // Verify the turn queue
+        assertThat(map.isInCombat()).isFalse();
+        PlayableCharacter playableCharacter = map.getInventory().getCharacters().get(character.getId());
+        assertThat(playableCharacter.getChangedStats().getHealth()).isNotEqualTo(playableCharacter.getHealth());
+    }
+    
+    @Test
     public void givenCharactersAndEnemies_whenNoAllyAlive_thenFinishCombat() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.EMPTY_MAP_ID);
@@ -720,6 +748,43 @@ public class CombatTest {
         assertThat(items.stream().anyMatch(item -> item.getType() == ItemType.FOOD)).isFalse();
         assertThat(items.stream().anyMatch(item -> item.getType() == ItemType.POTION)).isFalse();
         assertThat(items.stream().anyMatch(item -> item.getType() == ItemType.MATERIAL)).isFalse();
+    }
+    
+    @Test
+    public void givenBoostedCharacter_whenFinishCombat_thenResetBoost() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        // Create an empty game map
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        map.setInCombat(true);
+        
+        // Create characters and enemies
+        PlayableCharacter character = PlayableCharacterFactory.createMeleeCharacter(0);
+        character.getWeapon().setDamage(0);
+        int boost = PlayableCharacterFactory.TEST_CHARACTER_HEALTH * 9999;
+        character.getChangedStats().setBoostHealth(boost);
+        character.getChangedStats().setBoostSpeed(boost);
+        character.getChangedStats().setBoostStrength(boost);
+        character.getChangedStats().setBoostDefense(boost);
+        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
+        
+        // Place characters and enemies on the combat terrain
+        map.getCombatTerrain().placeCharacter(0, 0, character);
+        map.getCombatTerrain().placeEnemy(0, 0, enemy);
+        
+        // Execute the method
+        combatService.startAutoCombat(TEST_USER_EMAIL);
+        
+        // Verify the turn queue
+        assertThat(map.isInCombat()).isFalse();
+        PlayableCharacter playableCharacter = map.getInventory().getCharacters().get(character.getId());
+        assertThat(playableCharacter).isNotNull();
+        assertThat(playableCharacter.getChangedStats().getHealth()).isLessThanOrEqualTo(character.getHealth());
+        assertThat(playableCharacter.getChangedStats().getBoostHealth()).isEqualTo(0);
+        assertThat(playableCharacter.getChangedStats().getBoostSpeed()).isEqualTo(0);
+        assertThat(playableCharacter.getChangedStats().getBoostStrength()).isEqualTo(0);
+        assertThat(playableCharacter.getChangedStats().getBoostDefense()).isEqualTo(0);
     }
     //endregion
     

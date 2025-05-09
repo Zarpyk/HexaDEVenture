@@ -48,7 +48,7 @@ public class EnemyFactory {
                                                     TEST_LOOT_COUNT,
                                                     TEST_LOOT_PROBABILITY),
                                            new Loot(ItemType.POTION,
-                                                    ItemFactory.TEST_POTION_NAME,
+                                                    ItemFactory.TEST_HEALTH_POTION_NAME,
                                                     TEST_LOOT_COUNT,
                                                     TEST_LOOT_PROBABILITY),
                                            new Loot(ItemType.MATERIAL,

@@ -100,24 +100,7 @@ public class InventoryService implements InventoryUseCase {
     
     @Override
     public void equipWeapon(String email, String characterId, String weaponId) {
-        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
-        Inventory inventory = gameMap.getInventory();
-        
-        if(characterId == null) throw new InvalidCharacterException();
-        if(weaponId == null) throw new InvalidItemException();
-        
-        Map<String, PlayableCharacter> characters = inventory.getCharacters();
-        PlayableCharacter character = characters.get(characterId);
-        if(character == null) throw new InvalidCharacterException();
-        
-        Map<String, Item> items = inventory.getItems();
-        Item weaponItem = items.get(weaponId);
-        if(!(weaponItem instanceof Weapon weapon)) throw new InvalidItemException();
-        
-        character.setWeapon(weapon);
-        inventory.removeItem(weaponItem, 1);
-        
-        gameMapRepository.save(gameMap);
+        useItem(email, characterId, weaponId);
     }
     
     @Override
@@ -136,6 +119,55 @@ public class InventoryService implements InventoryUseCase {
         character.setWeapon(null);
         
         gameMapRepository.save(gameMap);
+    }
+    
+    @Override
+    public void useItem(String email, String characterId, String itemId) {
+        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
+        Inventory inventory = gameMap.getInventory();
+        
+        if(characterId == null) throw new InvalidCharacterException();
+        if(itemId == null) throw new InvalidItemException();
+        
+        getCharacterAndUseItem(inventory, characterId, itemId);
+        
+        gameMapRepository.save(gameMap);
+    }
+    
+    private void getCharacterAndUseItem(Inventory inventory, String characterId, String itemId) {
+        Map<String, PlayableCharacter> characters = inventory.getCharacters();
+        PlayableCharacter character = characters.get(characterId);
+        if(character == null) throw new InvalidCharacterException();
+        
+        Map<String, Item> items = inventory.getItems();
+        Item item = items.get(itemId);
+        if(item == null) throw new InvalidItemException();
+        useItem(character, item);
+        inventory.removeItem(item, 1);
+    }
+    
+    private void useItem(PlayableCharacter character, Item item) {
+        switch (item.getType()) {
+            case WEAPON -> {
+                if(!(item instanceof Weapon weapon)) throw new InvalidItemException();
+                character.setWeapon(weapon);
+            }
+            case FOOD -> {
+                if(!(item instanceof Food food)) throw new InvalidItemException();
+                character.getChangedStats().heal(character.getHealth(), food.getHealthPoints());
+            }
+            case POTION -> {
+                if(!(item instanceof Potion potion)) throw new InvalidItemException();
+                switch (potion.getPotionType()) {
+                    case HEALING -> character.getChangedStats().setBoostHealth(potion.getPotionPower());
+                    case SPEED -> character.getChangedStats().setBoostSpeed(potion.getPotionPower());
+                    case STRENGTH -> character.getChangedStats().setBoostStrength(potion.getPotionPower());
+                    case DEFENSE -> character.getChangedStats().setBoostDefense(potion.getPotionPower());
+                    default -> throw new IllegalStateException("Unexpected value: " + potion.getPotionType());
+                }
+            }
+            default -> throw new InvalidItemException();
+        }
     }
     
     private static int getCraftableAmount(Map<String, Item> inventoryItems,

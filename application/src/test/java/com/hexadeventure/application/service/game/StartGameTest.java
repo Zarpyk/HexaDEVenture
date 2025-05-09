@@ -163,7 +163,7 @@ public class StartGameTest {
             } else if(item instanceof Food food) {
                 assertThat(food.getName()).isEqualTo(ItemFactory.TEST_FOOD_NAME);
             } else if(item instanceof Potion potion) {
-                assertThat(potion.getName()).isEqualTo(ItemFactory.TEST_POTION_NAME);
+                assertThat(potion.getName()).isEqualTo(ItemFactory.TEST_HEALTH_POTION_NAME);
             } else if(item instanceof Material material) {
                 assertThat(material.getMaterialType()).isEqualTo(ItemFactory.TEST_MATERIAL_TYPE);
             }

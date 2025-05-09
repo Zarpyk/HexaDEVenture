@@ -4,6 +4,7 @@ import com.hexadeventure.adapter.in.rest.common.RestCommon;
 import com.hexadeventure.adapter.in.rest.common.UserFactory;
 import com.hexadeventure.adapter.in.rest.game.dto.in.EquipWeaponDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.in.UnequipWeaponDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.in.UseItemDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.InventoryDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.RecipesDTO;
 import com.hexadeventure.application.exceptions.*;
@@ -146,6 +147,36 @@ public class InvetoryTest {
                                                                                       "");
         UnequipWeaponDTO unequipWeaponDTO = new UnequipWeaponDTO("");
         RestCommon.postWithBody("/inventory/unequip", unequipWeaponDTO)
+                  .then()
+                  .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+    
+    @Test
+    public void givenDTO_whenUseItem_thenReturnOk() {
+        UseItemDTO useItemDTO = new UseItemDTO(TEST_CHARACTER_ID, TEST_WEAPON_ID);
+        RestCommon.postWithBody("/inventory/use", useItemDTO)
+                  .then()
+                  .statusCode(HttpStatus.OK.value());
+    }
+    
+    @Test
+    public void givenInvalidCharacter_whenUseItem_thenReturnBadRequest() {
+        doThrow(InvalidCharacterException.class).when(inventoryUseCase).useItem(UserFactory.EMAIL,
+                                                                                "",
+                                                                                TEST_WEAPON_ID);
+        UseItemDTO useItemDTO = new UseItemDTO("", TEST_WEAPON_ID);
+        RestCommon.postWithBody("/inventory/use", useItemDTO)
+                  .then()
+                  .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+    
+    @Test
+    public void givenInvalidItem_whenUseItem_thenReturnBadRequest() {
+        doThrow(InvalidItemException.class).when(inventoryUseCase).useItem(UserFactory.EMAIL,
+                                                                           TEST_CHARACTER_ID,
+                                                                           "");
+        UseItemDTO useItemDTO = new UseItemDTO(TEST_CHARACTER_ID, "");
+        RestCommon.postWithBody("/inventory/use", useItemDTO)
                   .then()
                   .statusCode(HttpStatus.BAD_REQUEST.value());
     }

@@ -9,4 +9,5 @@ public interface InventoryUseCase {
     Inventory getInventory(String email);
     void equipWeapon(String email, String characterId, String weaponId);
     void unequipWeapon(String email, String characterId);
+    void useItem(String email, String characterId, String itemId);
 }

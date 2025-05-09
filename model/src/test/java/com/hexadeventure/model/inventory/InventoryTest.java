@@ -59,7 +59,7 @@ public class InventoryTest {
     @Test
     public void givenPotion_whenAddItemToInventory_thenItemIsAdded() {
         Inventory inventory = new Inventory();
-        Potion potion = new Potion(TEST_POTION_NAME, 1, PotionType.HEALING);
+        Potion potion = new Potion(TEST_POTION_NAME, 1, 1, PotionType.HEALING);
         assertThat(potion.getType()).isEqualTo(ItemType.POTION);
         
         inventory.addItem(potion);

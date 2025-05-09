@@ -30,8 +30,14 @@ public class ItemFactory {
     public static final String TEST_WEAPON_NAME = "Sword";
     public static final String TEST_RANDOM_WEAPON_NAME = "Random Sword";
     public static final String TEST_FOOD_NAME = "Apple";
-    public static final String TEST_POTION_NAME = "Health Potion";
+    public static final String TEST_HEALTH_POTION_NAME = "Health Potion";
+    public static final String TEST_SPEED_POTION_NAME = "Speed Potion";
+    public static final String TEST_STRENGTH_POTION_NAME = "Attack Potion";
+    public static final String TEST_DEFENSE_POTION_NAME = "Defense Potion";
     public static final ResourceType TEST_MATERIAL_TYPE = ResourceType.WOOD;
+    
+    public static final int TEST_FOOD_HEALING = 20;
+    public static final int TEST_POTION_POWER = 20;
     
     public static final String TEST_RECIPE_NAME = "TestRecipe";
     public static final int TEST_RECIPE_COUNT = 20;
@@ -77,11 +83,17 @@ public class ItemFactory {
                                                        1, Integer.MAX_VALUE - 1);
         weaponsCache.put(TEST_RANDOM_WEAPON_NAME, randomWeapon);
         
-        Food food = new Food(TEST_FOOD_NAME, 1, 1);
+        Food food = new Food(TEST_FOOD_NAME, 1, TEST_FOOD_HEALING);
         foodsCache.put(TEST_FOOD_NAME, food);
         
-        Potion potion = new Potion(TEST_POTION_NAME, 1, PotionType.HEALING);
-        potionsCache.put(TEST_POTION_NAME, potion);
+        Potion potion = new Potion(TEST_HEALTH_POTION_NAME, 1, TEST_POTION_POWER, PotionType.HEALING);
+        potionsCache.put(TEST_HEALTH_POTION_NAME, potion);
+        potion = new Potion(TEST_SPEED_POTION_NAME, 1, TEST_POTION_POWER, PotionType.SPEED);
+        potionsCache.put(TEST_SPEED_POTION_NAME, potion);
+        potion = new Potion(TEST_STRENGTH_POTION_NAME, 1, TEST_POTION_POWER, PotionType.STRENGTH);
+        potionsCache.put(TEST_STRENGTH_POTION_NAME, potion);
+        potion = new Potion(TEST_DEFENSE_POTION_NAME, 1, TEST_POTION_POWER, PotionType.DEFENSE);
+        potionsCache.put(TEST_DEFENSE_POTION_NAME, potion);
         
         Material material = new Material("Wood", 1, TEST_MATERIAL_TYPE);
         materialsCache.put(TEST_MATERIAL_TYPE, material);
@@ -109,7 +121,7 @@ public class ItemFactory {
         InitialStringIdResourceData[] initialFoods = new InitialStringIdResourceData[]{
                 new InitialStringIdResourceData(TEST_FOOD_NAME, 1)};
         InitialStringIdResourceData[] initialPotions = new InitialStringIdResourceData[]{
-                new InitialStringIdResourceData(TEST_POTION_NAME, 1)};
+                new InitialStringIdResourceData(TEST_HEALTH_POTION_NAME, 1)};
         InitialResourceTypeIdResourceData[] initialMaterials = new InitialResourceTypeIdResourceData[]{
                 new InitialResourceTypeIdResourceData(TEST_MATERIAL_TYPE, 1)};
         
@@ -139,7 +151,7 @@ public class ItemFactory {
         recipes.add(recipe);
         recipe = new Recipe(TEST_FOOD_NAME, ItemType.FOOD, 1, recipeResources);
         recipes.add(recipe);
-        recipe = new Recipe(TEST_POTION_NAME, ItemType.POTION, 1, recipeResources);
+        recipe = new Recipe(TEST_HEALTH_POTION_NAME, ItemType.POTION, 1, recipeResources);
         recipes.add(recipe);
         recipe = new Recipe(TEST_MATERIAL_TYPE.toString(),
                             ItemType.MATERIAL,

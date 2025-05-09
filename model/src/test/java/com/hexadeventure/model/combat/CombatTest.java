@@ -312,6 +312,34 @@ public class CombatTest {
         assertThat(characterStatusChange.oldValue()).isEqualTo(0);
         assertThat(characterStatusChange.newValue()).isEqualTo(1);
     }
+    
+    @Test
+    public void givenCharacterWithBoosts_whenCreated_thenApplyBoosts() {
+        PlayableCharacter character = CharacterFactory.createCharacter();
+        int boost = 20;
+        character.getChangedStats().setBoostHealth(boost);
+        character.getChangedStats().setBoostSpeed(boost);
+        character.getChangedStats().setBoostStrength(boost);
+        character.getChangedStats().setBoostDefense(boost);
+        CharacterCombatInfo characterCombatInfo = new CharacterCombatInfo(character, 0, 0, false);
+        
+        assertThat(characterCombatInfo.getHealth()).isEqualTo(character.getHealth() + boost);
+        assertThat(characterCombatInfo.getSpeed()).isEqualTo(character.getSpeed() + boost);
+        assertThat(characterCombatInfo.getDamage()).isEqualTo(character.getWeapon().getDamage() + boost);
+        assertThat(characterCombatInfo.getMeleeDefense()).isEqualTo(character.getWeapon().getMeleeDefense() + boost);
+        assertThat(characterCombatInfo.getRangedDefense()).isEqualTo(character.getWeapon().getRangedDefense() + boost);
+    }
+    
+    @Test
+    public void givenMoreDefenseBoostThanMax_whenCreated_thenApplyMax() {
+        PlayableCharacter character = CharacterFactory.createCharacter();
+        int boost = 999;
+        character.getChangedStats().setBoostDefense(boost);
+        CharacterCombatInfo characterCombatInfo = new CharacterCombatInfo(character, 0, 0, false);
+        
+        assertThat(characterCombatInfo.getMeleeDefense()).isEqualTo(CharacterCombatInfo.MAX_DEFFENSE);
+        assertThat(characterCombatInfo.getRangedDefense()).isEqualTo(CharacterCombatInfo.MAX_DEFFENSE);
+    }
     //endregion
     
     //region CharacterCombatInfo Comparator
