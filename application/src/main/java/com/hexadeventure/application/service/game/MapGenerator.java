@@ -271,7 +271,7 @@ public class MapGenerator {
                                                                                               GENERATE_RESOURCE_VARIATION));
                         double randomValue = random.nextDouble();
                         if(randomValue < probability) {
-                            double threshold = DoubleMapper.map(randomValue, 0, probability, -1, 1);
+                            double threshold = DoubleMapper.map(randomValue, 0, probability, 0, 1);
                             map.addResource(position, threshold, random);
                         }
                     }
