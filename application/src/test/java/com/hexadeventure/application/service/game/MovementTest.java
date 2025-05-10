@@ -279,7 +279,7 @@ public class MovementTest {
         
         gameService.move(TEST_USER_EMAIL, MapFactory.RESOURCE_END_POSITION);
         
-        assertThat(testUser.getCollectedResources()).isGreaterThan(MapFactory.RESOURCE_MAP_PATH_LENGTH - 1);
+        assertThat(testUser.getCollectedResources()).isEqualTo(MapFactory.RESOURCE_MAP_PATH_LENGTH - 1);
         
         verify(userRepository, times(1)).save(any());
     }

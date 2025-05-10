@@ -39,6 +39,9 @@ public class GameMap {
         mainCharacter = new MainCharacter(new Vector2(size / 2, size / 2));
         inventory = new Inventory();
         combatTerrain = new CombatTerrain(COMBAT_TERRAIN_ROW_SIZE, COMBAT_TERRAIN_COLUMN_SIZE);
+        bossPosition = new Vector2(Integer.MIN_VALUE, Integer.MIN_VALUE);
+        isInCombat = false;
+        isBossBattle = false;
     }
     
     public GameMap(String id, String userEmail, long seed, int size, Map<Vector2C, Chunk> chunks,

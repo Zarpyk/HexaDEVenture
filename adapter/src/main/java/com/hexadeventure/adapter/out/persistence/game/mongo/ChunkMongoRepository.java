@@ -2,6 +2,7 @@ package com.hexadeventure.adapter.out.persistence.game.mongo;
 
 import com.hexadeventure.adapter.out.persistence.game.mongo.data.ChunkMongoEntity;
 import com.hexadeventure.adapter.out.persistence.game.mongo.data.ChunkMongoMapper;
+import com.hexadeventure.adapter.out.persistence.game.mongo.data.Vector2MongoMapper;
 import com.hexadeventure.application.port.out.persistence.ChunkRepository;
 import com.hexadeventure.model.map.Chunk;
 import com.hexadeventure.model.map.Vector2C;
@@ -30,7 +31,7 @@ public class ChunkMongoRepository implements ChunkRepository {
         if(!repo.existsByMapId(mapId)) return List.of();
         List<Chunk> chunks = new ArrayList<>();
         for (Vector2C position : positions) {
-            repo.findByMapIdAndXAndY(mapId, position.x, position.y)
+            repo.findByMapIdAndPosition(mapId, Vector2MongoMapper.toEntity(position))
                 .ifPresent(chunk -> chunks.add(ChunkMongoMapper.toModel(chunk, gridFsOperations)));
         }
         return chunks;

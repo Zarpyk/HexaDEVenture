@@ -96,8 +96,8 @@ public class AStarAdapterTest {
     }
     
     @Test
-    public void whenGeneratePathWithNoSolution_thenNullIsReturn() {
+    public void whenGeneratePathWithNoSolution_thenEmptyQueueIsReturn() {
         Queue<Vector2> path = aStarAdapter.generatePath(start, end, noSolutionCostMap);
-        assertThat(path).isNull();
+        assertThat(path).isEmpty();
     }
 }

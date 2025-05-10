@@ -11,6 +11,9 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 public class User {
+    // Define a custom min date to support database mapping that does not support LocalDateTime.MIN
+    public static final LocalDateTime MIN_DATE = LocalDateTime.of(1970, 1, 1, 0, 0);
+    
     private final String id;
     private final String email;
     private final String username;
@@ -35,6 +38,6 @@ public class User {
         this.email = email;
         this.username = username;
         this.password = password;
-        currentGameStartTime = LocalDateTime.MIN;
+        currentGameStartTime = User.MIN_DATE;
     }
 }

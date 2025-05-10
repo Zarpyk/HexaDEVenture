@@ -20,7 +20,6 @@ import com.hexadeventure.model.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -860,7 +859,7 @@ public class CombatTest {
         assertThat(combatProcess.lose()).isFalse();
         assertThat(testUser.getMapId()).isEqualTo(null);
         assertThat(testUser.getWins()).isEqualTo(1);
-        assertThat(testUser.getCurrentGameStartTime()).isEqualTo(LocalDateTime.MIN);
+        assertThat(testUser.getCurrentGameStartTime()).isEqualTo(User.MIN_DATE);
         verify(testUser, times(1)).setPlayedTime(anyInt());
         verify(userRepository, times(1)).save(testUser);
         verify(gameMapRepository, times(1)).deleteById(map.getId());
@@ -895,7 +894,7 @@ public class CombatTest {
         
         assertThat(testUser.getMapId()).isEqualTo(null);
         assertThat(testUser.getWins()).isEqualTo(0);
-        assertThat(testUser.getCurrentGameStartTime()).isEqualTo(LocalDateTime.MIN);
+        assertThat(testUser.getCurrentGameStartTime()).isEqualTo(User.MIN_DATE);
         verify(testUser, times(1)).setPlayedTime(anyInt());
         verify(userRepository, times(1)).save(testUser);
         verify(gameMapRepository, times(1)).deleteById(map.getId());

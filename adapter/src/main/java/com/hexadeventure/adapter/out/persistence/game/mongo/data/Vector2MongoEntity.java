@@ -1,6 +1,5 @@
 package com.hexadeventure.adapter.out.persistence.game.mongo.data;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 

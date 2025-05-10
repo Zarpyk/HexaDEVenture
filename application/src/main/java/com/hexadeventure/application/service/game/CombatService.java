@@ -136,7 +136,7 @@ public class CombatService implements CombatUseCase {
                 // Add played time
                 int passedTime = user.getCurrentGameStartTime().getSecond() - LocalDateTime.now().getSecond();
                 user.setPlayedTime(user.getPlayedTime() + passedTime);
-                user.setCurrentGameStartTime(LocalDateTime.MIN);
+                user.setCurrentGameStartTime(User.MIN_DATE);
                 
                 // Finish the game
                 user.setMapId(null);

@@ -185,7 +185,7 @@ public class GameTest {
         gameService.startGame(TEST_USER_EMAIL, TEST_SEED, TEST_SIZE);
         
         assertThat(user.getPlayedGames()).isEqualTo(1);
-        assertThat(user.getCurrentGameStartTime()).isNotEqualTo(LocalDateTime.MIN);
+        assertThat(user.getCurrentGameStartTime()).isNotEqualTo(User.MIN_DATE);
     }
     //endregion
     
