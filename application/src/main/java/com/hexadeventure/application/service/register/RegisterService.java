@@ -14,10 +14,11 @@ import java.util.regex.Pattern;
 
 public class RegisterService implements RegisterUseCase {
     /**
-     * Simplified email validation that doesn't strictly follow the different standards.
+     * Simplified email validation that doesn't strictly follow the standards.<br>
+     * Modified from the original regex to better check subdomains.
      * @see <a href="https://stackoverflow.com/a/8204716/11451105">Email Validation Regex</a>
      */
-    private static final Pattern EMAIL_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
+    private static final Pattern EMAIL_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@([A-Z0-9-]+\\.)+[A-Z]{2,6}$",
                                                                Pattern.CASE_INSENSITIVE);
     /**
      * Minimum 8 characters
