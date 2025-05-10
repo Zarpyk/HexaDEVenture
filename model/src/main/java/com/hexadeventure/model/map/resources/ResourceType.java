@@ -19,7 +19,7 @@ public enum ResourceType {
     public static ResourceType[] getResourcesBelowThreshold(double threshold) {
         ResourceType[] resources = ResourceType.values();
         return Arrays.stream(resources)
-                     .filter(resourceType -> resourceType.minThreshold < threshold)
+                     .filter(resourceType -> resourceType.minThreshold <= threshold)
                      .toArray(ResourceType[]::new);
     }
 }
