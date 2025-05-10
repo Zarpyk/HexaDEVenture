@@ -7,5 +7,5 @@ public interface CombatUseCase {
     CombatTerrain getCombatStatus(String email);
     void placeCharacter(String email, int row, int column, String characterId);
     void removeCharacter(String email, int row, int column);
-    CombatProcess startAutoCombat(String email);
+    CombatProcess processCombatTurn(String email);
 }

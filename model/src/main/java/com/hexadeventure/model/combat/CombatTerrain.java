@@ -5,6 +5,7 @@ import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import com.hexadeventure.model.map.GameMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -15,6 +16,9 @@ public class CombatTerrain {
     private final String id;
     private final int rowSize;
     private final int columnSize;
+    
+    @Setter
+    private boolean modifiable = true;
     
     private final PlayableCharacter[][] playerTerrain;
     private final PlayableCharacter[][] enemyTerrain;
@@ -128,6 +132,9 @@ public class CombatTerrain {
                 enemyTerrain[i][j] = null;
             }
         }
+        modifiable = true;
+        loot = null;
+        lootSeed = -1;
     }
     
     @Override

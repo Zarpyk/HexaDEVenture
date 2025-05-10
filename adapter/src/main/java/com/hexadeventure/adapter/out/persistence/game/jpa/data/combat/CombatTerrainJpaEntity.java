@@ -19,6 +19,8 @@ public class CombatTerrainJpaEntity {
     private int rowSize;
     private int columnSize;
     
+    private boolean modifiable = true;
+    
     @Column(columnDefinition = "json")
     // From: https://stackoverflow.com/a/77150431/11451105
     // Probably only for PostgreSQL

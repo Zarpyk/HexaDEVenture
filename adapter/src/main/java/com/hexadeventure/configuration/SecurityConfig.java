@@ -26,7 +26,10 @@ public class SecurityConfig {
     
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((authorize) -> authorize.requestMatchers("/register").permitAll()
+        http.authorizeHttpRequests((authorize) -> authorize.requestMatchers("/register",
+                                                                            "/v3/api-docs/**",
+                                                                            "/swagger-ui/**",
+                                                                            "/swagger-ui.html").permitAll()
                                                            .anyRequest().authenticated())
             .formLogin(AbstractHttpConfigurer::disable)
             .csrf(AbstractHttpConfigurer::disable)

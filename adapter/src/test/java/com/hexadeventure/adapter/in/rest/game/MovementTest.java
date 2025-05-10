@@ -9,6 +9,7 @@ import com.hexadeventure.adapter.in.rest.game.dto.out.map.Vector2DTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.movement.MovementResponseDTO;
 import com.hexadeventure.adapter.utils.Vector2DTODeserializer;
 import com.hexadeventure.adapter.utils.Vector2Deserializer;
+import com.hexadeventure.application.exceptions.GameInCombatException;
 import com.hexadeventure.application.exceptions.GameNotStartedException;
 import com.hexadeventure.application.port.in.game.GameUseCase;
 import com.hexadeventure.model.map.Chunk;
@@ -72,6 +73,15 @@ public class MovementTest {
     public void givenNoStartGameUser_whenMove_thenReturnMethodNotAllowed() {
         doThrow(GameNotStartedException.class).when(gameUseCase).move(UserFactory.EMAIL,
                                                                       Vector2DTO.toModel(MOVE_POSITION));
+        RestCommon.postWithBody("/game/move", MOVE_POSITION, true)
+                  .then()
+                  .statusCode(HttpStatus.METHOD_NOT_ALLOWED.value());
+    }
+    
+    @Test
+    public void givenInCombatUser_whenMove_thenReturnMethodNotAllowed() {
+        doThrow(GameInCombatException.class).when(gameUseCase).move(UserFactory.EMAIL,
+                                                                    Vector2DTO.toModel(MOVE_POSITION));
         RestCommon.postWithBody("/game/move", MOVE_POSITION, true)
                   .then()
                   .statusCode(HttpStatus.METHOD_NOT_ALLOWED.value());

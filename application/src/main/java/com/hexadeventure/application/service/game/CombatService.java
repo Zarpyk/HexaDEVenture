@@ -1,6 +1,9 @@
 package com.hexadeventure.application.service.game;
 
-import com.hexadeventure.application.exceptions.*;
+import com.hexadeventure.application.exceptions.CombatNotStartedException;
+import com.hexadeventure.application.exceptions.GameInCombatException;
+import com.hexadeventure.application.exceptions.InvalidCharacterException;
+import com.hexadeventure.application.exceptions.InvalidPositionException;
 import com.hexadeventure.application.port.in.game.CombatUseCase;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
@@ -54,13 +57,15 @@ public class CombatService implements CombatUseCase {
         if(!gameMap.isInCombat()) throw new CombatNotStartedException();
         
         CombatTerrain combatTerrain = gameMap.getCombatTerrain();
+        if (!combatTerrain.isModifiable()) throw new GameInCombatException();
         checkParams(row, column, combatTerrain);
         
         Inventory inventory = gameMap.getInventory();
         PlayableCharacter playableCharacter = inventory.getCharacters().get(characterId);
-        if(playableCharacter == null) throw new CharacterNotFoundException();
+        if(playableCharacter == null) throw new InvalidCharacterException();
         
-        if(combatTerrain.getCharacterAt(row, column) != null) throw new PositionOccupiedException();
+        if(combatTerrain.getCharacterAt(row, column) != null)
+            throw new InvalidPositionException("Position already occupied");
         combatTerrain.placeCharacter(row, column, playableCharacter);
         
         inventory.removeCharacter(playableCharacter);
@@ -75,10 +80,11 @@ public class CombatService implements CombatUseCase {
         if(!gameMap.isInCombat()) throw new CombatNotStartedException();
         
         CombatTerrain combatTerrain = gameMap.getCombatTerrain();
+        if (!combatTerrain.isModifiable()) throw new GameInCombatException();
         checkParams(row, column, combatTerrain);
         
         PlayableCharacter playableCharacter = combatTerrain.getCharacterAt(row, column);
-        if(playableCharacter == null) throw new PositionEmptyException();
+        if(playableCharacter == null) throw new InvalidPositionException("No character at this position");
         combatTerrain.removeCharacter(row, column);
         
         Inventory inventory = gameMap.getInventory();
@@ -88,7 +94,7 @@ public class CombatService implements CombatUseCase {
     }
     
     @Override
-    public CombatProcess startAutoCombat(String email) {
+    public CombatProcess processCombatTurn(String email) {
         User user = Utilities.getUser(email, userRepository);
         GameMap gameMap = Utilities.getGameMap(user, gameMapRepository);
         
@@ -99,6 +105,7 @@ public class CombatService implements CombatUseCase {
         // Process the combat
         CombatProcessor combatProcessor = new CombatProcessor(combatTerrain);
         combatProcessor.processTurn();
+        combatTerrain.setModifiable(false);
         
         // Update the combat info
         boolean noCharacterRemain = true;
@@ -126,13 +133,13 @@ public class CombatService implements CombatUseCase {
         boolean lose = false;
         if(finished) {
             finishCombat(combatProcessor, gameMap);
+            gameMap.getCombatTerrain().resetTerrain();
             lose = gameMap.getInventory().getCharacters().isEmpty();
-            // If is boss battle and player has characters, then win
-            if(gameMap.isBossBattle() && !lose) {
-                user.setWins(user.getWins() + 1);
-            }
-            // If is boss battle or player has no characters, finish the game
+            // If is boss battle, finish the game
             if(gameMap.isBossBattle() || lose) {
+                // If is boss battle and the player has characters, then win
+                if(!lose && !noCharacterRemain) user.setWins(user.getWins() + 1);
+                
                 // Add played time
                 int passedTime = user.getCurrentGameStartTime().getSecond() - LocalDateTime.now().getSecond();
                 user.setPlayedTime(user.getPlayedTime() + passedTime);
@@ -142,10 +149,13 @@ public class CombatService implements CombatUseCase {
                 user.setMapId(null);
                 userRepository.save(user);
                 gameMapRepository.deleteById(gameMap.getId());
+            } else {
+                gameMap.setInCombat(false);
+                gameMapRepository.save(gameMap);
             }
+        } else {
+            gameMapRepository.save(gameMap);
         }
-        
-        gameMapRepository.save(gameMap);
         
         List<TurnInfo> turnInfos = combatProcessor.getTurnInfos();
         return new CombatProcess(turnInfos, finished, gameMap.isBossBattle(), lose);
@@ -154,7 +164,7 @@ public class CombatService implements CombatUseCase {
     private static void checkParams(int row, int column, CombatTerrain combatTerrain) {
         if(row < 0 || row >= combatTerrain.getRowSize() ||
            column < 0 || column >= combatTerrain.getColumnSize()) {
-            throw new InvalidPositionException();
+            throw new InvalidPositionException("Out of bounds");
         }
     }
     
@@ -183,7 +193,6 @@ public class CombatService implements CombatUseCase {
                 addLootToInventory(loot, gameMap, random);
             }
         }
-        gameMap.setInCombat(false);
     }
     
     private void addLootToInventory(Loot loot, GameMap gameMap, SplittableRandom random) {

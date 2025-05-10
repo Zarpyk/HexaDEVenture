@@ -32,6 +32,8 @@ public class CombatTerrainJpaMapper {
             entity.setRowSize(model.getRowSize());
             entity.setColumnSize(model.getColumnSize());
             
+            entity.setModifiable(model.isModifiable());
+            
             String playerJson = objectMapper.writeValueAsString(model.getPlayerTerrain());
             entity.setPlayerTerrain(playerJson);
             
@@ -56,8 +58,14 @@ public class CombatTerrainJpaMapper {
             PlayableCharacter[][] enemies = objectMapper.readValue(entity.getEnemyTerrain(),
                                                                    PlayableCharacter[][].class);
             Loot[] loot = objectMapper.readValue(entity.getLoot(), Loot[].class);
-            return new CombatTerrain(entity.getId(), entity.getRowSize(), entity.getColumnSize(), player, enemies,
-                                     loot, entity.getLootSeed());
+            return new CombatTerrain(entity.getId(),
+                                     entity.getRowSize(),
+                                     entity.getColumnSize(),
+                                     entity.isModifiable(),
+                                     player,
+                                     enemies,
+                                     loot,
+                                     entity.getLootSeed());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

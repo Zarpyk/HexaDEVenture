@@ -1,3 +1,10 @@
 package com.hexadeventure.adapter.in.rest.game.dto.in;
 
-public record EquipWeaponDTO(String characterId, String weaponId) {}
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public record EquipWeaponDTO(@Schema(requiredMode = Schema.RequiredMode.REQUIRED,
+                                     minLength = 1)
+                             String characterId,
+                             @Schema(requiredMode = Schema.RequiredMode.REQUIRED,
+                                     minLength = 1)
+                             String weaponId) {}

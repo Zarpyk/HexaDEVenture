@@ -13,10 +13,17 @@ import com.hexadeventure.application.service.game.CombatService;
 import com.hexadeventure.application.service.game.GameService;
 import com.hexadeventure.application.service.game.InventoryService;
 import com.hexadeventure.application.service.register.RegisterService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.info.License;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication()
+@OpenAPIDefinition(info = @Info(title = "HexaDEVenture API",
+        version = "v1",
+        license = @License(name = "Commons Clause + Apache 2.0",
+                url = "https://github.com/Zarpyk/HexaDEVenture/blob/main/LICENSE")))
 public class HexaDEVentureApplication {
     private final UserRepository userRepository;
     private final GameMapRepository gameMapRepository;

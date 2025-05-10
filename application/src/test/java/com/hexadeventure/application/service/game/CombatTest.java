@@ -159,7 +159,7 @@ public class CombatTest {
         map.setInCombat(true);
         
         // Check
-        assertThatExceptionOfType(CharacterNotFoundException.class)
+        assertThatExceptionOfType(InvalidCharacterException.class)
                 .isThrownBy(() -> combatService.placeCharacter(TEST_USER_EMAIL,
                                                                TEST_COMBAT_ROW,
                                                                TEST_COMBAT_COLUMN,
@@ -219,11 +219,39 @@ public class CombatTest {
         combatService.placeCharacter(TEST_USER_EMAIL, TEST_COMBAT_ROW, TEST_COMBAT_COLUMN, playableCharacter.getId());
         
         // Check
-        assertThatExceptionOfType(PositionOccupiedException.class)
+        assertThatExceptionOfType(InvalidPositionException.class)
                 .isThrownBy(() -> combatService.placeCharacter(TEST_USER_EMAIL,
                                                                TEST_COMBAT_ROW,
                                                                TEST_COMBAT_COLUMN,
                                                                playableCharacter2.getId()));
+    }
+    
+    @Test
+    public void givenCharacterToPlace_whenCombatAlreadyStart_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        // Create an empty game map
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        map.setInCombat(true);
+        
+        // Create characters and enemies
+        PlayableCharacter character = PlayableCharacterFactory.createMeleeCharacter(9999);
+        PlayableCharacter extraCharacter = PlayableCharacterFactory.createMeleeCharacter(15);
+        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
+        
+        // Place characters and enemies on the combat terrain
+        map.getCombatTerrain().placeCharacter(0, 0, character);
+        map.getCombatTerrain().placeEnemy(0, 0, enemy);
+        map.getInventory().addCharacter(character);
+        
+        combatService.processCombatTurn(TEST_USER_EMAIL);
+        
+        assertThatExceptionOfType(GameInCombatException.class)
+                .isThrownBy(() -> combatService.placeCharacter(TEST_USER_EMAIL,
+                                                               TEST_COMBAT_ROW,
+                                                               TEST_COMBAT_COLUMN,
+                                                               extraCharacter.getId()));
     }
     //endregion
     
@@ -285,7 +313,7 @@ public class CombatTest {
         map.setInCombat(true);
         
         // Check
-        assertThatExceptionOfType(PositionEmptyException.class)
+        assertThatExceptionOfType(InvalidPositionException.class)
                 .isThrownBy(() -> combatService.removeCharacter(TEST_USER_EMAIL,
                                                                 TEST_COMBAT_ROW,
                                                                 TEST_COMBAT_COLUMN));
@@ -320,6 +348,33 @@ public class CombatTest {
         assertThat(combat.getPlayerTerrain()[TEST_COMBAT_ROW][TEST_COMBAT_COLUMN]).isNull();
         assertThat(map.getInventory().getCharacters()).containsKey(playableCharacter.getId());
         assertThat(map.getInventory().getCharacters()).containsValue(playableCharacter);
+    }
+    
+    @Test
+    public void givenCharacterToRemove_whenCombatAlreadyStart_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        // Create an empty game map
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        map.setInCombat(true);
+        
+        // Create characters and enemies
+        PlayableCharacter character = PlayableCharacterFactory.createMeleeCharacter(9999);
+        PlayableCharacter extraCharacter = PlayableCharacterFactory.createMeleeCharacter(15);
+        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
+        
+        // Place characters and enemies on the combat terrain
+        map.getCombatTerrain().placeCharacter(0, 0, character);
+        map.getCombatTerrain().placeCharacter(0, 1, extraCharacter);
+        map.getCombatTerrain().placeEnemy(0, 0, enemy);
+        
+        combatService.processCombatTurn(TEST_USER_EMAIL);
+        
+        assertThatExceptionOfType(GameInCombatException.class)
+                .isThrownBy(() -> combatService.removeCharacter(TEST_USER_EMAIL,
+                                                                TEST_COMBAT_ROW,
+                                                                TEST_COMBAT_COLUMN));
     }
     //endregion
     
@@ -408,7 +463,7 @@ public class CombatTest {
     }
     //endregion
     
-    //region StartAutoCombat + CombatProcessor
+    //region ProcessCombatTurn + CombatProcessor
     @Test
     public void givenCharactersAndEnemies_whenCalculateTurnQueue_thenOrderBySpeed() {
         // Create an empty game map
@@ -462,7 +517,7 @@ public class CombatTest {
     }
     
     @Test
-    public void givenCharactersAndEnemies_whenStartAutoCombat_thenProcessTurn() {
+    public void givenCharactersAndEnemies_whenProcessCombatTurn_thenProcessTurn() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.EMPTY_MAP_ID);
         
@@ -479,7 +534,7 @@ public class CombatTest {
         map.getCombatTerrain().placeEnemy(0, 0, enemy);
         
         // Execute the method
-        CombatProcess combatProcess = combatService.startAutoCombat(TEST_USER_EMAIL);
+        CombatProcess combatProcess = combatService.processCombatTurn(TEST_USER_EMAIL);
         
         // Verify
         PlayableCharacter[][] playerTerrain = combatService.getCombatStatus(TEST_USER_EMAIL).getPlayerTerrain();
@@ -519,25 +574,26 @@ public class CombatTest {
         // Create characters and enemies
         PlayableCharacter character = PlayableCharacterFactory.createMeleeCharacter(9999);
         character.getWeapon().setDamage(PlayableCharacterFactory.TEST_CHARACTER_HEALTH * 9999);
-        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
+        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15, 9999);
+        PlayableCharacter extra = PlayableCharacterFactory.createMeleeCharacter(15);
         
         // Place characters and enemies on the combat terrain
         map.getCombatTerrain().placeCharacter(0, 0, character);
         map.getCombatTerrain().placeEnemy(0, 0, enemy);
+        map.getCombatTerrain().placeEnemy(0, 1, extra);
         
         // Execute the method
-        CombatProcess combatProcess = combatService.startAutoCombat(TEST_USER_EMAIL);
+        CombatProcess combatProcess = combatService.processCombatTurn(TEST_USER_EMAIL);
         
         // Verify
         PlayableCharacter[][] playerTerrain = map.getCombatTerrain().getPlayerTerrain();
         assertThat(playerTerrain[0][0]).isNotNull();
-        assertThat(playerTerrain[0][0].getChangedStats().getHealth()).isEqualTo(character.getHealth());
-        assertThat(playerTerrain[0][0].getChangedStats().isHypnotized()).isFalse();
         
         PlayableCharacter[][] enemyTerrain = map.getCombatTerrain().getEnemyTerrain();
         assertThat(enemyTerrain[0][0]).isNull();
+        assertThat(enemyTerrain[0][1]).isNotNull();
         
-        assertThat(combatProcess.turns()).hasSize(1);
+        assertThat(combatProcess.turns()).hasSize(2);
         TurnInfo first = combatProcess.turns().getFirst();
         assertThat(first.action()).isEqualTo(CombatAction.ATTACK);
         assertThat(first.isEnemyTurn()).isFalse();
@@ -555,26 +611,28 @@ public class CombatTest {
         // Create characters and enemies
         PlayableCharacter character = PlayableCharacterFactory.createHypnotizerCharacter(9999);
         character.getWeapon().setHypnotizationPower(100);
-        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
+        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15, 9999);
         enemy.setHypnotizationResistance(0);
+        PlayableCharacter extra = PlayableCharacterFactory.createMeleeCharacter(15);
+        extra.setHypnotizationResistance(100);
         
         // Place characters and enemies on the combat terrain
         map.getCombatTerrain().placeCharacter(0, 0, character);
         map.getCombatTerrain().placeEnemy(0, 0, enemy);
+        map.getCombatTerrain().placeEnemy(0, 1, extra);
         
         // Execute the method
-        CombatProcess combatProcess = combatService.startAutoCombat(TEST_USER_EMAIL);
+        CombatProcess combatProcess = combatService.processCombatTurn(TEST_USER_EMAIL);
         
         // Verify
         PlayableCharacter[][] playerTerrain = map.getCombatTerrain().getPlayerTerrain();
         assertThat(playerTerrain[0][0]).isNotNull();
-        assertThat(playerTerrain[0][0].getChangedStats().getHealth()).isEqualTo(character.getHealth());
-        assertThat(playerTerrain[0][0].getChangedStats().isHypnotized()).isFalse();
         
         PlayableCharacter[][] enemyTerrain = map.getCombatTerrain().getEnemyTerrain();
         assertThat(enemyTerrain[0][0]).isNotNull();
+        assertThat(enemyTerrain[0][1]).isNotNull();
         
-        assertThat(combatProcess.turns()).hasSize(1);
+        assertThat(combatProcess.turns()).hasSize(2);
         TurnInfo first = combatProcess.turns().getFirst();
         assertThat(first.action()).isEqualTo(CombatAction.HYPNOTIZE);
         assertThat(first.isEnemyTurn()).isFalse();
@@ -599,7 +657,7 @@ public class CombatTest {
         map.getCombatTerrain().placeEnemy(0, 0, enemy);
         
         // Execute the method
-        CombatProcess combatProcess = combatService.startAutoCombat(TEST_USER_EMAIL);
+        CombatProcess combatProcess = combatService.processCombatTurn(TEST_USER_EMAIL);
         
         // Verify
         assertThat(map.isInCombat()).isFalse();
@@ -627,8 +685,8 @@ public class CombatTest {
         map.getCombatTerrain().placeEnemy(0, 0, enemy);
         
         // Execute the method
-        combatService.startAutoCombat(TEST_USER_EMAIL);
-        combatService.startAutoCombat(TEST_USER_EMAIL);
+        combatService.processCombatTurn(TEST_USER_EMAIL);
+        combatService.processCombatTurn(TEST_USER_EMAIL);
         
         // Verify
         assertThat(map.isInCombat()).isFalse();
@@ -659,7 +717,7 @@ public class CombatTest {
         map.getCombatTerrain().placeEnemy(0, 0, enemy);
         
         // Execute the method
-        CombatProcess combatProcess = combatService.startAutoCombat(TEST_USER_EMAIL);
+        CombatProcess combatProcess = combatService.processCombatTurn(TEST_USER_EMAIL);
         
         // Verify
         assertThat(map.isInCombat()).isFalse();
@@ -691,7 +749,7 @@ public class CombatTest {
         map.getCombatTerrain().placeEnemy(0, 0, enemy);
         
         // Execute the method
-        combatService.startAutoCombat(TEST_USER_EMAIL);
+        combatService.processCombatTurn(TEST_USER_EMAIL);
         
         // Verify
         assertThat(map.getInventory().getCharacters()).containsKey(character.getId());
@@ -722,7 +780,7 @@ public class CombatTest {
         map.getCombatTerrain().setLoot(EnemyFactory.createEnemyPattern().loot(), 1234);
         
         // Execute the method
-        combatService.startAutoCombat(TEST_USER_EMAIL);
+        combatService.processCombatTurn(TEST_USER_EMAIL);
         
         // Verify
         Collection<Item> items = map.getInventory().getItems().values();
@@ -756,7 +814,7 @@ public class CombatTest {
         map.getCombatTerrain().setLoot(loot, 1234);
         
         // Execute the method
-        combatService.startAutoCombat(TEST_USER_EMAIL);
+        combatService.processCombatTurn(TEST_USER_EMAIL);
         
         // Verify
         Collection<Item> items = map.getInventory().getItems().values();
@@ -790,7 +848,7 @@ public class CombatTest {
         map.getCombatTerrain().placeEnemy(0, 0, enemy);
         
         // Execute the method
-        combatService.startAutoCombat(TEST_USER_EMAIL);
+        combatService.processCombatTurn(TEST_USER_EMAIL);
         
         // Verify
         assertThat(map.isInCombat()).isFalse();
@@ -804,7 +862,37 @@ public class CombatTest {
     }
     
     @Test
-    public void givenCharactersAndEnemies_whenStartAutoCombat_thenReturnCombatProcess() {
+    public void givenCharacterAndEnemies_whenFinishCombat_thenResetCombatTerrain() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        // Create an empty game map
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        map.setInCombat(true);
+        
+        // Create characters and enemies
+        PlayableCharacter character = PlayableCharacterFactory.createMeleeCharacter(0);
+        character.getWeapon().setDamage(PlayableCharacterFactory.TEST_CHARACTER_HEALTH * 9999);
+        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
+        
+        // Place characters and enemies on the combat terrain
+        map.getCombatTerrain().placeCharacter(0, 0, character);
+        map.getCombatTerrain().placeEnemy(0, 0, enemy);
+        
+        // Execute the method
+        combatService.processCombatTurn(TEST_USER_EMAIL);
+        
+        // Verify
+        assertThat(map.isInCombat()).isFalse();
+        assertThat(map.getCombatTerrain().isModifiable()).isTrue();
+        assertThat(map.getCombatTerrain().getPlayerTerrain()[0][0]).isNull();
+        assertThat(map.getCombatTerrain().getEnemyTerrain()[0][0]).isNull();
+        assertThat(map.getCombatTerrain().getLoot()).isNull();
+        assertThat(map.getCombatTerrain().getLootSeed()).isEqualTo(-1);
+    }
+    
+    @Test
+    public void givenCharactersAndEnemies_whenProcessCombatTurn_thenReturnCombatProcess() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.EMPTY_MAP_ID);
         
@@ -821,7 +909,7 @@ public class CombatTest {
         map.getCombatTerrain().placeEnemy(0, 0, enemy);
         
         // Execute the method
-        CombatProcess combatProcess = combatService.startAutoCombat(TEST_USER_EMAIL);
+        CombatProcess combatProcess = combatService.processCombatTurn(TEST_USER_EMAIL);
         
         // Verify
         assertThat(map.isInCombat()).isTrue();
@@ -851,7 +939,7 @@ public class CombatTest {
         map.getCombatTerrain().placeEnemy(0, 0, enemy);
         
         // Execute the method
-        CombatProcess combatProcess = combatService.startAutoCombat(TEST_USER_EMAIL);
+        CombatProcess combatProcess = combatService.processCombatTurn(TEST_USER_EMAIL);
         
         // Verify
         assertThat(combatProcess.combatFinished()).isTrue();
@@ -885,7 +973,7 @@ public class CombatTest {
         map.getCombatTerrain().placeEnemy(0, 0, enemy);
         
         // Execute the method
-        CombatProcess combatProcess = combatService.startAutoCombat(TEST_USER_EMAIL);
+        CombatProcess combatProcess = combatService.processCombatTurn(TEST_USER_EMAIL);
         
         // Verify
         assertThat(combatProcess.combatFinished()).isTrue();

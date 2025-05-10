@@ -1,4 +1,11 @@
 package com.hexadeventure.adapter.in.rest.game.dto.in;
 
-public record UseItemDTO(String characterId, String itemId) {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public record UseItemDTO(@Schema(requiredMode = Schema.RequiredMode.REQUIRED,
+                                 minLength = 1)
+                         String characterId,
+                         @Schema(requiredMode = Schema.RequiredMode.REQUIRED,
+                                 minLength = 1)
+                         String itemId) {
 }
