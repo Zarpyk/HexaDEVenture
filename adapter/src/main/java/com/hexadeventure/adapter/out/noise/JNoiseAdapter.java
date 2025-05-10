@@ -77,27 +77,6 @@ public class JNoiseAdapter implements NoiseGenerator {
             }
             circle.put(position, value);
         }
-        /*for (Vector2C chunk : chunksToGenerate) {
-            for (int x = chunk.getRealX(); x < chunk.getEndX(); x++) {
-                for (int y = chunk.getRealY(); y < chunk.getEndY(); y++) {
-                    Vector2 position = new Vector2(x, y);
-                    
-                    double distX = Math.abs(x - center.x);
-                    double distY = Math.abs(y - center.y);
-                    double dist = Math.sqrt(distX * distX + distY * distY);
-                    
-                    double value;
-                    if(dist > radius) value = 1;
-                    else value = circleGradient.get(position) * getPerlinNoise(x, y, noiseId, true);
-                    
-                    value *= 20;
-                    if(value > maxGrad) {
-                        maxGrad = value;
-                    }
-                    circle.put(position, value);
-                }
-            }
-        }*/
         
         normalize(circle, maxGrad);
         return circle;
@@ -147,15 +126,6 @@ public class JNoiseAdapter implements NoiseGenerator {
             }
             circleGrad.put(position, value);
         }
-        
-        /*for (Vector2 position : circleGrad.keySet()) {
-            double distX = Math.abs(position.x - center.x);
-            double distY = Math.abs(position.y - center.y);
-            double dist = Math.sqrt(distX * distX + distY * distY);
-            if(dist > radius) {
-                circleGrad.put(position, finalMaxGrad);
-            }
-        }*/
         
         normalize(circleGrad, finalMaxGrad);
         return circleGrad;
