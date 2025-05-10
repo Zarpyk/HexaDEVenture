@@ -104,7 +104,7 @@ public class CombatTest {
                                                                                    TEST_CHARACTER_ID);
         RestCommon.postWithBody("/game/combat/character", placeCharacterDTO, true)
                   .then()
-                  .statusCode(HttpStatus.METHOD_NOT_ALLOWED.value());
+                  .statusCode(HttpStatus.BAD_REQUEST.value());
     }
     
     @Test
@@ -116,7 +116,7 @@ public class CombatTest {
                                                                                     TEST_CHARACTER_ID);
         RestCommon.postWithBody("/game/combat/character", placeCharacterDTO, true)
                   .then()
-                  .statusCode(HttpStatus.METHOD_NOT_ALLOWED.value());
+                  .statusCode(HttpStatus.BAD_REQUEST.value());
     }
     
     @Test
@@ -149,7 +149,7 @@ public class CombatTest {
                                                                                     TEST_COLUMN);
         RestCommon.deleteWithBody("/game/combat/character", removeCharacterDTO, true)
                   .then()
-                  .statusCode(HttpStatus.METHOD_NOT_ALLOWED.value());
+                  .statusCode(HttpStatus.BAD_REQUEST.value());
     }
     
     @Test
