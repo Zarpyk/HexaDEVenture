@@ -48,7 +48,10 @@ public class MapFactory {
                                              chunks,
                                              new MainCharacter(new Vector2(TEST_SIZE / 2, TEST_SIZE / 2)),
                                              new Inventory(),
-                                             new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE));
+                                             new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE),
+                                             new Vector2(0, 0),
+                                             false,
+                                             false);
         
         chunks = Map.of(
                 CHUNK1.getPosition(), CHUNK1,
@@ -63,6 +66,9 @@ public class MapFactory {
                                            chunks,
                                            new MainCharacter(new Vector2(TEST_SIZE / 2, TEST_SIZE / 2)),
                                            new Inventory(),
-                                           new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE));
+                                           new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE),
+                                           new Vector2(0, 0),
+                                           false,
+                                           false);
     }
 }

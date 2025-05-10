@@ -50,7 +50,10 @@ public class CombatTest {
                                                                0, STATUS_CHANGES,
                                                                0,
                                                                0,
-                                                               STATUS_CHANGES)))
+                                                               STATUS_CHANGES))),
+            false,
+            false,
+            false
     );
     
     

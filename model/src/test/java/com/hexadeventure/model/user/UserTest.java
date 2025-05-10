@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserTest {
     private static final String EMAIL = "test@test.com";
     private static final String USERNAME = "testUser";
-    private static final String PASSWORD = "testPassword";
+    private static final String PASSWORD = "Test_Password1234@";
     
     @Test
     public void givenAEmailUsernameAndPassword_whenCreatingAUser_thenCreatesAUser() {

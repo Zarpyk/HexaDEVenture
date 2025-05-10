@@ -1,11 +1,16 @@
 package com.hexadeventure.application.service.register;
 
+import com.hexadeventure.application.exceptions.InvalidEmailException;
+import com.hexadeventure.application.exceptions.InvalidPasswordException;
+import com.hexadeventure.application.exceptions.InvalidUsernameException;
 import com.hexadeventure.application.exceptions.UserExistException;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.service.common.UserFactory;
 import com.hexadeventure.model.user.User;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.UUID;
 
@@ -34,6 +39,39 @@ public class RegisterServiceTest {
         });
         
         verify(userRepository, never()).save(any());
+    }
+    
+    @ParameterizedTest
+    @ValueSource(strings = {"", "invalid_email", "invalid@domain", "invalid@domain.", "invalid@.com",
+                            "invalid@domain..com", "@invalid.com"})
+    public void givenInvalidEmail_whenRegister_thenThrowException(String email) {
+        User user = new User(email, UserFactory.USERNAME, UserFactory.PASSWORD);
+        
+        assertThatExceptionOfType(InvalidEmailException.class).isThrownBy(() -> {
+            registerService.register(user);
+        });
+    }
+    
+    @Test
+    public void givenInvalidUsername_whenRegister_thenThrowException() {
+        User user = new User(UserFactory.EMAIL, "", UserFactory.PASSWORD);
+        
+        assertThatExceptionOfType(InvalidUsernameException.class).isThrownBy(() -> registerService.register(user));
+    }
+    
+    @ParameterizedTest
+    @ValueSource(strings = {"1@Abc", "12345678", "abcdefgh", "ABCDEFGH", "12345678abcdefgh", "12345678ABCDEFGH",
+                            "abcdefghABCDEFGH", "abcdefgh12345678", "ABCDEFGH12345678",
+                            "abcdefghABCDEFGH12345678", "!@#$&* _-", "abcdefgh!@#$&*",
+                            "ABCDEFGH!@#$&*", "12345678!@#$&*", "abcdefgh12345678!@#$&*",
+                            "ABCDEFGH12345678!@#$&*",
+                            "1234567890@1234567890@1234567890@1234567890@1234567890@1234567890"})
+    public void givenInvalidPassword_whenRegister_thenThrowException(String password) {
+        User user = new User(UserFactory.EMAIL, UserFactory.USERNAME, password);
+        
+        assertThatExceptionOfType(InvalidPasswordException.class).isThrownBy(() -> {
+            registerService.register(user);
+        });
     }
     
     @Test

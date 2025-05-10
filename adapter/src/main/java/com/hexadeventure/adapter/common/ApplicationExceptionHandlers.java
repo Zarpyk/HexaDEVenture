@@ -39,7 +39,10 @@ public class ApplicationExceptionHandlers {
                        InvalidSearchException.class,
                        InvalidRecipeException.class,
                        InvalidCharacterException.class,
-                       InvalidItemException.class})
+                       InvalidItemException.class,
+                       InvalidEmailException.class,
+                       InvalidUsernameException.class,
+                       InvalidPasswordException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     private String badRequestExceptionHandler(Exception ex) {
         return ex.getMessage();
