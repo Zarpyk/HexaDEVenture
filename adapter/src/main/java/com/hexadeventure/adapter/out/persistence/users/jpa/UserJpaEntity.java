@@ -14,8 +14,6 @@ import java.time.LocalDateTime;
 @Table(name = "users")
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserJpaEntity {
     @Id
     private String id;

@@ -25,7 +25,7 @@ public class RegisterServiceTest {
     
     @Test
     public void givenNewUser_whenRegister_thenSaveUser() {
-        registerService.register(UserFactory.USER);
+        registerService.register(UserFactory.USER, UserFactory.PASSWORD);
         
         verify(userRepository, times(1)).save(UserFactory.USER);
     }
@@ -35,7 +35,7 @@ public class RegisterServiceTest {
         UserFactory.createTestUser(userRepository);
         
         assertThatExceptionOfType(UserExistException.class).isThrownBy(() -> {
-            registerService.register(UserFactory.USER);
+            registerService.register(UserFactory.USER, UserFactory.PASSWORD);
         });
         
         verify(userRepository, never()).save(any());
@@ -48,7 +48,7 @@ public class RegisterServiceTest {
         User user = new User(email, UserFactory.USERNAME, UserFactory.PASSWORD);
         
         assertThatExceptionOfType(InvalidEmailException.class).isThrownBy(() -> {
-            registerService.register(user);
+            registerService.register(user, UserFactory.PASSWORD);
         });
     }
     
@@ -56,7 +56,8 @@ public class RegisterServiceTest {
     public void givenInvalidUsername_whenRegister_thenThrowException() {
         User user = new User(UserFactory.EMAIL, "", UserFactory.PASSWORD);
         
-        assertThatExceptionOfType(InvalidUsernameException.class).isThrownBy(() -> registerService.register(user));
+        assertThatExceptionOfType(InvalidUsernameException.class)
+                .isThrownBy(() -> registerService.register(user, UserFactory.PASSWORD));
     }
     
     @ParameterizedTest
@@ -70,7 +71,7 @@ public class RegisterServiceTest {
         User user = new User(UserFactory.EMAIL, UserFactory.USERNAME, password);
         
         assertThatExceptionOfType(InvalidPasswordException.class).isThrownBy(() -> {
-            registerService.register(user);
+            registerService.register(user, password);
         });
     }
     

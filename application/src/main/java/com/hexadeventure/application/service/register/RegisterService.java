@@ -44,14 +44,14 @@ public class RegisterService implements RegisterUseCase {
     }
     
     @Override
-    public void register(User user) {
+    public void register(User user, String password) {
         if(user.getEmail() == null || !EMAIL_REGEX.matcher(user.getEmail()).matches()) {
             throw new InvalidEmailException(user.getEmail());
         }
         if(user.getUsername() == null || user.getUsername().isEmpty()) {
             throw new InvalidUsernameException();
         }
-        if(user.getPassword() == null || !PASSWORD_REGEX.matcher(user.getPassword()).matches()) {
+        if(password == null || !PASSWORD_REGEX.matcher(password).matches()) {
             throw new InvalidPasswordException();
         }
         

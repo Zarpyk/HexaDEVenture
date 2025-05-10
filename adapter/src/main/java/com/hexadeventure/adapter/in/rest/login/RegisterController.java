@@ -22,7 +22,7 @@ public class RegisterController {
         if(principal != null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        registerUseCase.register(user.toModel());
+        registerUseCase.register(user.toModel(), user.password());
         return ResponseEntity.ok().build();
     }
     

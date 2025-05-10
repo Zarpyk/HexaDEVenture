@@ -1,11 +1,11 @@
 package com.hexadeventure.configuration;
 
+import com.hexadeventure.application.port.out.persistence.UserRepository;
+import com.hexadeventure.model.user.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import com.hexadeventure.application.port.out.persistence.UserRepository;
-import com.hexadeventure.model.user.User;
 
 /**
  * Custom user details service.
@@ -21,10 +21,10 @@ public class CustomUserDetailService implements UserDetailsService {
     }
     
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username)
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email)
                                   .orElseThrow(() -> new UsernameNotFoundException(
-                                          "User Not Found with username: " + username));
+                                          "User Not Found with email: " + email));
         return new CustomUserDetails(user);
     }
 }

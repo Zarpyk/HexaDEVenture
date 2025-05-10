@@ -5,9 +5,11 @@ import com.hexadeventure.model.user.User;
 public interface RegisterUseCase {
     /**
      * Register a new user to the system
-     * @param user the user to register
+     *
+     * @param user     the user to register
+     * @param password
      */
-    void register(User user);
+    void register(User user, String password);
     
     /**
      * Unregister a user from the system and delete all its data

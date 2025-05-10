@@ -29,13 +29,15 @@ public class RegisterControllerTest {
     
     @Test
     public void givenAnEmailAndUsernameAndPassword_whenRegistering_thenRegistersTheUser() {
-        RestCommon.postWithBody("/register", UserFactory.USER_DTO, false).then().statusCode(HttpStatus.OK.value());
+        RestCommon.postWithBody("/register", UserFactory.USER_DTO, false)
+                  .then()
+                  .statusCode(HttpStatus.OK.value());
     }
     
     @Test
     public void givenAnExistingEmail_whenRegistering_thenReturnsError() {
         // Simulate already the user exists
-        doThrow(new UserExistException(UserFactory.EMAIL)).when(registerUseCase).register(any());
+        doThrow(new UserExistException(UserFactory.EMAIL)).when(registerUseCase).register(any(), any());
         
         RestCommon.postWithBody("/register", UserFactory.USER_DTO, false)
                   .then()
@@ -45,7 +47,7 @@ public class RegisterControllerTest {
     @Test
     public void givenAnInvalidEmail_whenRegistering_thenReturnsError() {
         // Simulate already the user exists
-        doThrow(new InvalidEmailException(UserFactory.EMAIL)).when(registerUseCase).register(any());
+        doThrow(new InvalidEmailException(UserFactory.EMAIL)).when(registerUseCase).register(any(), any());
         
         RestCommon.postWithBody("/register", UserFactory.USER_DTO, false)
                   .then()
@@ -55,7 +57,7 @@ public class RegisterControllerTest {
     @Test
     public void givenAnInvalidUsername_whenRegistering_thenReturnsError() {
         // Simulate already the user exists
-        doThrow(new InvalidUsernameException()).when(registerUseCase).register(any());
+        doThrow(new InvalidUsernameException()).when(registerUseCase).register(any(), any());
         
         RestCommon.postWithBody("/register", UserFactory.USER_DTO, false)
                   .then()
@@ -65,7 +67,7 @@ public class RegisterControllerTest {
     @Test
     public void givenAnInvalidPassword_whenRegistering_thenReturnsError() {
         // Simulate already the user exists
-        doThrow(new InvalidPasswordException()).when(registerUseCase).register(any());
+        doThrow(new InvalidPasswordException()).when(registerUseCase).register(any(), any());
         
         RestCommon.postWithBody("/register", UserFactory.USER_DTO, false)
                   .then()
@@ -75,5 +77,12 @@ public class RegisterControllerTest {
     @Test
     public void givenAnAuthRequest_whenAlreadyLogin_thenReturnsError() {
         RestCommon.postWithBody("/register", ANOTHER_USER_DTO).then().statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+    
+    @Test
+    public void givenAuthUser_whenUnregistering_thenUnregistersTheUser() {
+        RestCommon.post("/unregister")
+                  .then()
+                  .statusCode(HttpStatus.OK.value());
     }
 }
