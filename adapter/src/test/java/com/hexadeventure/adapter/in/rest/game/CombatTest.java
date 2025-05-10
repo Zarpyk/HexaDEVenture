@@ -14,7 +14,6 @@ import com.hexadeventure.model.combat.CombatTerrain;
 import com.hexadeventure.model.combat.TurnInfo;
 import com.hexadeventure.model.inventory.characters.CharacterStat;
 import com.hexadeventure.model.inventory.characters.CharacterStatusChange;
-import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -33,9 +32,6 @@ public class CombatTest {
     private static final int ROW_SIZE = 3;
     private static final int COLUMN_SIZE = 4;
     private static final CombatTerrain COMBAT_TERRAIN = new CombatTerrain(ROW_SIZE, COLUMN_SIZE);
-    private static final PlayableCharacter TEST_CHARACTER = new PlayableCharacter(TEST_CHARACTER_ID,
-                                                                                  0,
-                                                                                  0);
     
     private static final List<CharacterStatusChange> STATUS_CHANGES =
             new ArrayList<>(Collections.singleton(new CharacterStatusChange(

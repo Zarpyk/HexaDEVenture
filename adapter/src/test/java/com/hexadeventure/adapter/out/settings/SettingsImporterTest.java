@@ -141,7 +141,7 @@ public class SettingsImporterTest {
     }
     
     @Test
-    public void givenThreshold_whenGetEnemyPatterns_thenReturnAllPaternsLowerOrEqualThanThreshold() {
+    public void givenThreshold_whenGetEnemyPatterns_thenReturnAllPatternsLowerOrEqualThanThreshold() {
         EnemyPattern[] enemyPatterns = settingsImporter.importEnemyPatterns(0.5f);
         assertThat(enemyPatterns.length).isEqualTo(2);
         

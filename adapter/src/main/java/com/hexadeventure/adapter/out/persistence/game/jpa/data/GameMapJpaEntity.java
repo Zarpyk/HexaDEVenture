@@ -2,7 +2,6 @@ package com.hexadeventure.adapter.out.persistence.game.jpa.data;
 
 import com.hexadeventure.adapter.out.persistence.game.jpa.data.combat.CombatTerrainJpaEntity;
 import com.hexadeventure.adapter.out.persistence.game.jpa.data.inventory.InventoryJpaEntity;
-import com.hexadeventure.model.map.Vector2;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

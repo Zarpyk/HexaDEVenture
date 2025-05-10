@@ -1,7 +1,5 @@
 package com.hexadeventure.application.port.out.settings;
 
-import com.hexadeventure.model.inventory.Item;
-import com.hexadeventure.model.inventory.ItemType;
 import com.hexadeventure.model.inventory.characters.EnemyPattern;
 import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.initial.InitialResources;

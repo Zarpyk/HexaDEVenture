@@ -6,6 +6,7 @@ import lombok.Getter;
 import java.util.Objects;
 
 @Getter
+@SuppressWarnings("FieldMayBeFinal")
 public class CharacterCombatInfo {
     // Create a copy of PlayableCharacter to avoid modifying the original character
     // This allows modifying the stats of the character in combat
@@ -17,7 +18,7 @@ public class CharacterCombatInfo {
     public static final double SECOND_ROW_SPEED = 0.75;
     public static final double THIRD_ROW_SPEED = 0.5;
     
-    public static final double MAX_DEFFENSE = 75;
+    public static final double MAX_DEFENSE = 75;
     
     private PlayableCharacter character;
     private final int row;
@@ -51,14 +52,14 @@ public class CharacterCombatInfo {
         this.name = character.getName();
         this.health = character.getChangedStats().getHealth() + character.getChangedStats().getBoostHealth();
         this.speed = character.getSpeed() + character.getChangedStats().getBoostSpeed();
-        this.hypnotizationResistance = character.getHypnotizationResistence();
+        this.hypnotizationResistance = character.getHypnotizationResistance();
         this.isHypnotized = character.getChangedStats().isHypnotized();
         this.weaponType = character.getWeapon().getWeaponType();
         this.damage = character.getWeapon().getDamage() + character.getChangedStats().getBoostStrength();
         this.meleeDefense = character.getWeapon().getMeleeDefense() + character.getChangedStats().getBoostDefense();
-        this.meleeDefense = Math.min(this.meleeDefense, MAX_DEFFENSE);
+        this.meleeDefense = Math.min(this.meleeDefense, MAX_DEFENSE);
         this.rangedDefense = character.getWeapon().getRangedDefense() + character.getChangedStats().getBoostDefense();
-        this.rangedDefense = Math.min(this.rangedDefense, MAX_DEFFENSE);
+        this.rangedDefense = Math.min(this.rangedDefense, MAX_DEFENSE);
         this.cooldown = 0;
         this.aggroGeneration = character.getWeapon().getAggroGeneration();
         this.currentAggro = character.getWeapon().getInitialAggro();
@@ -87,10 +88,10 @@ public class CharacterCombatInfo {
      * @return a negative integer, zero, or a positive integer.
      */
     public int compareBySpeed(CharacterCombatInfo o) {
-        // Priotize higher speed
+        // Prioritize higher speed
         int compare = Double.compare(o.getSpeed(), getSpeed());
         if(compare != 0) return compare;
-        // If the speed is the same, priotize ally
+        // If the speed is the same, prioritize ally
         if(!this.isEnemy && o.isEnemy) return -1;
         if(this.isEnemy && !o.isEnemy) return 1;
         // After that, prioritize the lower row
@@ -105,13 +106,13 @@ public class CharacterCombatInfo {
      * <p>If the target aggro is higher, it will be prioritized.</p>
      * <p>If the aggro is the same, it will prioritize the lower row.</p>
      * <p>If the row is the same, it will prioritize the lower column.</p>
-     * <p>This comparison doesn't take into account if this is enemy or ally.</p>
+     * <p>This comparison doesn't take into account if this is an enemy or ally.</p>
      *
      * @param o the other `CharacterCombatInfo` to compare with
      * @return a negative integer, zero, or a positive integer.
      */
     public int compareByAggro(CharacterCombatInfo o) {
-        // Priotize higher aggro
+        // Prioritize higher aggro
         int compare = Double.compare(o.getCurrentAggro(), getCurrentAggro());
         if(compare != 0) return compare;
         // If the aggro is the same, prioritize the lower row

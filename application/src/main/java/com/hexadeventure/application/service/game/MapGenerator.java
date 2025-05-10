@@ -65,7 +65,7 @@ public class MapGenerator {
         
         int distance = (GameService.MIN_SQUARE_SIZE - 1) / 2;
         
-        Set<Vector2C> chunksToGenerate = new HashSet<>(centerChunk.getArroundPositions(distance, true));
+        Set<Vector2C> chunksToGenerate = new HashSet<>(centerChunk.getAroundPositions(distance, true));
         
         GameMap map = new GameMap(email, seed, size);
         generateCells(map, chunksToGenerate, true);

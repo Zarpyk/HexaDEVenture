@@ -48,15 +48,15 @@ public class Vector2C {
         return new Vector2C(x + direction.y * distance, y - direction.x * distance);
     }
     
-    public Set<Vector2C> getArroundPositions(int distance, boolean includeCenter) {
-        Set<Vector2C> aroundPossitions = new HashSet<>();
-        if(includeCenter) aroundPossitions.add(this);
+    public Set<Vector2C> getAroundPositions(int distance, boolean includeCenter) {
+        Set<Vector2C> aroundPositions = new HashSet<>();
+        if(includeCenter) aroundPositions.add(this);
         for (int x = -distance; x <= distance; x++) {
             for (int y = -distance; y <= distance; y++) {
-                aroundPossitions.add(new Vector2C(this.x + x, this.y + y));
+                aroundPositions.add(new Vector2C(this.x + x, this.y + y));
             }
         }
-        return aroundPossitions;
+        return aroundPositions;
     }
     
     public Vector2C add(Vector2C vector2) {

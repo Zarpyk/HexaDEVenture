@@ -151,7 +151,7 @@ public class InventoryTest {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.EMPTY_MAP_ID);
         
-        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
         
         assertThatExceptionOfType(InvalidRecipeException.class)
                 .isThrownBy(() -> inventoryService.craft(UserFactory.EMAIL, -1, 10));
@@ -183,7 +183,7 @@ public class InventoryTest {
         int craftableCount = 10;
         map.getInventory().addItem(materials.get(ItemFactory.TEST_MATERIAL_TYPE), craftableCount);
         
-        assertThatExceptionOfType(NotEnoughtResourcesException.class)
+        assertThatExceptionOfType(NotEnoughResourcesException.class)
                 .isThrownBy(() -> inventoryService.craft(UserFactory.EMAIL, 0, craftableCount + 1));
     }
     
@@ -337,7 +337,7 @@ public class InventoryTest {
     }
     
     @Test
-    public void givenInvalidCharacterId_whenEquipWeapon_thenThrowExeption() {
+    public void givenInvalidCharacterId_whenEquipWeapon_thenThrowException() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.EMPTY_MAP_ID);
         
@@ -354,7 +354,7 @@ public class InventoryTest {
     }
     
     @Test
-    public void givenInvalidWeaponId_whenEquipWeapon_thenThrowExeption() {
+    public void givenInvalidWeaponId_whenEquipWeapon_thenThrowException() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.EMPTY_MAP_ID);
         
@@ -408,7 +408,7 @@ public class InventoryTest {
     }
     
     @Test
-    public void givenInvalidCharacterId_whenUnequipWeapon_thenThrowExeption() {
+    public void givenInvalidCharacterId_whenUnequipWeapon_thenThrowException() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.EMPTY_MAP_ID);
         
@@ -425,7 +425,7 @@ public class InventoryTest {
     }
     
     @Test
-    public void givenCharacterWithoutWeapon_whenUnequipWeapon_thenThrowExeption() {
+    public void givenCharacterWithoutWeapon_whenUnequipWeapon_thenThrowException() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.EMPTY_MAP_ID);
         
@@ -511,7 +511,7 @@ public class InventoryTest {
     }
     
     @Test
-    public void givenInvalidCharacterId_whenUseItem_thenThrowExeption() {
+    public void givenInvalidCharacterId_whenUseItem_thenThrowException() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.EMPTY_MAP_ID);
         
@@ -529,7 +529,7 @@ public class InventoryTest {
     }
     
     @Test
-    public void givenInvalidItemId_whenUseItem_thenThrowExeption() {
+    public void givenInvalidItemId_whenUseItem_thenThrowException() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.EMPTY_MAP_ID);
         

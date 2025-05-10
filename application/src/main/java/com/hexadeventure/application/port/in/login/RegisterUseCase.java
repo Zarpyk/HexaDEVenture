@@ -6,8 +6,8 @@ public interface RegisterUseCase {
     /**
      * Register a new user to the system
      *
-     * @param user     the user to register
-     * @param password
+     * @param user the user to register
+     * @param password the password of the user without encryption
      */
     void register(User user, String password);
     

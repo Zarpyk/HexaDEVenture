@@ -1,11 +1,9 @@
 package com.hexadeventure.adapter.out.settings.json.initial;
 
-import com.hexadeventure.adapter.out.settings.json.material.MaterialJson;
 import com.hexadeventure.model.inventory.initial.InitialCharacter;
 import com.hexadeventure.model.inventory.initial.InitialResourceTypeIdResourceData;
 import com.hexadeventure.model.inventory.initial.InitialResources;
 import com.hexadeventure.model.inventory.initial.InitialStringIdResourceData;
-import com.hexadeventure.model.map.resources.ResourceType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

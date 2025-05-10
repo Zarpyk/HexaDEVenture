@@ -20,7 +20,7 @@ public class ApplicationExceptionHandlers {
                        PositionEmptyException.class,
                        PositionOccupiedException.class,
                        CharacterNotFoundException.class,
-                       NotEnoughtResourcesException.class})
+                       NotEnoughResourcesException.class})
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     private String methodNotAllowedExceptionHandler(Exception ex) {
         return ex.getMessage();

@@ -86,15 +86,6 @@ public class Chunk {
     /**
      * Returns the cost map of the chunk.
      * @param onlyWalkable if true, non-walkable cells will have a cost of -1, otherwise a big number will be used
-     * @return the cost map
-     */
-    public int[][] getCostMap(boolean onlyWalkable) {
-        return getCostMap(onlyWalkable, false, null);
-    }
-    
-    /**
-     * Returns the cost map of the chunk.
-     * @param onlyWalkable if true, non-walkable cells will have a cost of -1, otherwise a big number will be used
      * @param ignoreEnemies if true, enemies will be -1
      * @param notIgnoreEnemy if not null, the enemy on this position will not be -1
      * @return the cost map

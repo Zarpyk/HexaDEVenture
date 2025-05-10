@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 import static org.mockito.Mockito.*;
 
-public class InvetoryTest {
+public class InventoryTest {
     private static final int TEST_PAGE = 0;
     private static final int TEST_SIZE = 10;
     private static final int TEST_RECIPE_INDEX = 0;
@@ -60,7 +60,7 @@ public class InvetoryTest {
     }
     
     @Test
-    public void givenEnoughtMaterials_whenCraft_thenReturnOk() {
+    public void givenEnoughMaterials_whenCraft_thenReturnOk() {
         RestCommon.postWithParam("game/craft",
                                  "recipeIndex", Integer.toString(TEST_RECIPE_INDEX),
                                  "count", Integer.toString(TEST_CRAFT_COUNT))
@@ -70,9 +70,9 @@ public class InvetoryTest {
     
     @Test
     public void givenEmptyInventory_whenCraft_thenReturnMethodNotAllowed() {
-        doThrow(NotEnoughtResourcesException.class).when(inventoryUseCase).craft(UserFactory.EMAIL,
-                                                                                 TEST_RECIPE_INDEX,
-                                                                                 TEST_CRAFT_COUNT);
+        doThrow(NotEnoughResourcesException.class).when(inventoryUseCase).craft(UserFactory.EMAIL,
+                                                                                TEST_RECIPE_INDEX,
+                                                                                TEST_CRAFT_COUNT);
         RestCommon.postWithParam("game/craft",
                                  "recipeIndex", Integer.toString(TEST_RECIPE_INDEX),
                                  "count", Integer.toString(TEST_CRAFT_COUNT))

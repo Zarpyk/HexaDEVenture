@@ -556,7 +556,7 @@ public class CombatTest {
         PlayableCharacter character = PlayableCharacterFactory.createHypnotizerCharacter(9999);
         character.getWeapon().setHypnotizationPower(100);
         PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
-        enemy.setHypnotizationResistence(0);
+        enemy.setHypnotizationResistance(0);
         
         // Place characters and enemies on the combat terrain
         map.getCombatTerrain().placeCharacter(0, 0, character);
@@ -650,7 +650,7 @@ public class CombatTest {
         PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(9999);
         enemy.getWeapon().setDamage(PlayableCharacterFactory.TEST_CHARACTER_HEALTH * 9999);
         
-        // Add extra character to avoid lose the game
+        // Add extra character to avoid losing the game
         PlayableCharacter extraCharacter = PlayableCharacterFactory.createMeleeCharacter(15);
         map.getInventory().addCharacter(extraCharacter);
         
@@ -683,7 +683,7 @@ public class CombatTest {
         character.getWeapon().setHypnotizationPower(100);
         PlayableCharacter melee = PlayableCharacterFactory.createMeleeCharacter(9999);
         PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
-        enemy.setHypnotizationResistence(0);
+        enemy.setHypnotizationResistance(0);
         
         // Place characters and enemies on the combat terrain
         map.getCombatTerrain().placeCharacter(0, 0, character);

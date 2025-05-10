@@ -70,7 +70,7 @@ public class MapFactory {
         Map<Vector2C, Chunk> chunks = new HashMap<>();
         int center = EMPTY_MAP_SIZE / 2;
         Vector2C centerChunk = Chunk.getChunkPosition(center, center);
-        for (Vector2C chunkPosition : centerChunk.getArroundPositions(EMPTY_MAP_SIZE_MULTIPLIER, true)) {
+        for (Vector2C chunkPosition : centerChunk.getAroundPositions(EMPTY_MAP_SIZE_MULTIPLIER, true)) {
             chunks.put(chunkPosition, new Chunk(chunkPosition));
             Chunk chunk = chunks.get(chunkPosition);
             for (int x = chunkPosition.getRealX(); x < chunkPosition.getEndX(); x++) {
@@ -94,7 +94,7 @@ public class MapFactory {
                                       false,
                                       false);
         
-        Map<Vector2, Integer> costMap = gameMap.getCostMap(centerChunk.getArroundPositions(1, true),
+        Map<Vector2, Integer> costMap = gameMap.getCostMap(centerChunk.getAroundPositions(1, true),
                                                            true);
         gameMap.setChunks(new HashMap<>());
         
@@ -112,7 +112,7 @@ public class MapFactory {
         Map<Vector2C, Chunk> chunks = new HashMap<>();
         int center = OBSTACLE_MAP_SIZE / 2;
         Vector2C centerChunk = Chunk.getChunkPosition(center, center);
-        for (Vector2C chunkPosition : centerChunk.getArroundPositions(OBSTACLE_MAP_SIZE_MULTIPLIER, true)) {
+        for (Vector2C chunkPosition : centerChunk.getAroundPositions(OBSTACLE_MAP_SIZE_MULTIPLIER, true)) {
             chunks.put(chunkPosition, new Chunk(chunkPosition));
             Chunk chunk = chunks.get(chunkPosition);
             for (int x = chunkPosition.getRealX(); x < chunkPosition.getEndX(); x++) {
@@ -147,7 +147,7 @@ public class MapFactory {
         Map<Vector2C, Chunk> chunks = new HashMap<>();
         int center = RESOURCE_MAP_SIZE / 2;
         Vector2C centerChunk = Chunk.getChunkPosition(center, center);
-        for (Vector2C chunkPosition : centerChunk.getArroundPositions(RESOURCE_MAP_SIZE_MULTIPLIER, true)) {
+        for (Vector2C chunkPosition : centerChunk.getAroundPositions(RESOURCE_MAP_SIZE_MULTIPLIER, true)) {
             chunks.put(chunkPosition, new Chunk(chunkPosition));
             Chunk chunk = chunks.get(chunkPosition);
             for (int x = chunkPosition.getRealX(); x < chunkPosition.getEndX(); x++) {
@@ -178,7 +178,7 @@ public class MapFactory {
                                       false,
                                       false);
         
-        Map<Vector2, Integer> costMap = gameMap.getCostMap(centerChunk.getArroundPositions(1, true),
+        Map<Vector2, Integer> costMap = gameMap.getCostMap(centerChunk.getAroundPositions(1, true),
                                                            true);
         if(!returnChunks) gameMap.setChunks(new HashMap<>());
         
@@ -197,7 +197,7 @@ public class MapFactory {
         Map<Vector2C, Chunk> chunks = new HashMap<>();
         int center = ENEMY_MAP_SIZE / 2;
         Vector2C centerChunk = Chunk.getChunkPosition(center, center);
-        for (Vector2C chunkPosition : centerChunk.getArroundPositions(ENEMY_MAP_SIZE_MULTIPLIER, true)) {
+        for (Vector2C chunkPosition : centerChunk.getAroundPositions(ENEMY_MAP_SIZE_MULTIPLIER, true)) {
             chunks.put(chunkPosition, new Chunk(chunkPosition));
             Chunk chunk = chunks.get(chunkPosition);
             for (int x = chunkPosition.getRealX(); x < chunkPosition.getEndX(); x++) {
@@ -216,7 +216,7 @@ public class MapFactory {
         }
         mockChunk(gameMapRepository, ENEMY_MAP_ID, chunks);
         
-        // Create game map
+        // Create the game map
         GameMap gameMap = new GameMap(ENEMY_MAP_ID,
                                       TEST_USER_EMAIL,
                                       TEST_SEED,
@@ -229,11 +229,11 @@ public class MapFactory {
                                       false,
                                       false);
         
-        Map<Vector2, Integer> costMap = gameMap.getCostMap(centerChunk.getArroundPositions(1, true),
+        Map<Vector2, Integer> costMap = gameMap.getCostMap(centerChunk.getAroundPositions(1, true),
                                                            true, true, ENEMY_MAP_ENEMY_POSITION);
         gameMap.setChunks(new HashMap<>());
         
-        // Generate path for the main character
+        // Generate a path for the main character
         Queue<Vector2> path = generatePath(ENEMY_START_POSITION, ENEMY_END_POSITION);
         
         // Generate a path for the enemy

@@ -18,35 +18,4 @@ public class UserTest {
         assertThat(user.getUsername()).isEqualTo(USERNAME);
         assertThat(user.getPassword()).isEqualTo(PASSWORD);
     }
-    
-    /*TODO move this to application layer @Test
-    public void givenAnEmptyOrNullEmail_whenCreatingAUser_thenThrowsAnException() {
-        ThrowableAssert.ThrowingCallable invokation = () -> new User("", USERNAME, PASSWORD);
-        assertThat(invokation).isInstanceOf(IllegalArgumentException.class);
-        
-        invokation = () -> new User(null, USERNAME, PASSWORD);
-        assertThat(invokation).isInstanceOf(IllegalArgumentException.class);
-    }
-    
-    @Test
-    public void givenAWrongEmail_whenCreatingAUser_thenThrowsAnException() {
-        ThrowableAssert.ThrowingCallable invokation = () -> new User("wrongEmail", USERNAME, PASSWORD);
-        assertThat(invokation).isInstanceOf(IllegalArgumentException.class);
-    }
-    
-    @Test
-    public void givenAEmptyOrNullUserName_whenCreatingAUser_thenThrowsAnException() {
-        ThrowableAssert.ThrowingCallable invokation = () -> new User(EMAIL, "", PASSWORD);
-        assertThat(invokation).isInstanceOf(IllegalArgumentException.class);
-        
-        invokation = () -> new User(EMAIL, null, PASSWORD);
-        assertThat(invokation).isInstanceOf(IllegalArgumentException.class);
-    }
-    
-    @ParameterizedTest
-    @ValueSource(ints = {51, Integer.MAX_VALUE})
-    public void givenAUserNameWithMoreThan50Characters_whenCreatingAUser_thenThrowsAnException(int length) {
-        ThrowableAssert.ThrowingCallable invokation = () -> new User(EMAIL, "a".repeat(length), PASSWORD);
-        assertThat(invokation).isInstanceOf(IllegalArgumentException.class);
-    }*/
 }

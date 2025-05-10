@@ -275,7 +275,7 @@ public class CombatProcessor {
         processHypnotizerTurn(character, target, character.getAggroGeneration());
     }
     
-    private void processAttackTurn(CharacterCombatInfo character, CharacterCombatInfo target, double aggreGen) {
+    private void processAttackTurn(CharacterCombatInfo character, CharacterCombatInfo target, double aggroGen) {
         // Target is null if all characters are dead
         if(target == null) return;
         
@@ -304,7 +304,7 @@ public class CombatProcessor {
         CharacterStatusChange cooldownChange = character.resetCooldown();
         
         // Update character aggro
-        CharacterStatusChange aggroChange = character.increaseAggro(aggreGen);
+        CharacterStatusChange aggroChange = character.increaseAggro(aggroGen);
         
         // Create turn info
         TurnInfo turnInfo = new TurnInfo(

@@ -94,7 +94,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!--Use version +1.26.0 to fix testcontainers vulnerability-->
+        <!--Use version +1.26.0 to fix a testcontainers vulnerability-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>

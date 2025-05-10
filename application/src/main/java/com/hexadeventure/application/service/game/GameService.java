@@ -131,8 +131,8 @@ public class GameService implements GameUseCase {
         Vector2C currentChunk = Chunk.getChunkPosition(mainCharacter.getPosition());
         
         // Get chunks around the player
-        Set<Vector2C> chunkArroundPlayer = currentChunk.getArroundPositions(RENDER_DISTANCE, false);
-        Map<Vector2C, Chunk> mapChunks = gameMapRepository.findMapChunks(gameMap.getId(), chunkArroundPlayer);
+        Set<Vector2C> chunkAroundPlayer = currentChunk.getAroundPositions(RENDER_DISTANCE, false);
+        Map<Vector2C, Chunk> mapChunks = gameMapRepository.findMapChunks(gameMap.getId(), chunkAroundPlayer);
         
         return new ChunkData(mapChunks);
     }
@@ -151,10 +151,10 @@ public class GameService implements GameUseCase {
         Vector2C currentChunkPosition = Chunk.getChunkPosition(mainCharacter.getPosition());
         
         // Get chunks around the player
-        Set<Vector2C> chunksArroundPlayer = currentChunkPosition.getArroundPositions(RENDER_DISTANCE,
-                                                                                     false);
+        Set<Vector2C> chunksAroundPlayer = currentChunkPosition.getAroundPositions(RENDER_DISTANCE,
+                                                                                   false);
         Map<Vector2C, Chunk> chunksCache = gameMapRepository.findMapChunks(gameMap.getId(),
-                                                                           chunksArroundPlayer);
+                                                                           chunksAroundPlayer);
         gameMap.addChunks(chunksCache, false);
         
         // Check the position to move is not a wall
@@ -166,7 +166,7 @@ public class GameService implements GameUseCase {
         // Generate the player path
         Queue<Vector2> path = aStarPathfinder.generatePath(mainCharacter.getPosition(),
                                                            positionToMove,
-                                                           gameMap.getCostMap(chunksArroundPlayer,
+                                                           gameMap.getCostMap(chunksAroundPlayer,
                                                                               true));
         Vector2 position = mainCharacter.getPosition();
         boolean startCombat = false;
@@ -182,7 +182,7 @@ public class GameService implements GameUseCase {
             // Process the enemies
             List<EnemyMovement> enemyMovements = new ArrayList<>();
             startCombat = processEnemy(gameMap,
-                                       chunksArroundPlayer,
+                                       chunksAroundPlayer,
                                        chunksCache,
                                        enemyMovements,
                                        position);
@@ -222,14 +222,14 @@ public class GameService implements GameUseCase {
     /**
      * Process the enemies around the player.
      * @param gameMap the game map
-     * @param chunksArroundPlayer the initial chunks position around the player
+     * @param chunksAroundPlayer the initial chunks position around the player
      * @param chunksCache the cache of chunks to avoid finding it again on the database
      * @param enemyMovements the list of enemy movements to be updated
      * @param position the position that the player is going to
      * @return true if combat started, false otherwise
      */
     private boolean processEnemy(GameMap gameMap,
-                                 Set<Vector2C> chunksArroundPlayer,
+                                 Set<Vector2C> chunksAroundPlayer,
                                  Map<Vector2C, Chunk> chunksCache,
                                  List<EnemyMovement> enemyMovements,
                                  Vector2 position) {
@@ -246,12 +246,12 @@ public class GameService implements GameUseCase {
             // Move enemies around the player to the player position
             
             // Check chunks around the player are changed
-            Set<Vector2C> newChunkPositions = Chunk.getChunkPosition(position).getArroundPositions(RENDER_DISTANCE,
-                                                                                                   false);
-            if(!newChunkPositions.equals(chunksArroundPlayer)) {
+            Set<Vector2C> newChunkPositions = Chunk.getChunkPosition(position).getAroundPositions(RENDER_DISTANCE,
+                                                                                                  false);
+            if(!newChunkPositions.equals(chunksAroundPlayer)) {
                 // Update the cache of chunks
-                chunksArroundPlayer = newChunkPositions;
-                chunksCache = gameMapRepository.findMapChunks(gameMap.getId(), chunksArroundPlayer);
+                chunksAroundPlayer = newChunkPositions;
+                chunksCache = gameMapRepository.findMapChunks(gameMap.getId(), chunksAroundPlayer);
                 gameMap.addChunks(chunksCache, false);
             }
             
@@ -264,7 +264,7 @@ public class GameService implements GameUseCase {
                     Queue<Vector2> enemyPath = aStarPathfinder.generatePath(enemy.getPosition(),
                                                                             position,
                                                                             gameMap.getCostMap(
-                                                                                    chunksArroundPlayer,
+                                                                                    chunksAroundPlayer,
                                                                                     true,
                                                                                     true,
                                                                                     enemy.getPosition()));

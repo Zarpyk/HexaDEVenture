@@ -16,7 +16,7 @@ public class PlayableCharacter {
     @Setter
     private double speed;
     @Setter
-    private double hypnotizationResistence;
+    private double hypnotizationResistance;
     private Weapon weapon;
     private final ChangedStats changedStats;
     
@@ -31,9 +31,9 @@ public class PlayableCharacter {
         changedStats.updateStats(health, false);
     }
     
-    public PlayableCharacter(String name, double health, double speed, double hypnotizationResistence) {
+    public PlayableCharacter(String name, double health, double speed, double hypnotizationResistance) {
         this(name, health, speed);
-        this.hypnotizationResistence = Math.round(hypnotizationResistence * 100) / 100d;
+        this.hypnotizationResistance = Math.round(hypnotizationResistance * 100) / 100d;
     }
     
     public void setWeapon(Weapon weapon) {

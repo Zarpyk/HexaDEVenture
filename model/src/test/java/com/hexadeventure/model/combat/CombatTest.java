@@ -249,27 +249,27 @@ public class CombatTest {
     public void givenCharacter_whenReduceCooldown_thenCooldownIsReduced() {
         CharacterCombatInfo character = CharacterFactory.createCombatCharacter();
         character.resetCooldown();
-        int resetedCooldown = character.getCooldown();
+        int resetCooldown = character.getCooldown();
         
         CharacterStatusChange characterStatusChange = character.reduceCooldown();
         
-        assertThat(character.getCooldown()).isEqualTo(resetedCooldown - 1);
+        assertThat(character.getCooldown()).isEqualTo(resetCooldown - 1);
         assertThat(characterStatusChange).isNotNull();
         assertThat(characterStatusChange.statChanged()).isEqualTo(CharacterStat.COOLDOWN);
-        assertThat(characterStatusChange.oldValue()).isEqualTo(resetedCooldown);
-        assertThat(characterStatusChange.newValue()).isEqualTo(resetedCooldown - 1);
+        assertThat(characterStatusChange.oldValue()).isEqualTo(resetCooldown);
+        assertThat(characterStatusChange.newValue()).isEqualTo(resetCooldown - 1);
     }
     
     @Test
     public void givenDeadCharacter_whenReduceCooldown_CooldownIsNotChanged() {
         CharacterCombatInfo character = CharacterFactory.createCombatCharacter();
         character.resetCooldown();
-        int resetedCooldown = character.getCooldown();
+        int resetCooldown = character.getCooldown();
         
         character.damage(character.getHealth());
         CharacterStatusChange characterStatusChange = character.reduceCooldown();
         
-        assertThat(character.getCooldown()).isEqualTo(resetedCooldown);
+        assertThat(character.getCooldown()).isEqualTo(resetCooldown);
         assertThat(characterStatusChange).isNull();
     }
     
@@ -337,8 +337,8 @@ public class CombatTest {
         character.getChangedStats().setBoostDefense(boost);
         CharacterCombatInfo characterCombatInfo = new CharacterCombatInfo(character, 0, 0, false);
         
-        assertThat(characterCombatInfo.getMeleeDefense()).isEqualTo(CharacterCombatInfo.MAX_DEFFENSE);
-        assertThat(characterCombatInfo.getRangedDefense()).isEqualTo(CharacterCombatInfo.MAX_DEFFENSE);
+        assertThat(characterCombatInfo.getMeleeDefense()).isEqualTo(CharacterCombatInfo.MAX_DEFENSE);
+        assertThat(characterCombatInfo.getRangedDefense()).isEqualTo(CharacterCombatInfo.MAX_DEFENSE);
     }
     //endregion
     

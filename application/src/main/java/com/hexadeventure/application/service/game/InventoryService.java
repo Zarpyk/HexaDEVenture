@@ -78,7 +78,7 @@ public class InventoryService implements InventoryUseCase {
         Recipe recipe = recipes.get(recipeIndex);
         int craftableAmount = getCraftableAmount(items, recipe.getMaterials());
         if(craftableAmount < count) {
-            throw new NotEnoughtResourcesException();
+            throw new NotEnoughResourcesException();
         }
         
         // Remove the materials from the inventory

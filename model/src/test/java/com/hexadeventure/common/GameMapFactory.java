@@ -2,8 +2,6 @@ package com.hexadeventure.common;
 
 import com.hexadeventure.model.map.GameMap;
 
-import java.util.HashMap;
-
 public class GameMapFactory {
     public final static long SEED = 1234;
     public final static int SIZE = 10;

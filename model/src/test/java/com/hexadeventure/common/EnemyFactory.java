@@ -13,8 +13,8 @@ public class EnemyFactory {
     public static final int TEST_MAX_HEALTH = 2;
     public static final int TEST_MIN_SPEED = 1;
     public static final int TEST_MAX_SPEED = 2;
-    public static final int TEST_MIN_HYPNOTIZATION_RESISTENCE = 1;
-    public static final int TEST_MAX_HYPNOTIZATION_RESISTENCE = 2;
+    public static final int TEST_MIN_HYPNOTIZATION_RESISTANCE = 1;
+    public static final int TEST_MAX_HYPNOTIZATION_RESISTANCE = 2;
     
     public static final int TEST_LOOT_COUNT = 1;
     public static final int TEST_LOOT_PROBABILITY = 1;
@@ -27,8 +27,8 @@ public class EnemyFactory {
                 TEST_MAX_HEALTH,
                 TEST_MIN_SPEED,
                 TEST_MAX_SPEED,
-                TEST_MIN_HYPNOTIZATION_RESISTENCE,
-                TEST_MAX_HYPNOTIZATION_RESISTENCE
+                TEST_MIN_HYPNOTIZATION_RESISTANCE,
+                TEST_MAX_HYPNOTIZATION_RESISTANCE
         );
     }
     

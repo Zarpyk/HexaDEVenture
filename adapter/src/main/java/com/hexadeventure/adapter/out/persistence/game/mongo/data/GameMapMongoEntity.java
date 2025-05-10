@@ -1,6 +1,5 @@
 package com.hexadeventure.adapter.out.persistence.game.mongo.data;
 
-import com.hexadeventure.model.map.Vector2;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;

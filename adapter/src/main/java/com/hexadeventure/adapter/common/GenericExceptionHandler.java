@@ -17,7 +17,7 @@ public class GenericExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     private String exceptionHandler(Exception ex) {
-        ex.printStackTrace();
+        logger.error(ex.getMessage(), ex);
         return ex.getMessage();
     }
 }

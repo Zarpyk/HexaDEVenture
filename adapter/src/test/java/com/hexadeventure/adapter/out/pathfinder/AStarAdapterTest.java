@@ -19,7 +19,7 @@ public class AStarAdapterTest {
             {1, 1, 1, 1, 1},
             {1, 1, 1, 1, 1},
             };
-    // Map to hash map with the array position as Vector2 key
+    // Map to a hash map with the array position as a Vector2 key
     private final static Map<Vector2, Integer> costMap = new HashMap<>();
     
     private final static int pathLength = 9;

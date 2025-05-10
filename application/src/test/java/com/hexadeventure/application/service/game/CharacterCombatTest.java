@@ -106,7 +106,7 @@ public class CharacterCombatTest {
         assertThat(character.getCooldown()).isEqualTo(melee.getWeapon().getCooldown());
         assertThat(character.getCurrentAggro()).isEqualTo(initialAggro + melee.getWeapon().getAggroGeneration());
         
-        // Verify that the action is refrected in the enemy
+        // Verify that the action is reflected in the enemy
         CharacterCombatInfo moreAggroEnemy = processor.getTurnQueue().last();
         assertThat(moreAggroEnemy.getHealth()).isEqualTo(TEST_CHARACTER_HEALTH -
                                                          melee.getWeapon().getDamage() *
@@ -393,7 +393,7 @@ public class CharacterCombatTest {
         assertThat(character.getCooldown()).isEqualTo(ranged.getWeapon().getCooldown());
         assertThat(character.getCurrentAggro()).isEqualTo(initialAggro + ranged.getWeapon().getAggroGeneration());
         
-        // Verify that the action is refrected in the enemy
+        // Verify that the action is reflected in the enemy
         CharacterCombatInfo moreAggroEnemy = processor.getTurnQueue().getLast();
         assertThat(moreAggroEnemy.getHealth()).isEqualTo(TEST_CHARACTER_HEALTH -
                                                          ranged.getWeapon().getDamage() *
@@ -504,7 +504,7 @@ public class CharacterCombatTest {
         // Verify that the action is reflected in the character
         CharacterCombatInfo character = processor.getTurnQueue().first();
         assertThat(character.getCooldown()).isEqualTo(tank.getWeapon().getCooldown());
-        // Aggro is multiplied by 3 because the tank generates aggro when recives damage
+        // Aggro is multiplied by 3 because the tank generates aggro when receives damage
         assertThat(character.getCurrentAggro()).isEqualTo(initialAggro +
                                                           tank.getWeapon().getAggroGeneration() * 3);
         boolean allEnemyGenerateAggro = processor.getTurnInfos()
@@ -516,7 +516,7 @@ public class CharacterCombatTest {
                                                                                 CharacterStat.CURRENT_AGGRO));
         assertThat(allEnemyGenerateAggro).isTrue();
         
-        // Verify that the action is refrected in the enemy
+        // Verify that the action is reflected in the enemy
         CharacterCombatInfo moreAggroEnemy = processor.getTurnQueue().last();
         assertThat(moreAggroEnemy.getHealth()).isEqualTo(TEST_CHARACTER_HEALTH -
                                                          tank.getWeapon().getDamage() *
@@ -952,7 +952,7 @@ public class CharacterCombatTest {
         assertThat(character.getCooldown()).isEqualTo(healer.getWeapon().getCooldown());
         assertThat(character.getCurrentAggro()).isEqualTo(initialAggro + healer.getWeapon().getDamage());
         
-        // Verify that the action is refrected in the enemy
+        // Verify that the action is reflected in the enemy
         CharacterCombatInfo moreAggroEnemy = processor.getTurnQueue().last();
         assertThat(moreAggroEnemy.getHealth()).isEqualTo(TEST_CHARACTER_HEALTH -
                                                          healer.getWeapon().getDamage() *
@@ -1288,7 +1288,7 @@ public class CharacterCombatTest {
         // Create characters and enemies
         PlayableCharacter hypnotizer = PlayableCharacterFactory.createHypnotizerCharacter(9999);
         PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
-        enemy.setHypnotizationResistence(hypnotizer.getWeapon().getHypnotizationPower());
+        enemy.setHypnotizationResistance(hypnotizer.getWeapon().getHypnotizationPower());
         
         // Place characters and enemies on the combat terrain
         int characterRow = CombatProcessor.FIRST_ROW_INDEX;

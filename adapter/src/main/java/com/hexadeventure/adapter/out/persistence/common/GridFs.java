@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
-import org.springframework.data.mongodb.gridfs.GridFsResource;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -34,13 +33,11 @@ public class GridFs {
     
     public <T> T readData(String fileId, Class<T> clazz) throws IOException {
         // From: https://stackoverflow.com/a/2525152/11451105
-        GridFsResource resourceResource = gridFsOperations.getResource(fileId + ".json");
         return objectMapper.readValue(gridFsOperations.getResource(fileId + ".json").getInputStream(), clazz);
     }
     
     public <T> T readData(String fileId, TypeReference<T> ref) throws IOException {
         // From: https://stackoverflow.com/a/2525152/11451105
-        GridFsResource resourceResource = gridFsOperations.getResource(fileId + ".json");
         return objectMapper.readValue(gridFsOperations.getResource(fileId + ".json").getInputStream(), ref);
     }
 }

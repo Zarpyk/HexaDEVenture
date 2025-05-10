@@ -16,8 +16,8 @@ public class EnemyJson {
     private int maxHealth;
     private int minSpeed;
     private int maxSpeed;
-    private int minHypnotizationResistence;
-    private int maxHypnotizationResistence;
+    private int minHypnotizationResistance;
+    private int maxHypnotizationResistance;
     
     public EnemySetting toModel() {
         return new EnemySetting(
@@ -27,8 +27,8 @@ public class EnemyJson {
                 maxHealth,
                 minSpeed,
                 maxSpeed,
-                minHypnotizationResistence,
-                maxHypnotizationResistence
+                minHypnotizationResistance,
+                maxHypnotizationResistance
         );
     }
 }

@@ -6,8 +6,8 @@
     "maxHealth": 200,
     "minSpeed": 25,
     "maxSpeed": 100,
-    "minHypnotizationResistence": 2,
-    "maxHypnotizationResistence": 10
+    "minHypnotizationResistance": 2,
+    "maxHypnotizationResistance": 10
   },
   {
     "id": "Skeleton Archer",
@@ -16,8 +16,8 @@
     "maxHealth": 150,
     "minSpeed": 50,
     "maxSpeed": 125,
-    "minHypnotizationResistence": 2,
-    "maxHypnotizationResistence": 10
+    "minHypnotizationResistance": 2,
+    "maxHypnotizationResistance": 10
   },
   {
     "id": "Skeleton Guardian",
@@ -26,8 +26,8 @@
     "maxHealth": 400,
     "minSpeed": 10,
     "maxSpeed": 75,
-    "minHypnotizationResistence": 5,
-    "maxHypnotizationResistence": 15
+    "minHypnotizationResistance": 5,
+    "maxHypnotizationResistance": 15
   },
   {
     "id": "Skeleton Healer",
@@ -36,8 +36,8 @@
     "maxHealth": 250,
     "minSpeed": 10,
     "maxSpeed": 50,
-    "minHypnotizationResistence": 5,
-    "maxHypnotizationResistence": 15
+    "minHypnotizationResistance": 5,
+    "maxHypnotizationResistance": 15
   },
   {
     "id": "Giant Skeleton",
@@ -46,7 +46,7 @@
     "maxHealth": 500,
     "minSpeed": 10,
     "maxSpeed": 10,
-    "minHypnotizationResistence": 19,
-    "maxHypnotizationResistence": 19
+    "minHypnotizationResistance": 19,
+    "maxHypnotizationResistance": 19
   }
 ]

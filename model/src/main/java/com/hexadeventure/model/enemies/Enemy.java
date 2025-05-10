@@ -41,8 +41,8 @@ public class Enemy {
                 String name = settings[i][j].id();
                 int health = random.nextInt(settings[i][j].minHealth(), settings[i][j].maxHealth() + 1);
                 int speed = random.nextInt(settings[i][j].minSpeed(), settings[i][j].maxSpeed() + 1);
-                double hypnoRes = random.nextDouble(settings[i][j].minHypnotizationResistence(),
-                                                    settings[i][j].maxHypnotizationResistence() + OFFSET);
+                double hypnoRes = random.nextDouble(settings[i][j].minHypnotizationResistance(),
+                                                    settings[i][j].maxHypnotizationResistance() + OFFSET);
                 enemies[i][j] = new PlayableCharacter(name, health, speed, hypnoRes);
                 
                 List<WeaponSetting> weaponSettings = weapons.get(settings[i][j].weaponType());
