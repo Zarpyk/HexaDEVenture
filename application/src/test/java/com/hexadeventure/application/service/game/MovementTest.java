@@ -20,13 +20,15 @@ import com.hexadeventure.model.movement.EnemyMovement;
 import com.hexadeventure.model.movement.MovementAction;
 import com.hexadeventure.model.movement.MovementResponse;
 import com.hexadeventure.model.user.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 
@@ -41,6 +43,12 @@ public class MovementTest {
     private static final GameService gameService = new GameService(userRepository, gameMapRepository,
                                                                    noiseGenerator, aStarPathfinder,
                                                                    settingsImporter);
+    
+    @BeforeEach
+    public void beforeEach() {
+        // Reset the mocks before each test
+        reset(userRepository, gameMapRepository);
+    }
     
     //region GetChunks
     @Test
@@ -244,8 +252,36 @@ public class MovementTest {
                                                         settingsImporter);
         gameMap.setInCombat(true);
         
-        assertThatThrownBy(() -> gameService.move(TEST_USER_EMAIL, MapFactory.ENEMY_END_POSITION))
-                .isInstanceOf(GameInCombatException.class);
+        assertThatExceptionOfType(GameInCombatException.class)
+                .isThrownBy(() -> gameService.move(TEST_USER_EMAIL, MapFactory.ENEMY_END_POSITION));
+    }
+    
+    @Test
+    public void givenPosition_whenMove_thenUpdateTravelPosition() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        
+        gameService.move(TEST_USER_EMAIL, MapFactory.EMPTY_END_POSITION);
+        
+        assertThat(testUser.getTravelledDistance()).isEqualTo(MapFactory.EMPTY_MAP_PATH_LENGTH);
+        
+        verify(userRepository, times(1)).save(any());
+    }
+    
+    @Test
+    public void givenResources_whenMove_thenUpdateCollectedResources() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.RESOURCE_MAP_ID);
+        
+        MapFactory.createResourceGameMap(gameMapRepository, aStarPathfinder, settingsImporter, false);
+        
+        gameService.move(TEST_USER_EMAIL, MapFactory.RESOURCE_END_POSITION);
+        
+        assertThat(testUser.getCollectedResources()).isGreaterThan(MapFactory.RESOURCE_MAP_PATH_LENGTH - 1);
+        
+        verify(userRepository, times(1)).save(any());
     }
     //endregion
 }

@@ -12,8 +12,7 @@ public class ChunkMongoEntity {
     @MongoId
     private String id;
     private String mapId;
-    private int x;
-    private int y;
+    private Vector2MongoEntity position;
     
     private String cellsFileId;
     private String resourcesFileId;

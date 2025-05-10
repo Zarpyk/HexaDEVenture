@@ -39,7 +39,7 @@ public class InvetoryTest {
     @Test
     public void givenPageAndSize_whenGetRecipes_thenReturnOkWithDTO() {
         when(inventoryUseCase.getRecipes(UserFactory.EMAIL, TEST_PAGE, TEST_SIZE)).thenReturn(new Recipe[10]);
-        RestCommon.getWithParam("/recipes",
+        RestCommon.getWithParam("game/craft/recipes",
                                 "page", Integer.toString(TEST_PAGE),
                                 "size", Integer.toString(TEST_SIZE))
                   .then()
@@ -52,7 +52,7 @@ public class InvetoryTest {
         doThrow(InvalidSearchException.class).when(inventoryUseCase).getRecipes(UserFactory.EMAIL,
                                                                                 TEST_PAGE,
                                                                                 TEST_SIZE);
-        RestCommon.getWithParam("/recipes",
+        RestCommon.getWithParam("game/craft/recipes",
                                 "page", Integer.toString(TEST_PAGE),
                                 "size", Integer.toString(TEST_SIZE))
                   .then()
@@ -61,7 +61,7 @@ public class InvetoryTest {
     
     @Test
     public void givenEnoughtMaterials_whenCraft_thenReturnOk() {
-        RestCommon.postWithParam("/craft",
+        RestCommon.postWithParam("game/craft",
                                  "recipeIndex", Integer.toString(TEST_RECIPE_INDEX),
                                  "count", Integer.toString(TEST_CRAFT_COUNT))
                   .then()
@@ -73,7 +73,7 @@ public class InvetoryTest {
         doThrow(NotEnoughtResourcesException.class).when(inventoryUseCase).craft(UserFactory.EMAIL,
                                                                                  TEST_RECIPE_INDEX,
                                                                                  TEST_CRAFT_COUNT);
-        RestCommon.postWithParam("/craft",
+        RestCommon.postWithParam("game/craft",
                                  "recipeIndex", Integer.toString(TEST_RECIPE_INDEX),
                                  "count", Integer.toString(TEST_CRAFT_COUNT))
                   .then()
@@ -85,7 +85,7 @@ public class InvetoryTest {
         doThrow(InvalidRecipeException.class).when(inventoryUseCase).craft(UserFactory.EMAIL,
                                                                            -1,
                                                                            TEST_CRAFT_COUNT);
-        RestCommon.postWithParam("/craft",
+        RestCommon.postWithParam("game/craft",
                                  "recipeIndex", Integer.toString(-1),
                                  "count", Integer.toString(TEST_CRAFT_COUNT))
                   .then()
@@ -97,7 +97,7 @@ public class InvetoryTest {
         when(inventoryUseCase.getInventory(UserFactory.EMAIL)).thenReturn(new Inventory(TEST_INVENTORY_ID,
                                                                                         new HashMap<>(),
                                                                                         new HashMap<>()));
-        RestCommon.get("/inventory")
+        RestCommon.get("game/inventory")
                   .then()
                   .statusCode(HttpStatus.OK.value())
                   .extract().body().as(InventoryDTO.class);
@@ -106,7 +106,7 @@ public class InvetoryTest {
     @Test
     public void givenDTO_whenEquipWeapon_thenReturnOk() {
         EquipWeaponDTO equipWeaponDTO = new EquipWeaponDTO(TEST_CHARACTER_ID, TEST_WEAPON_ID);
-        RestCommon.postWithBody("/inventory/equip", equipWeaponDTO)
+        RestCommon.postWithBody("game/inventory/equip", equipWeaponDTO)
                   .then()
                   .statusCode(HttpStatus.OK.value());
     }
@@ -117,7 +117,7 @@ public class InvetoryTest {
                                                                                     "",
                                                                                     TEST_WEAPON_ID);
         EquipWeaponDTO equipWeaponDTO = new EquipWeaponDTO("", TEST_WEAPON_ID);
-        RestCommon.postWithBody("/inventory/equip", equipWeaponDTO)
+        RestCommon.postWithBody("game/inventory/equip", equipWeaponDTO)
                   .then()
                   .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -128,7 +128,7 @@ public class InvetoryTest {
                                                                                TEST_CHARACTER_ID,
                                                                                "");
         EquipWeaponDTO equipWeaponDTO = new EquipWeaponDTO(TEST_CHARACTER_ID, "");
-        RestCommon.postWithBody("/inventory/equip", equipWeaponDTO)
+        RestCommon.postWithBody("game/inventory/equip", equipWeaponDTO)
                   .then()
                   .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -136,7 +136,7 @@ public class InvetoryTest {
     @Test
     public void givenDTO_whenUnequipWeapon_thenReturnOk() {
         UnequipWeaponDTO unequipWeaponDTO = new UnequipWeaponDTO(TEST_CHARACTER_ID);
-        RestCommon.postWithBody("/inventory/unequip", unequipWeaponDTO)
+        RestCommon.postWithBody("game/inventory/unequip", unequipWeaponDTO)
                   .then()
                   .statusCode(HttpStatus.OK.value());
     }
@@ -146,7 +146,7 @@ public class InvetoryTest {
         doThrow(InvalidCharacterException.class).when(inventoryUseCase).unequipWeapon(UserFactory.EMAIL,
                                                                                       "");
         UnequipWeaponDTO unequipWeaponDTO = new UnequipWeaponDTO("");
-        RestCommon.postWithBody("/inventory/unequip", unequipWeaponDTO)
+        RestCommon.postWithBody("game/inventory/unequip", unequipWeaponDTO)
                   .then()
                   .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -154,7 +154,7 @@ public class InvetoryTest {
     @Test
     public void givenDTO_whenUseItem_thenReturnOk() {
         UseItemDTO useItemDTO = new UseItemDTO(TEST_CHARACTER_ID, TEST_WEAPON_ID);
-        RestCommon.postWithBody("/inventory/use", useItemDTO)
+        RestCommon.postWithBody("game/inventory/use", useItemDTO)
                   .then()
                   .statusCode(HttpStatus.OK.value());
     }
@@ -165,7 +165,7 @@ public class InvetoryTest {
                                                                                 "",
                                                                                 TEST_WEAPON_ID);
         UseItemDTO useItemDTO = new UseItemDTO("", TEST_WEAPON_ID);
-        RestCommon.postWithBody("/inventory/use", useItemDTO)
+        RestCommon.postWithBody("game/inventory/use", useItemDTO)
                   .then()
                   .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -176,7 +176,7 @@ public class InvetoryTest {
                                                                            TEST_CHARACTER_ID,
                                                                            "");
         UseItemDTO useItemDTO = new UseItemDTO(TEST_CHARACTER_ID, "");
-        RestCommon.postWithBody("/inventory/use", useItemDTO)
+        RestCommon.postWithBody("game/inventory/use", useItemDTO)
                   .then()
                   .statusCode(HttpStatus.BAD_REQUEST.value());
     }

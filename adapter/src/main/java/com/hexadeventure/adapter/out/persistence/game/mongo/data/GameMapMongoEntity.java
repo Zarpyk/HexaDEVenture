@@ -1,5 +1,6 @@
 package com.hexadeventure.adapter.out.persistence.game.mongo.data;
 
+import com.hexadeventure.model.map.Vector2;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,4 +19,8 @@ public class GameMapMongoEntity {
     
     private String inventoryFileId;
     private String combatTerrainFileId;
+    
+    private Vector2MongoEntity bossPosition;
+    private boolean isInCombat;
+    private boolean isBossBattle;
 }

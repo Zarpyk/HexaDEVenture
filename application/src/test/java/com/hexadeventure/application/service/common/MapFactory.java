@@ -8,15 +8,9 @@ import com.hexadeventure.model.combat.CombatTerrain;
 import com.hexadeventure.model.enemies.Enemy;
 import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.inventory.characters.EnemyPattern;
-import com.hexadeventure.model.inventory.foods.Food;
-import com.hexadeventure.model.inventory.materials.Material;
-import com.hexadeventure.model.inventory.potions.Potion;
-import com.hexadeventure.model.inventory.potions.PotionType;
-import com.hexadeventure.model.inventory.weapons.AggroGenType;
 import com.hexadeventure.model.inventory.weapons.WeaponSetting;
 import com.hexadeventure.model.inventory.weapons.WeaponType;
 import com.hexadeventure.model.map.*;
-import com.hexadeventure.model.map.resources.ResourceType;
 
 import java.util.*;
 
@@ -95,7 +89,10 @@ public class MapFactory {
                                       chunks,
                                       new MainCharacter(new Vector2(EMPTY_MAP_SIZE / 2, EMPTY_MAP_SIZE / 2)),
                                       new Inventory(),
-                                      new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE));
+                                      new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE),
+                                      new Vector2(0, 0),
+                                      false,
+                                      false);
         
         Map<Vector2, Integer> costMap = gameMap.getCostMap(centerChunk.getArroundPositions(1, true),
                                                            true);
@@ -135,7 +132,10 @@ public class MapFactory {
                                       null,
                                       new MainCharacter(new Vector2(EMPTY_MAP_SIZE / 2, EMPTY_MAP_SIZE / 2)),
                                       new Inventory(),
-                                      new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE));
+                                      new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE),
+                                      new Vector2(0, 0),
+                                      false,
+                                      false);
         
         mockGameMap(gameMapRepository, OBSTACLE_MAP_ID, gameMap, chunks);
         ItemFactory.setupSettingsImporter(settingsImporter);
@@ -173,7 +173,10 @@ public class MapFactory {
                                       chunks,
                                       new MainCharacter(new Vector2(RESOURCE_MAP_SIZE / 2, RESOURCE_MAP_SIZE / 2)),
                                       new Inventory(),
-                                      new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE));
+                                      new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE),
+                                      new Vector2(0, 0),
+                                      false,
+                                      false);
         
         Map<Vector2, Integer> costMap = gameMap.getCostMap(centerChunk.getArroundPositions(1, true),
                                                            true);
@@ -221,10 +224,13 @@ public class MapFactory {
                                       chunks,
                                       new MainCharacter(new Vector2(ENEMY_MAP_SIZE / 2, ENEMY_MAP_SIZE / 2)),
                                       new Inventory(),
-                                      new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE));
+                                      new CombatTerrain(COMBAT_ROW_SIZE, COMBAT_COLUMN_SIZE),
+                                      new Vector2(0, 0),
+                                      false,
+                                      false);
         
         Map<Vector2, Integer> costMap = gameMap.getCostMap(centerChunk.getArroundPositions(1, true),
-                                                           true);
+                                                           true, true, ENEMY_MAP_ENEMY_POSITION);
         gameMap.setChunks(new HashMap<>());
         
         // Generate path for the main character

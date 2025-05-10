@@ -50,8 +50,7 @@ public class ChunkMongoMapper {
         ChunkMongoEntity mongoEntity = new ChunkMongoEntity();
         mongoEntity.setId(model.getId());
         mongoEntity.setMapId(mapId);
-        mongoEntity.setX(model.getPosition().x);
-        mongoEntity.setY(model.getPosition().y);
+        mongoEntity.setPosition(Vector2MongoMapper.toEntity(model.getPosition()));
         
         try {
             Optional<ChunkMongoEntity> chunk = repo.findById(model.getId());
@@ -90,7 +89,7 @@ public class ChunkMongoMapper {
                                                               new TypeReference<>() {});
             
             return new Chunk(entity.getId(),
-                             new Vector2C(entity.getX(), entity.getY()),
+                             Vector2MongoMapper.toChunkModel(entity.getPosition()),
                              grid,
                              resources,
                              enemies);

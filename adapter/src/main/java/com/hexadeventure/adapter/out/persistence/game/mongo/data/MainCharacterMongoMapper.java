@@ -1,17 +1,15 @@
 package com.hexadeventure.adapter.out.persistence.game.mongo.data;
 
 import com.hexadeventure.model.map.MainCharacter;
-import com.hexadeventure.model.map.Vector2;
 
 public class MainCharacterMongoMapper {
     public static MainCharacterMongoEntity toEntity(MainCharacter model) {
         MainCharacterMongoEntity mongoEntity = new MainCharacterMongoEntity();
-        mongoEntity.setX(model.getPosition().x);
-        mongoEntity.setY(model.getPosition().y);
+        mongoEntity.setPosition(Vector2MongoMapper.toEntity(model.getPosition()));
         return mongoEntity;
     }
     
     public static MainCharacter toModel(MainCharacterMongoEntity entity) {
-        return new MainCharacter(new Vector2(entity.getX(), entity.getY()));
+        return new MainCharacter(Vector2MongoMapper.toModel(entity.getPosition()));
     }
 }

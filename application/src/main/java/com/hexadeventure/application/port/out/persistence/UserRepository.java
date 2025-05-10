@@ -26,14 +26,6 @@ public interface UserRepository {
     void deleteAll();
     
     /**
-     * Sets the map ID of a user.
-     *
-     * @param email the email of the user
-     * @param mapId the map ID to set
-     */
-    void updateMapIdByEmail(String email, String mapId);
-    
-    /**
      * Deletes a user by their email.
      *
      * @param email the email of the user to delete

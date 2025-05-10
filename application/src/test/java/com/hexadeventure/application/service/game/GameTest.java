@@ -1,5 +1,6 @@
 package com.hexadeventure.application.service.game;
 
+import com.hexadeventure.application.exceptions.GameNotStartedException;
 import com.hexadeventure.application.exceptions.GameStartedException;
 import com.hexadeventure.application.exceptions.SizeException;
 import com.hexadeventure.application.port.out.noise.NoiseGenerator;
@@ -8,6 +9,7 @@ import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
 import com.hexadeventure.application.port.out.settings.SettingsImporter;
 import com.hexadeventure.application.service.common.ItemFactory;
+import com.hexadeventure.application.service.common.MapFactory;
 import com.hexadeventure.application.service.common.UserFactory;
 import com.hexadeventure.model.inventory.Item;
 import com.hexadeventure.model.inventory.foods.Food;
@@ -25,6 +27,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class StartGameTest {
+public class GameTest {
     private static final String TEST_USER_EMAIL = "test@test.com";
     private static final long TEST_SEED = 1234;
     private static final int TEST_SIZE = GameService.MIN_MAP_SIZE;
@@ -70,8 +73,13 @@ public class StartGameTest {
         when(aStarPathfinder.generatePath(any(), any(), any())).thenReturn(new LinkedList<>());
         
         ItemFactory.setupSettingsImporter(settingsImporter);
+        
+        reset(userRepository);
+        reset(gameMapRepository);
+        reset(noiseGenerator);
     }
     
+    //region StartGame
     @Test
     public void givenEmailSeedAndSize_whenItDontHaveStartedGame_thenCreateNewMap() {
         UserFactory.createTestUser(userRepository);
@@ -91,7 +99,7 @@ public class StartGameTest {
         verify(noiseGenerator, atLeast(1)).getPerlinNoise(anyDouble(), anyDouble(), any(), anyBoolean());
         verify(noiseGenerator, atLeast(1)).releaseNoise(any());
         
-        verify(userRepository, times(1)).updateMapIdByEmail(eq(UserFactory.EMAIL), any());
+        verify(userRepository, times(1)).save(any());
         verify(gameMapRepository, times(1)).save(any());
     }
     
@@ -169,4 +177,54 @@ public class StartGameTest {
             }
         }
     }
+    
+    @Test
+    public void givenEmail_whenStartGame_ThenSavePlayedGameStat() {
+        User user = UserFactory.createTestUser(userRepository);
+        
+        gameService.startGame(TEST_USER_EMAIL, TEST_SEED, TEST_SIZE);
+        
+        assertThat(user.getPlayedGames()).isEqualTo(1);
+        assertThat(user.getCurrentGameStartTime()).isNotEqualTo(LocalDateTime.MIN);
+    }
+    //endregion
+    
+    //region FinishGame
+    @Test
+    public void givenEmail_whenFinishGame_ThenFinishGame() {
+        User user = UserFactory.createTestUser(userRepository);
+        user.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        
+        gameService.finishGame(TEST_USER_EMAIL);
+        
+        verify(gameMapRepository, times(1)).deleteById(any());
+    }
+    
+    @Test
+    public void givenNoStartGameUser_whenFinishGame_ThenThrowException() {
+        User user = UserFactory.createTestUser(userRepository);
+        user.setMapId(null);
+        
+        assertThatExceptionOfType(GameNotStartedException.class)
+                .isThrownBy(() -> gameService.finishGame(UserFactory.EMAIL));
+    }
+    
+    @Test
+    public void givenEmail_whenFinishGame_ThenUpdatePlayedTime() {
+        // Spy to verify method calls
+        User user = spy(UserFactory.createTestUser(userRepository));
+        user.setMapId(MapFactory.EMPTY_MAP_ID);
+        user.setCurrentGameStartTime(LocalDateTime.now().minusMinutes(1));
+        when(userRepository.findByEmail(UserFactory.EMAIL)).thenReturn(Optional.of(user));
+        
+        MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        
+        gameService.finishGame(TEST_USER_EMAIL);
+        
+        verify(user, times(1)).setPlayedTime(anyInt());
+        verify(userRepository, times(1)).save(any());
+    }
+    //endregion
 }

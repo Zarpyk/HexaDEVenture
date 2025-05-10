@@ -55,6 +55,10 @@ public class GameMapMongoMapper {
             throw new RuntimeException(e);
         }
         
+        mongoEntity.setBossPosition(Vector2MongoMapper.toEntity(model.getBossPosition()));
+        mongoEntity.setInCombat(model.isInCombat());
+        mongoEntity.setBossBattle(model.isBossBattle());
+        
         return mongoEntity;
     }
     
@@ -71,7 +75,10 @@ public class GameMapMongoMapper {
                                null,
                                MainCharacterMongoMapper.toModel(entity.getMainCharacter()),
                                inventory,
-                               combatTerrain);
+                               combatTerrain,
+                               Vector2MongoMapper.toModel(entity.getBossPosition()),
+                               entity.isInCombat(),
+                               entity.isBossBattle());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

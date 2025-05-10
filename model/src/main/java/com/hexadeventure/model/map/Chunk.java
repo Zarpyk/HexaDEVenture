@@ -19,6 +19,8 @@ public class Chunk {
     private final Vector2C position;
     
     private final CellData[][] cells;
+    
+    // Vector2 is the real position on the map (is not the chunk position with 0-index)
     private final Map<Vector2, Resource> resources;
     private final Map<Vector2, Enemy> enemies;
     
@@ -87,11 +89,29 @@ public class Chunk {
      * @return the cost map
      */
     public int[][] getCostMap(boolean onlyWalkable) {
+        return getCostMap(onlyWalkable, false, null);
+    }
+    
+    /**
+     * Returns the cost map of the chunk.
+     * @param onlyWalkable if true, non-walkable cells will have a cost of -1, otherwise a big number will be used
+     * @param ignoreEnemies if true, enemies will be -1
+     * @param notIgnoreEnemy if not null, the enemy on this position will not be -1
+     * @return the cost map
+     */
+    public int[][] getCostMap(boolean onlyWalkable, boolean ignoreEnemies, Vector2 notIgnoreEnemy) {
         int[][] costMap = new int[SIZE][SIZE];
         for (int x = 0; x < SIZE; x++) {
             for (int y = 0; y < SIZE; y++) {
                 CellType cellType = getCell(new Vector2(x, y)).getType();
                 costMap[x][y] = CellType.getCost(cellType, onlyWalkable);
+                
+                if(ignoreEnemies) {
+                    Vector2 enemyPosition = new Vector2(x, y).add(position.x * SIZE, position.y * SIZE);
+                    if(!enemyPosition.equals(notIgnoreEnemy) && enemies.containsKey(enemyPosition)) {
+                        costMap[x][y] = -1;
+                    }
+                }
             }
         }
         return costMap;

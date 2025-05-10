@@ -8,4 +8,5 @@ public interface GameUseCase {
     void startGame(String email, long seed, int size);
     ChunkData getChunks(String email);
     MovementResponse move(String email, Vector2 positionToMove);
+    void finishGame(String email);
 }

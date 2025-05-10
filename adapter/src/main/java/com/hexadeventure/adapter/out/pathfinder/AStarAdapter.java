@@ -11,7 +11,7 @@ public class AStarAdapter implements AStarPathfinder {
     
     @Override
     public Queue<Vector2> generatePath(Vector2 start, Vector2 end, Map<Vector2, Integer> costMap) {
-        if(start == null || end == null || costMap.isEmpty()) return null;
+        if(start == null || end == null || costMap.isEmpty()) return new PriorityQueue<>();
         
         PriorityQueue<Node> checklist = new PriorityQueue<>();
         HashSet<Vector2> checkedPosition = new HashSet<>();
@@ -62,7 +62,7 @@ public class AStarAdapter implements AStarPathfinder {
             }
         }
         
-        return null;
+        return new PriorityQueue<>();
     }
     
     private static class Node implements Comparable<Node> {

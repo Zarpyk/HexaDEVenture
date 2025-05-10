@@ -4,13 +4,17 @@ import com.hexadeventure.model.user.User;
 
 public class UserMongoMapper {
     public static UserMongoEntity toEntity(User user) {
-        UserMongoEntity entity = new UserMongoEntity();
-        entity.setId(user.getId());
-        entity.setEmail(user.getEmail());
-        entity.setUsername(user.getUsername());
-        entity.setPassword(user.getPassword());
-        entity.setMapId(user.getMapId());
-        return entity;
+        return new UserMongoEntity(user.getId(),
+                                   user.getEmail(),
+                                   user.getUsername(),
+                                   user.getPassword(),
+                                   user.getMapId(),
+                                   user.getWins(),
+                                   user.getPlayedGames(),
+                                   user.getPlayedTime(),
+                                   user.getCurrentGameStartTime(),
+                                   user.getTravelledDistance(),
+                                   user.getCollectedResources());
     }
     
     public static User toModel(UserMongoEntity entity) {
@@ -18,6 +22,12 @@ public class UserMongoMapper {
                         entity.getEmail(),
                         entity.getUsername(),
                         entity.getPassword(),
-                        entity.getMapId());
+                        entity.getMapId(),
+                        entity.getWins(),
+                        entity.getPlayedGames(),
+                        entity.getPlayedTime(),
+                        entity.getCurrentGameStartTime(),
+                        entity.getTravelledDistance(),
+                        entity.getCollectedResources());
     }
 }

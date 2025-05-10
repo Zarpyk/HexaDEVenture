@@ -35,6 +35,13 @@ public abstract class AbstractUserRepositoryTest {
         assertThat(user.get().getEmail()).isEqualTo(USER.getEmail());
         assertThat(user.get().getUsername()).isEqualTo(USER.getUsername());
         assertThat(user.get().getPassword()).isEqualTo(USER.getPassword());
+        assertThat(user.get().getMapId()).isEqualTo(USER.getMapId());
+        assertThat(user.get().getWins()).isEqualTo(USER.getWins());
+        assertThat(user.get().getPlayedGames()).isEqualTo(USER.getPlayedGames());
+        assertThat(user.get().getPlayedTime()).isEqualTo(USER.getPlayedTime());
+        assertThat(user.get().getCurrentGameStartTime()).isEqualTo(USER.getCurrentGameStartTime());
+        assertThat(user.get().getTravelledDistance()).isEqualTo(USER.getTravelledDistance());
+        assertThat(user.get().getCollectedResources()).isEqualTo(USER.getCollectedResources());
     }
     
     @Test

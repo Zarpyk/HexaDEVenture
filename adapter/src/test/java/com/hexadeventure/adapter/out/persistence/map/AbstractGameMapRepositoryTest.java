@@ -36,7 +36,18 @@ public abstract class AbstractGameMapRepositoryTest {
         
         Optional<GameMap> map = gameMapRepository.findById(MapFactory.GAME_MAP.getId());
         assertThat(map).isPresent();
-        assertThat(map.get()).isEqualTo(MapFactory.GAME_MAP);
+        assertThat(map.get().getId()).isEqualTo(MapFactory.GAME_MAP.getId());
+        assertThat(map.get().getUserEmail()).isEqualTo(MapFactory.GAME_MAP.getUserEmail());
+        assertThat(map.get().getSeed()).isEqualTo(MapFactory.GAME_MAP.getSeed());
+        assertThat(map.get().getSize()).isEqualTo(MapFactory.GAME_MAP.getSize());
+        
+        assertThat(map.get().getMainCharacter()).isEqualTo(MapFactory.GAME_MAP.getMainCharacter());
+        assertThat(map.get().getInventory()).isEqualTo(MapFactory.GAME_MAP.getInventory());
+        assertThat(map.get().getCombatTerrain()).isEqualTo(MapFactory.GAME_MAP.getCombatTerrain());
+        
+        assertThat(map.get().getBossPosition()).isEqualTo(MapFactory.GAME_MAP.getBossPosition());
+        assertThat(map.get().isInCombat()).isEqualTo(MapFactory.GAME_MAP.isInCombat());
+        assertThat(map.get().isBossBattle()).isEqualTo(MapFactory.GAME_MAP.isBossBattle());
     }
     
     @Test

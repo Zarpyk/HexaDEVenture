@@ -45,7 +45,7 @@ public class InventoryService implements InventoryUseCase {
             throw new InvalidSearchException();
         }
         
-        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
+        GameMap gameMap = Utilities.getUserGameMap(email, userRepository, gameMapRepository);
         
         Recipe[] result = new Recipe[size];
         Map<String, Item> items = gameMap.getInventory().getItems();
@@ -70,7 +70,7 @@ public class InventoryService implements InventoryUseCase {
             throw new InvalidRecipeException(recipeIndex);
         }
         
-        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
+        GameMap gameMap = Utilities.getUserGameMap(email, userRepository, gameMapRepository);
         Inventory inventory = gameMap.getInventory();
         Map<String, Item> items = inventory.getItems();
         
@@ -94,7 +94,7 @@ public class InventoryService implements InventoryUseCase {
     
     @Override
     public Inventory getInventory(String email) {
-        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
+        GameMap gameMap = Utilities.getUserGameMap(email, userRepository, gameMapRepository);
         return gameMap.getInventory();
     }
     
@@ -105,7 +105,7 @@ public class InventoryService implements InventoryUseCase {
     
     @Override
     public void unequipWeapon(String email, String characterId) {
-        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
+        GameMap gameMap = Utilities.getUserGameMap(email, userRepository, gameMapRepository);
         Inventory inventory = gameMap.getInventory();
         
         if(characterId == null) throw new InvalidCharacterException();
@@ -123,7 +123,7 @@ public class InventoryService implements InventoryUseCase {
     
     @Override
     public void useItem(String email, String characterId, String itemId) {
-        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
+        GameMap gameMap = Utilities.getUserGameMap(email, userRepository, gameMapRepository);
         Inventory inventory = gameMap.getInventory();
         
         if(characterId == null) throw new InvalidCharacterException();

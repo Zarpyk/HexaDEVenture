@@ -344,7 +344,8 @@ public class MapGenerator {
     private void generateRoadToBoss(GameMap map, Set<Vector2C> chunksToGenerate) {
         Queue<Vector2> path = aStarPathfinder.generatePath(map.getMainCharacter().getPosition(),
                                                            map.getBossPosition(),
-                                                           map.getCostMap(chunksToGenerate, false));
+                                                           map.getCostMap(chunksToGenerate,
+                                                                          false));
         if(path == null) throw new RuntimeException("Fail creating path to boss");
         
         Vector2 direction = Vector2.UP;

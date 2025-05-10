@@ -33,11 +33,6 @@ public class UserMongoRepository implements UserRepository {
     }
     
     @Override
-    public void updateMapIdByEmail(String email, String mapId) {
-        repo.updateMapIdByEmail(email, mapId);
-    }
-    
-    @Override
     public void deleteByEmail(String email) {
         repo.deleteByEmail(email);
     }

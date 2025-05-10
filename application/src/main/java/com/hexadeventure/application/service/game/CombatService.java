@@ -20,7 +20,9 @@ import com.hexadeventure.model.inventory.weapons.Weapon;
 import com.hexadeventure.model.inventory.weapons.WeaponSetting;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.resources.ResourceType;
+import com.hexadeventure.model.user.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.SplittableRandom;
 
@@ -38,7 +40,7 @@ public class CombatService implements CombatUseCase {
     
     @Override
     public CombatTerrain getCombatStatus(String email) {
-        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
+        GameMap gameMap = Utilities.getUserGameMap(email, userRepository, gameMapRepository);
         
         if(!gameMap.isInCombat()) throw new CombatNotStartedException();
         
@@ -47,7 +49,7 @@ public class CombatService implements CombatUseCase {
     
     @Override
     public void placeCharacter(String email, int row, int column, String characterId) {
-        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
+        GameMap gameMap = Utilities.getUserGameMap(email, userRepository, gameMapRepository);
         
         if(!gameMap.isInCombat()) throw new CombatNotStartedException();
         
@@ -68,7 +70,7 @@ public class CombatService implements CombatUseCase {
     
     @Override
     public void removeCharacter(String email, int row, int column) {
-        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
+        GameMap gameMap = Utilities.getUserGameMap(email, userRepository, gameMapRepository);
         
         if(!gameMap.isInCombat()) throw new CombatNotStartedException();
         
@@ -87,7 +89,8 @@ public class CombatService implements CombatUseCase {
     
     @Override
     public CombatProcess startAutoCombat(String email) {
-        GameMap gameMap = Utilities.getGameMap(email, userRepository, gameMapRepository);
+        User user = Utilities.getUser(email, userRepository);
+        GameMap gameMap = Utilities.getGameMap(user, gameMapRepository);
         
         if(!gameMap.isInCombat()) throw new CombatNotStartedException();
         
@@ -119,14 +122,33 @@ public class CombatService implements CombatUseCase {
         }
         
         // Check if combat finished
-        if(noCharacterRemain || noEnemyRemain) {
+        boolean finished = noCharacterRemain || noEnemyRemain;
+        boolean lose = false;
+        if(finished) {
             finishCombat(combatProcessor, gameMap);
+            lose = gameMap.getInventory().getCharacters().isEmpty();
+            // If is boss battle and player has characters, then win
+            if(gameMap.isBossBattle() && !lose) {
+                user.setWins(user.getWins() + 1);
+            }
+            // If is boss battle or player has no characters, finish the game
+            if(gameMap.isBossBattle() || lose) {
+                // Add played time
+                int passedTime = user.getCurrentGameStartTime().getSecond() - LocalDateTime.now().getSecond();
+                user.setPlayedTime(user.getPlayedTime() + passedTime);
+                user.setCurrentGameStartTime(LocalDateTime.MIN);
+                
+                // Finish the game
+                user.setMapId(null);
+                userRepository.save(user);
+                gameMapRepository.deleteById(gameMap.getId());
+            }
         }
         
         gameMapRepository.save(gameMap);
         
         List<TurnInfo> turnInfos = combatProcessor.getTurnInfos();
-        return new CombatProcess(turnInfos);
+        return new CombatProcess(turnInfos, finished, gameMap.isBossBattle(), lose);
     }
     
     private static void checkParams(int row, int column, CombatTerrain combatTerrain) {

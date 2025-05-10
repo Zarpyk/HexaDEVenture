@@ -14,9 +14,5 @@ import java.util.Optional;
 public interface UserMongoSDRepository extends MongoRepository<UserMongoEntity, String> {
     Optional<UserMongoEntity> findByEmail(String email);
     
-    @Query("{'email': email}")
-    @Update("{'$set': {'mapId': mapId}}")
-    void updateMapIdByEmail(@Param("email") String email, @Param("mapId") String mapId);
-    
     void deleteByEmail(String email);
 }

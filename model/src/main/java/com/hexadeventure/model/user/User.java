@@ -1,18 +1,27 @@
 package com.hexadeventure.model.user;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class User {
     private final String id;
     private final String email;
     private final String username;
     private final String password;
     private String mapId;
+    private int wins;
+    private int playedGames;
+    private int playedTime;
+    private LocalDateTime currentGameStartTime;
+    private int travelledDistance;
+    private int collectedResources;
     
     /**
      * Creates a new user.
@@ -22,23 +31,10 @@ public class User {
      * @throws IllegalArgumentException If the email is empty or null.
      */
     public User(String email, String username, String password) throws IllegalArgumentException {
-        this(UUID.randomUUID().toString(), email, username, password, null);
-    }
-    
-    /**
-     * Creates a new user.
-     * @param id The user id.
-     * @param email The user email.
-     * @param username The user username.
-     * @param password The user password.
-     * @throws IllegalArgumentException If the email is empty or null.
-     */
-    public User(String id, String email, String username, String password,
-                String mapId) throws IllegalArgumentException {
-        this.id = id;
+        id = UUID.randomUUID().toString();
         this.email = email;
         this.username = username;
         this.password = password;
-        this.mapId = mapId;
+        currentGameStartTime = LocalDateTime.MIN;
     }
 }

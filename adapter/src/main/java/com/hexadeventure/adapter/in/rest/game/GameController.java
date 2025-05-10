@@ -2,8 +2,8 @@ package com.hexadeventure.adapter.in.rest.game;
 
 import com.hexadeventure.adapter.in.rest.game.dto.in.StartGameDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.map.ChunkDataDTO;
-import com.hexadeventure.adapter.in.rest.game.dto.out.movement.MovementResponseDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.map.Vector2DTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.movement.MovementResponseDTO;
 import com.hexadeventure.application.port.in.game.GameUseCase;
 import com.hexadeventure.model.movement.MovementResponse;
 import org.springframework.http.HttpStatus;
@@ -40,5 +40,11 @@ public class GameController {
     public ResponseEntity<MovementResponseDTO> move(Principal principal, @RequestBody Vector2DTO position) {
         MovementResponse response = gameUseCase.move(principal.getName(), Vector2DTO.toModel(position));
         return ResponseEntity.ok(MovementResponseDTO.fromModel(response));
+    }
+    
+    @PostMapping("/finish")
+    public ResponseEntity<Void> finishGame(Principal principal) {
+        gameUseCase.finishGame(principal.getName());
+        return ResponseEntity.ok().build();
     }
 }

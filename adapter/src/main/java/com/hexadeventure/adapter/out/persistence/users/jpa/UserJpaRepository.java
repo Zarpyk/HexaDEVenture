@@ -38,12 +38,6 @@ public class UserJpaRepository implements UserRepository {
     
     @Override
     @Transactional
-    public void updateMapIdByEmail(String email, String mapId) {
-        repo.updateMapIdByEmail(email, mapId);
-    }
-    
-    @Override
-    @Transactional
     public void deleteByEmail(String email) {
         repo.deleteByEmail(email);
     }

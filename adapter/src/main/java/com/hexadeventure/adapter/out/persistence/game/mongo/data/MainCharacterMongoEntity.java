@@ -14,6 +14,5 @@ public class MainCharacterMongoEntity {
     @MongoId
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private int x;
-    private int y;
+    private Vector2MongoEntity position;
 }

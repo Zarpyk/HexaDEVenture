@@ -2,6 +2,7 @@ package com.hexadeventure.adapter.out.persistence.game.jpa.data;
 
 import com.hexadeventure.adapter.out.persistence.game.jpa.data.combat.CombatTerrainJpaEntity;
 import com.hexadeventure.adapter.out.persistence.game.jpa.data.inventory.InventoryJpaEntity;
+import com.hexadeventure.model.map.Vector2;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,4 +29,9 @@ public class GameMapJpaEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "combat_terrain_id")
     private CombatTerrainJpaEntity combatTerrain;
+    
+    private int bossPositionX;
+    private int bossPositionY;
+    private boolean isInCombat;
+    private boolean isBossBattle;
 }

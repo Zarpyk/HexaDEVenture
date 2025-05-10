@@ -28,6 +28,8 @@ public class GameMap {
     private Vector2 bossPosition;
     @Setter
     private boolean isInCombat;
+    @Setter
+    private boolean isBossBattle;
     
     public GameMap(String userEmail, long seed, int size) {
         this.id = UUID.randomUUID().toString();
@@ -40,7 +42,8 @@ public class GameMap {
     }
     
     public GameMap(String id, String userEmail, long seed, int size, Map<Vector2C, Chunk> chunks,
-                   MainCharacter mainCharacter, Inventory inventory, CombatTerrain combatTerrain) {
+                   MainCharacter mainCharacter, Inventory inventory, CombatTerrain combatTerrain,
+                   Vector2 bossPosition, boolean isInCombat, boolean isBossBattle) {
         this.id = id;
         this.userEmail = userEmail;
         this.seed = seed;
@@ -49,6 +52,9 @@ public class GameMap {
         this.mainCharacter = mainCharacter;
         this.inventory = inventory;
         this.combatTerrain = combatTerrain;
+        this.bossPosition = bossPosition;
+        this.isInCombat = isInCombat;
+        this.isBossBattle = isBossBattle;
     }
     
     public void addChunks(Map<Vector2C, Chunk> chunks, boolean canOverrideChunks) {
@@ -77,7 +83,6 @@ public class GameMap {
         chunks.get(chunkPosition).setCell(position, type);
     }
     
-    
     /**
      * Returns the chunk of the given cell position.
      * @param position the position of the cell
@@ -103,6 +108,11 @@ public class GameMap {
         Vector2C chunkPosition = Chunk.getChunkPosition(position);
         chunks.putIfAbsent(chunkPosition, new Chunk(chunkPosition));
         chunks.get(chunkPosition).addResource(position, threshold, random);
+    }
+    
+    public void removeResource(Vector2 position) {
+        Vector2C chunkPosition = Chunk.getChunkPosition(position);
+        chunks.get(chunkPosition).removeResource(position);
     }
     
     public void addEnemy(Vector2 position, Enemy enemy) {
@@ -142,10 +152,23 @@ public class GameMap {
      * @return the cost map
      */
     public Map<Vector2, Integer> getCostMap(Collection<Vector2C> chunkPositions, boolean onlyWalkable) {
+        return getCostMap(chunkPositions, onlyWalkable, false, null);
+    }
+    
+    /**
+     * Returns the cost map of the given chunks.
+     * @param chunkPositions the chunkPositions of the chunks
+     * @param onlyWalkable if true, non-walkable cells will have a cost of -1, otherwise a big number will be used
+     * @param ignoreEnemies if true, enemies will be -1
+     * @param notIgnoreEnemy if not null, the enemy on this position will not be -1
+     * @return the cost map
+     */
+    public Map<Vector2, Integer> getCostMap(Collection<Vector2C> chunkPositions, boolean onlyWalkable,
+                                            boolean ignoreEnemies, Vector2 notIgnoreEnemy) {
         Map<Vector2, Integer> costMap = new HashMap<>();
         
         for (Vector2C position : chunkPositions) {
-            int[][] chunkCostMap = chunks.get(position).getCostMap(onlyWalkable);
+            int[][] chunkCostMap = chunks.get(position).getCostMap(onlyWalkable, ignoreEnemies, notIgnoreEnemy);
             for (int x = position.getRealX(); x < position.getEndX(); x++) {
                 for (int y = position.getRealY(); y < position.getEndY(); y++) {
                     costMap.put(new Vector2(x, y), chunkCostMap[x - position.getRealX()][y - position.getRealY()]);
