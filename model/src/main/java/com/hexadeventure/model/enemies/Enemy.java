@@ -9,7 +9,9 @@ import com.hexadeventure.model.inventory.weapons.WeaponSetting;
 import com.hexadeventure.model.inventory.weapons.WeaponType;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.Vector2;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.SplittableRandom;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Enemy {
     private static final double OFFSET = 0.001;
     public static final int MOVEMENT_SPEED = 2;

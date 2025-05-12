@@ -2,15 +2,17 @@ package com.hexadeventure.model.inventory.characters;
 
 import com.hexadeventure.model.inventory.weapons.Weapon;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
 import java.util.UUID;
 
 @Getter
+@NoArgsConstructor
 public class PlayableCharacter {
-    private final String id;
-    private final String name;
+    private String id;
+    private String name;
     @Setter
     private double health;
     @Setter
@@ -18,7 +20,7 @@ public class PlayableCharacter {
     @Setter
     private double hypnotizationResistance;
     private Weapon weapon;
-    private final ChangedStats changedStats;
+    private ChangedStats changedStats;
     
     public PlayableCharacter(String name, double health, double speed) {
         this.id = UUID.randomUUID().toString();

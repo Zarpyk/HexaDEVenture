@@ -1,16 +1,18 @@
 package com.hexadeventure.model.inventory;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
 
 @Getter
+@NoArgsConstructor
 public abstract class Item {
     private String id;
-    private final String name;
-    private final ItemType type;
-    private final int skin;
+    private String name;
+    private ItemType type;
+    private int skin;
     @Setter
     private int count;
     

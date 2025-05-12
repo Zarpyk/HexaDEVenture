@@ -3,6 +3,7 @@ package com.hexadeventure.model.inventory.weapons;
 import com.hexadeventure.model.inventory.Item;
 import com.hexadeventure.model.inventory.ItemType;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
@@ -10,6 +11,7 @@ import java.util.SplittableRandom;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Weapon extends Item {
     private static final double OFFSET = 0.001;
     

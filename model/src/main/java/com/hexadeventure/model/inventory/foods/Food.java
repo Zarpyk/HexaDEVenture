@@ -2,13 +2,16 @@ package com.hexadeventure.model.inventory.foods;
 
 import com.hexadeventure.model.inventory.Item;
 import com.hexadeventure.model.inventory.ItemType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Food extends Item {
     private double healthPoints;
     
