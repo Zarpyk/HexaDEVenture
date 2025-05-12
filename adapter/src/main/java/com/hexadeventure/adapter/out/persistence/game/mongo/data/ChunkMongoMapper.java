@@ -12,6 +12,7 @@ import com.hexadeventure.adapter.out.persistence.game.mongo.ChunkMongoSDReposito
 import com.hexadeventure.adapter.utils.Vector2CDeserializer;
 import com.hexadeventure.adapter.utils.Vector2Deserializer;
 import com.hexadeventure.model.enemies.Enemy;
+import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import com.hexadeventure.model.map.CellData;
 import com.hexadeventure.model.map.Chunk;
 import com.hexadeventure.model.map.Vector2;
@@ -30,6 +31,8 @@ public class ChunkMongoMapper {
         // From: https://medium.com/@davenkin_93074/jackson-polymorphism-explained-910cd1619ffc
         PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
                                                                     .allowIfBaseType("com.hexadeventure")
+                                                                    .allowIfSubType(PlayableCharacter[][].class)
+                                                                    .allowIfSubType(PlayableCharacter[].class)
                                                                     .allowIfSubType(CellData[][].class)
                                                                     .allowIfSubType(CellData[].class)
                                                                     .allowIfSubType(HashMap.class)
