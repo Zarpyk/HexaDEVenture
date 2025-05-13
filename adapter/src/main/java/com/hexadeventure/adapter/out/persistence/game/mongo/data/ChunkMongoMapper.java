@@ -23,6 +23,7 @@ import org.springframework.data.mongodb.gridfs.GridFsOperations;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class ChunkMongoMapper {
@@ -63,18 +64,21 @@ public class ChunkMongoMapper {
             GridFs gridFs = new GridFs(objectMapper, gridFsOperations);
             
             // Store cells
+            String existingFileId = chunk.map(ChunkMongoEntity::getCellsFileId).orElse(null);
             String cellsFileId = gridFs.storeData(model.getCells(),
-                                                  chunk.map(ChunkMongoEntity::getCellsFileId).orElse(null));
+                                                  existingFileId);
             mongoEntity.setCellsFileId(cellsFileId);
             
             // Store resources
+            existingFileId = chunk.map(ChunkMongoEntity::getResourcesFileId).orElse(null);
             String resourcesFileId = gridFs.storeData(model.getResources(),
-                                                      chunk.map(ChunkMongoEntity::getResourcesFileId).orElse(null));
+                                                      existingFileId);
             mongoEntity.setResourcesFileId(resourcesFileId);
             
             // Store enemies
+            existingFileId = chunk.map(ChunkMongoEntity::getEnemiesFileId).orElse(null);
             String enemiesFileId = gridFs.storeData(model.getEnemies(),
-                                                    chunk.map(ChunkMongoEntity::getEnemiesFileId).orElse(null));
+                                                    existingFileId);
             mongoEntity.setEnemiesFileId(enemiesFileId);
             
             return mongoEntity;
@@ -88,10 +92,10 @@ public class ChunkMongoMapper {
             GridFs gridFs = new GridFs(objectMapper, gridFsOperations);
             
             CellData[][] grid = gridFs.readData(entity.getCellsFileId(), CellData[][].class);
-            HashMap<Vector2, Resource> resources = gridFs.readData(entity.getResourcesFileId(),
-                                                                   new TypeReference<>() {});
-            HashMap<Vector2, Enemy> enemies = gridFs.readData(entity.getEnemiesFileId(),
-                                                              new TypeReference<>() {});
+            Map<Vector2, Resource> resources = gridFs.readData(entity.getResourcesFileId(),
+                                                               new TypeReference<>() {});
+            Map<Vector2, Enemy> enemies = gridFs.readData(entity.getEnemiesFileId(),
+                                                          new TypeReference<>() {});
             
             return new Chunk(entity.getId(),
                              Vector2MongoMapper.toChunkModel(entity.getPosition()),

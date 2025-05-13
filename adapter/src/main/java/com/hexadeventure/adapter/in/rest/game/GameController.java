@@ -13,10 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -61,7 +58,7 @@ public class GameController {
             @ApiResponse(responseCode = "200", description = "Movement successful",
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = MovementResponseDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid position",
+            @ApiResponse(responseCode = "400", description = "Invalid targetPosition",
                          content = @Content),
             @ApiResponse(responseCode = "401", description = "User not logged in",
                          content = @Content),
@@ -73,7 +70,7 @@ public class GameController {
         return ResponseEntity.ok(MovementResponseDTO.fromModel(response));
     }
     
-    @PostMapping("/finish")
+    @DeleteMapping("/finish")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Game finished successfully"),
             @ApiResponse(responseCode = "401", description = "User not logged in"),

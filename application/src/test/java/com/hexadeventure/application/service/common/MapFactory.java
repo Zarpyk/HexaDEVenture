@@ -14,8 +14,7 @@ import com.hexadeventure.model.map.*;
 
 import java.util.*;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 public class MapFactory {
@@ -25,16 +24,17 @@ public class MapFactory {
     public static final String EMPTY_MAP_ID = UUID.randomUUID().toString();
     public static final int EMPTY_MAP_SIZE_MULTIPLIER = 2;
     public static final int EMPTY_MAP_SIZE = GameService.MIN_MAP_SIZE * EMPTY_MAP_SIZE_MULTIPLIER;
-    public static final Vector2 EMPTY_START_POSITION = new Vector2(EMPTY_MAP_SIZE / 2, EMPTY_MAP_SIZE / 2);
+    public static final Vector2 EMPTY_PLAYER_START_POSITION = new Vector2(EMPTY_MAP_SIZE / 2, EMPTY_MAP_SIZE / 2);
     private static final int EMPTY_MAP_MOVE_COUNT = 16;
     public static final Vector2 EMPTY_END_POSITION = new Vector2(EMPTY_MAP_SIZE / 2 + EMPTY_MAP_MOVE_COUNT,
                                                                  EMPTY_MAP_SIZE / 2 + EMPTY_MAP_MOVE_COUNT);
-    public static final int EMPTY_MAP_PATH_LENGTH = EMPTY_MAP_MOVE_COUNT + EMPTY_MAP_MOVE_COUNT + 1;
+    public static final int EMPTY_MAP_PATH_LENGTH = EMPTY_MAP_MOVE_COUNT + EMPTY_MAP_MOVE_COUNT;
     
     public static final String OBSTACLE_MAP_ID = UUID.randomUUID().toString();
     public static final int OBSTACLE_MAP_SIZE_MULTIPLIER = 2;
     public static final int OBSTACLE_MAP_SIZE = GameService.MIN_MAP_SIZE * OBSTACLE_MAP_SIZE_MULTIPLIER;
-    public static final Vector2 OBSTACLE_START_POSITION = new Vector2(OBSTACLE_MAP_SIZE / 2, OBSTACLE_MAP_SIZE / 2);
+    public static final Vector2 OBSTACLE_PLAYER_START_POSITION = new Vector2(OBSTACLE_MAP_SIZE / 2,
+                                                                             OBSTACLE_MAP_SIZE / 2);
     private static final int OBSTACLE_MAP_MOVE_COUNT = 16;
     public static final Vector2 OBSTACLE_END_POSITION = new Vector2(OBSTACLE_MAP_SIZE / 2 + OBSTACLE_MAP_MOVE_COUNT,
                                                                     OBSTACLE_MAP_SIZE / 2 + OBSTACLE_MAP_MOVE_COUNT);
@@ -42,20 +42,21 @@ public class MapFactory {
     public static final String RESOURCE_MAP_ID = UUID.randomUUID().toString();
     public static final int RESOURCE_MAP_SIZE_MULTIPLIER = 2;
     public static final int RESOURCE_MAP_SIZE = GameService.MIN_MAP_SIZE * RESOURCE_MAP_SIZE_MULTIPLIER;
-    public static final Vector2 RESOURCE_START_POSITION = new Vector2(RESOURCE_MAP_SIZE / 2, RESOURCE_MAP_SIZE / 2);
+    public static final Vector2 RESOURCE_PLAYER_START_POSITION = new Vector2(RESOURCE_MAP_SIZE / 2,
+                                                                             RESOURCE_MAP_SIZE / 2);
     private static final int RESOURCE_MAP_MOVE_COUNT = 16;
     public static final Vector2 RESOURCE_END_POSITION = new Vector2(RESOURCE_MAP_SIZE / 2 + RESOURCE_MAP_MOVE_COUNT,
                                                                     RESOURCE_MAP_SIZE / 2 + RESOURCE_MAP_MOVE_COUNT);
-    public static final int RESOURCE_MAP_PATH_LENGTH = RESOURCE_MAP_MOVE_COUNT + RESOURCE_MAP_MOVE_COUNT + 1;
+    public static final int RESOURCE_MAP_PATH_LENGTH = RESOURCE_MAP_MOVE_COUNT + RESOURCE_MAP_MOVE_COUNT;
     
     public static final String ENEMY_MAP_ID = UUID.randomUUID().toString();
     public static final int ENEMY_MAP_SIZE_MULTIPLIER = 2;
     public static final int ENEMY_MAP_SIZE = GameService.MIN_MAP_SIZE * ENEMY_MAP_SIZE_MULTIPLIER;
-    public static final Vector2 ENEMY_START_POSITION = new Vector2(ENEMY_MAP_SIZE / 2, ENEMY_MAP_SIZE / 2);
+    public static final Vector2 ENEMY_PLAYER_START_POSITION = new Vector2(ENEMY_MAP_SIZE / 2, ENEMY_MAP_SIZE / 2);
     private static final int ENEMY_MAP_MOVE_COUNT = 16;
     public static final Vector2 ENEMY_END_POSITION = new Vector2(ENEMY_MAP_SIZE / 2 + ENEMY_MAP_MOVE_COUNT,
                                                                  ENEMY_MAP_SIZE / 2 + ENEMY_MAP_MOVE_COUNT);
-    public static final int ENEMY_MAP_PATH_LENGTH = ENEMY_MAP_MOVE_COUNT + ENEMY_MAP_MOVE_COUNT + 1;
+    public static final int ENEMY_MAP_PATH_LENGTH = ENEMY_MAP_MOVE_COUNT + ENEMY_MAP_MOVE_COUNT;
     public static final int ENEMY_MAP_ENEMY_OFFSET = 16;
     public static final Vector2 ENEMY_MAP_ENEMY_POSITION = new Vector2(ENEMY_MAP_SIZE / 2 - ENEMY_MAP_ENEMY_OFFSET,
                                                                        ENEMY_MAP_SIZE / 2);
@@ -99,7 +100,7 @@ public class MapFactory {
         gameMap.setChunks(new HashMap<>());
         
         // Generate the path
-        Queue<Vector2> path = generatePath(EMPTY_START_POSITION, EMPTY_END_POSITION);
+        Queue<Vector2> path = generatePath(EMPTY_PLAYER_START_POSITION, EMPTY_END_POSITION);
         
         mockGameMap(gameMapRepository, EMPTY_MAP_ID, gameMap, chunks);
         when(aStarPathfinder.generatePath(any(), any(), eq(costMap))).thenReturn(path);
@@ -155,7 +156,7 @@ public class MapFactory {
                     Vector2 position = new Vector2(x, y);
                     chunk.setCell(position, CellType.GROUND);
                     // Add resource
-                    if(!position.equals(RESOURCE_START_POSITION)) {
+                    if(!position.equals(RESOURCE_PLAYER_START_POSITION)) {
                         chunk.addResource(position,
                                           0,
                                           new SplittableRandom(position.getRandomSeed(TEST_SEED, 0)));
@@ -183,7 +184,7 @@ public class MapFactory {
         if(!returnChunks) gameMap.setChunks(new HashMap<>());
         
         // Generate a path for player
-        Queue<Vector2> path = generatePath(RESOURCE_START_POSITION, RESOURCE_END_POSITION);
+        Queue<Vector2> path = generatePath(RESOURCE_PLAYER_START_POSITION, RESOURCE_END_POSITION);
         
         mockGameMap(gameMapRepository, RESOURCE_MAP_ID, gameMap, chunks);
         when(aStarPathfinder.generatePath(any(), any(), eq(costMap))).thenReturn(path);
@@ -234,25 +235,26 @@ public class MapFactory {
         gameMap.setChunks(new HashMap<>());
         
         // Generate a path for the main character
-        Queue<Vector2> path = generatePath(ENEMY_START_POSITION, ENEMY_END_POSITION);
+        Queue<Vector2> path = generatePath(ENEMY_PLAYER_START_POSITION, ENEMY_END_POSITION);
         
         // Generate a path for the enemy
         Queue<Vector2> lastPath;
-        Vector2 newPosition = ENEMY_MAP_ENEMY_POSITION;
+        Vector2 enemyPosition = ENEMY_MAP_ENEMY_POSITION;
         for (Vector2 position : path) {
-            lastPath = generatePath(newPosition, position);
-            when(aStarPathfinder.generatePath(eq(newPosition), eq(position), eq(costMap))).thenReturn(lastPath);
+            if (position == ENEMY_PLAYER_START_POSITION) continue;
+            lastPath = generatePath(enemyPosition, position);
+            when(aStarPathfinder.generatePath(eq(enemyPosition), eq(position), anyMap())).thenReturn(lastPath);
             Queue<Vector2> temp = new LinkedList<>(lastPath);
             // Ignore the first position
             temp.poll();
             for (int j = 0; j < Enemy.MOVEMENT_SPEED; j++) {
                 if(temp.isEmpty()) break;
-                newPosition = temp.poll();
+                enemyPosition = temp.poll();
             }
         }
         
         mockGameMap(gameMapRepository, ENEMY_MAP_ID, gameMap, chunks);
-        when(aStarPathfinder.generatePath(eq(ENEMY_START_POSITION), eq(ENEMY_END_POSITION), eq(costMap)))
+        when(aStarPathfinder.generatePath(eq(ENEMY_PLAYER_START_POSITION), eq(ENEMY_END_POSITION), anyMap()))
                 .thenReturn(path);
         ItemFactory.setupSettingsImporter(settingsImporter);
         return gameMap;

@@ -48,7 +48,7 @@ public class GameTest {
     //region FinishGame
     @Test
     public void givenStartedGame_whenFinishGame_thenReturnOk() {
-        RestCommon.post("/finish", true)
+        RestCommon.delete("/finish", true)
                   .then()
                   .statusCode(HttpStatus.OK.value());
     }
@@ -57,7 +57,7 @@ public class GameTest {
     public void givenNoStartedGame_whenFinishGame_thenReturnMethodNotAllowed() {
         doThrow(new GameNotStartedException()).when(gameUseCase).finishGame(UserFactory.EMAIL);
         
-        RestCommon.post("/finish", true)
+        RestCommon.delete("/finish", true)
                   .then()
                   .statusCode(HttpStatus.METHOD_NOT_ALLOWED.value());
     }

@@ -70,7 +70,7 @@ public class MovementTest {
         ChunkData chunkData = gameService.getChunks(TEST_USER_EMAIL);
         
         assertThat(chunkData.chunks().size()).isEqualTo(9);
-        assertThat(chunkData.mainCharacter().getPosition()).isEqualTo(MapFactory.EMPTY_START_POSITION);
+        assertThat(chunkData.mainCharacter().getPosition()).isEqualTo(MapFactory.EMPTY_PLAYER_START_POSITION);
     }
     //endregion
     
@@ -94,10 +94,10 @@ public class MovementTest {
         MovementResponse move = gameService.move(TEST_USER_EMAIL, MapFactory.EMPTY_END_POSITION);
         
         assertThat(move.actions()).hasSize(MapFactory.EMPTY_MAP_PATH_LENGTH);
-        Vector2 first = move.actions().getFirst().position();
-        assertThat(first.x).isEqualTo(MapFactory.EMPTY_START_POSITION.x);
-        assertThat(first.y).isEqualTo(MapFactory.EMPTY_START_POSITION.y);
-        Vector2 last = move.actions().getLast().position();
+        Vector2 first = move.actions().getFirst().originalPosition();
+        assertThat(first.x).isEqualTo(MapFactory.EMPTY_PLAYER_START_POSITION.x);
+        assertThat(first.y).isEqualTo(MapFactory.EMPTY_PLAYER_START_POSITION.y);
+        Vector2 last = move.actions().getLast().targetPosition();
         assertThat(last.x).isEqualTo(MapFactory.EMPTY_END_POSITION.x);
         assertThat(last.y).isEqualTo(MapFactory.EMPTY_END_POSITION.y);
         
@@ -134,22 +134,22 @@ public class MovementTest {
         
         assertThat(actions).hasSize(MapFactory.RESOURCE_MAP_PATH_LENGTH);
         MovementAction first = actions.getFirst();
-        assertThat(first.position().x).isEqualTo(MapFactory.RESOURCE_START_POSITION.x);
-        assertThat(first.position().y).isEqualTo(MapFactory.RESOURCE_START_POSITION.y);
-        assertThat(first.resourceAction()).isNull();
-        assertThat(gameMap.getResource(new Vector2(first.position().x, first.position().y))).isNull();
+        assertThat(first.originalPosition().x).isEqualTo(MapFactory.RESOURCE_PLAYER_START_POSITION.x);
+        assertThat(first.originalPosition().y).isEqualTo(MapFactory.RESOURCE_PLAYER_START_POSITION.y);
+        assertThat(first.resourceAction()).isNotNull();
+        assertThat(gameMap.getResource(new Vector2(first.targetPosition().x, first.targetPosition().y))).isNull();
         
         for (int i = 1; i < actions.size() - 1; i++) {
             MovementAction action = actions.get(i);
             assertThat(action.resourceAction()).isNotNull();
-            assertThat(gameMap.getResource(new Vector2(action.position().x, action.position().y))).isNull();
+            assertThat(gameMap.getResource(new Vector2(action.targetPosition().x, action.targetPosition().y))).isNull();
         }
         
         MovementAction last = actions.getLast();
-        assertThat(last.position().x).isEqualTo(MapFactory.RESOURCE_END_POSITION.x);
-        assertThat(last.position().y).isEqualTo(MapFactory.RESOURCE_END_POSITION.y);
+        assertThat(last.targetPosition().x).isEqualTo(MapFactory.RESOURCE_END_POSITION.x);
+        assertThat(last.targetPosition().y).isEqualTo(MapFactory.RESOURCE_END_POSITION.y);
         assertThat(last.resourceAction()).isNotNull();
-        assertThat(gameMap.getResource(new Vector2(last.position().x, last.position().y))).isNull();
+        assertThat(gameMap.getResource(new Vector2(last.targetPosition().x, last.targetPosition().y))).isNull();
         
         Map<String, Item> items = gameMap.getInventory().getItems();
         assertThat(items.size()).isEqualTo(1);
@@ -162,9 +162,8 @@ public class MovementTest {
                                                             settingsImporter,
                                                             true);
         int resourceCount = 0;
-        for (int i = 1; i < actions.size(); i++) {
-            MovementAction action = actions.get(i);
-            Resource resource = checkMap.getResource(new Vector2(action.position().x, action.position().y));
+        for (MovementAction action : actions) {
+            Resource resource = checkMap.getResource(new Vector2(action.targetPosition().x, action.targetPosition().y));
             resourceCount += resource.getCount();
         }
         
@@ -184,10 +183,10 @@ public class MovementTest {
         
         List<MovementAction> actions = move.actions();
         
-        assertThat(actions).hasSize(MapFactory.ENEMY_MAP_ENEMY_OFFSET - 1);
+        assertThat(actions).hasSize(MapFactory.ENEMY_MAP_ENEMY_OFFSET);
         MovementAction first = actions.getFirst();
-        assertThat(first.position().x).isEqualTo(MapFactory.ENEMY_START_POSITION.x);
-        assertThat(first.position().y).isEqualTo(MapFactory.ENEMY_START_POSITION.y);
+        assertThat(first.originalPosition().x).isEqualTo(MapFactory.ENEMY_PLAYER_START_POSITION.x);
+        assertThat(first.originalPosition().y).isEqualTo(MapFactory.ENEMY_PLAYER_START_POSITION.y);
         assertThat(first.enemyMovements()).hasSize(1);
         
         for (int i = 1; i < actions.size() - 1; i++) {
@@ -198,8 +197,8 @@ public class MovementTest {
         MovementAction last = actions.getLast();
         EnemyMovement enemyMovement = last.enemyMovements().stream().findFirst().orElse(null);
         assertThat(enemyMovement).isNotNull();
-        assertThat(last.position().x).isEqualTo(enemyMovement.position().x);
-        assertThat(last.position().y).isEqualTo(enemyMovement.position().y);
+        assertThat(last.targetPosition().x).isEqualTo(enemyMovement.targetPosition().x);
+        assertThat(last.targetPosition().y).isEqualTo(enemyMovement.targetPosition().y);
         
         assertThat(gameMap.isInCombat()).isTrue();
     }
@@ -217,13 +216,19 @@ public class MovementTest {
         
         List<MovementAction> actions = move.actions();
         
+        // Check the final position
         MovementAction last = actions.getLast();
         EnemyMovement enemyMovement = last.enemyMovements().stream().findFirst().orElse(null);
         assertThat(enemyMovement).isNotNull();
-        assertThat(last.position().x).isEqualTo(enemyMovement.position().x);
-        assertThat(last.position().y).isEqualTo(enemyMovement.position().y);
+        assertThat(last.targetPosition().x).isEqualTo(enemyMovement.targetPosition().x);
+        assertThat(last.targetPosition().y).isEqualTo(enemyMovement.targetPosition().y);
         
-        Enemy enemy = gameMap.getEnemy(enemyMovement.position());
+        // Check enemy initial position
+        Vector2 enemyInitialMovement = actions.getFirst().enemyMovements().getFirst().originalPosition();
+        assertThat(enemyInitialMovement.x).isEqualTo(MapFactory.ENEMY_MAP_ENEMY_POSITION.x);
+        assertThat(enemyInitialMovement.y).isEqualTo(MapFactory.ENEMY_MAP_ENEMY_POSITION.y);
+        
+        Enemy enemy = gameMap.getEnemy(enemyMovement.targetPosition());
         assertThat(enemy).isNull();
     }
     
@@ -280,7 +285,7 @@ public class MovementTest {
         
         gameService.move(TEST_USER_EMAIL, MapFactory.RESOURCE_END_POSITION);
         
-        assertThat(testUser.getCollectedResources()).isEqualTo(MapFactory.RESOURCE_MAP_PATH_LENGTH - 1);
+        assertThat(testUser.getCollectedResources()).isEqualTo(MapFactory.RESOURCE_MAP_PATH_LENGTH);
         
         verify(userRepository, times(1)).save(any());
     }

@@ -169,6 +169,10 @@ public class GameService implements GameUseCase {
                                                            positionToMove,
                                                            gameMap.getCostMap(chunksAroundPlayer,
                                                                               true));
+        // Discard the first position of the path because it is the player's actual position
+        path.poll();
+        
+        Vector2 oldPosition = mainCharacter.getPosition();
         Vector2 position = mainCharacter.getPosition();
         boolean startCombat = false;
         while (!path.isEmpty() && !startCombat) {
@@ -188,8 +192,9 @@ public class GameService implements GameUseCase {
                                        enemyMovements,
                                        position);
             
-            MovementAction movementAction = new MovementAction(position, resourceAction, enemyMovements);
+            MovementAction movementAction = new MovementAction(oldPosition, position, resourceAction, enemyMovements);
             actions.add(movementAction);
+            oldPosition = position;
         }
         mainCharacter.setPosition(position);
         
@@ -209,7 +214,7 @@ public class GameService implements GameUseCase {
         Resource resource = gameMap.getResource(position);
         ResourceAction resourceAction = null;
         if(resource != null) {
-            resourceAction = new ResourceAction(resource.getType().ordinal(), resource.getCount());
+            resourceAction = new ResourceAction(resource.getType(), resource.getCount());
             Material material = settingsImporter.importMaterials().get(resource.getType());
             gameMap.getInventory().addItem(material, resource.getCount());
             gameMap.removeResource(position);
@@ -226,29 +231,27 @@ public class GameService implements GameUseCase {
      * @param chunksAroundPlayer the initial chunks position around the player
      * @param chunksCache the cache of chunks to avoid finding it again on the database
      * @param enemyMovements the list of enemy movements to be updated
-     * @param position the position that the player is going to
+     * @param playerPosition the player position that the enemies will move to
      * @return true if combat started, false otherwise
      */
     private boolean processEnemy(GameMap gameMap,
                                  Set<Vector2C> chunksAroundPlayer,
                                  Map<Vector2C, Chunk> chunksCache,
                                  List<EnemyMovement> enemyMovements,
-                                 Vector2 position) {
+                                 Vector2 playerPosition) {
         boolean startCombat = false;
-        Enemy foundEnemy = gameMap.getEnemy(position);
+        Enemy foundEnemy = gameMap.getEnemy(playerPosition);
         if(foundEnemy != null) {
             // If the player goes to the enemy position, start combat
-            gameMap.getCombatTerrain().placeEnemies(foundEnemy.getEnemies());
-            gameMap.getCombatTerrain().setLoot(foundEnemy.getLoot(), foundEnemy.getLootSeed());
-            gameMap.setInCombat(true);
+            startCombat(gameMap, foundEnemy);
             if(foundEnemy.getPosition() == gameMap.getBossPosition()) gameMap.setBossBattle(true);
             startCombat = true;
         } else {
             // Move enemies around the player to the player position
             
             // Check chunks around the player are changed
-            Set<Vector2C> newChunkPositions = Chunk.getChunkPosition(position).getAroundPositions(RENDER_DISTANCE,
-                                                                                                  false);
+            Set<Vector2C> newChunkPositions = Chunk.getChunkPosition(playerPosition).getAroundPositions(RENDER_DISTANCE,
+                                                                                                        false);
             if(!newChunkPositions.equals(chunksAroundPlayer)) {
                 // Update the cache of chunks
                 chunksAroundPlayer = newChunkPositions;
@@ -258,12 +261,13 @@ public class GameService implements GameUseCase {
             
             Vector2 combatPosition = null;
             for (Chunk arroundChunk : chunksCache.values()) {
-                for (Enemy enemy : arroundChunk.getEnemies().values()) {
+                List<Enemy> enemies = new ArrayList<>(arroundChunk.getEnemies().values());
+                for (Enemy enemy : enemies) {
                     // Don't move the boss
                     if(enemy.getPosition() == gameMap.getBossPosition()) continue;
                     
                     Queue<Vector2> enemyPath = aStarPathfinder.generatePath(enemy.getPosition(),
-                                                                            position,
+                                                                            playerPosition,
                                                                             gameMap.getCostMap(
                                                                                     chunksAroundPlayer,
                                                                                     true,
@@ -272,30 +276,34 @@ public class GameService implements GameUseCase {
                     
                     if(enemyPath.isEmpty()) continue;
                     
-                    // Ignore the first position
+                    // Ignore the first position of the path, because it is the enemy position
                     enemyPath.poll();
                     
                     EnemyMovement enemyMovement;
                     if(enemyPath.size() <= Enemy.MOVEMENT_SPEED) {
                         // If the player is on the enemy range, start combat
-                        gameMap.moveEnemy(enemy.getPosition(), position);
-                        gameMap.getCombatTerrain().placeEnemies(enemy.getEnemies());
-                        gameMap.getCombatTerrain().setLoot(enemy.getLoot(), enemy.getLootSeed());
-                        gameMap.setInCombat(true);
-                        enemyMovement = new EnemyMovement(position);
+                        
+                        Vector2 targetPosition = enemyPath.poll();
+                        while (!enemyPath.isEmpty()) {
+                            targetPosition = enemyPath.poll();
+                        }
+                        
+                        enemyMovement = new EnemyMovement(enemy.getPosition(), targetPosition);
+                        gameMap.moveEnemy(enemy.getPosition(), targetPosition);
+                        startCombat(gameMap, enemy);
                         startCombat = true;
                         
-                        // Save position to remove outside the loop
-                        combatPosition = position;
+                        // Save targetPosition to remove outside the loop
+                        combatPosition = targetPosition;
                     } else {
                         Vector2 enemyPosition = null;
                         for (int i = 0; i < Enemy.MOVEMENT_SPEED; i++) {
                             if(enemyPath.isEmpty()) break;
                             enemyPosition = enemyPath.poll();
                         }
-                        if(enemyPosition == null) throw new IllegalStateException("Enemy position is null");
+                        if(enemyPosition == null) throw new IllegalStateException("Enemy targetPosition is null");
+                        enemyMovement = new EnemyMovement(enemy.getPosition(), enemyPosition);
                         gameMap.moveEnemy(enemy.getPosition(), enemyPosition);
-                        enemyMovement = new EnemyMovement(enemyPosition);
                     }
                     enemyMovements.add(enemyMovement);
                     if(startCombat) break;
@@ -305,6 +313,12 @@ public class GameService implements GameUseCase {
             if(combatPosition != null) gameMap.removeEnemy(combatPosition);
         }
         return startCombat;
+    }
+    
+    private static void startCombat(GameMap gameMap, Enemy enemy) {
+        gameMap.getCombatTerrain().placeEnemies(enemy.getEnemies());
+        gameMap.getCombatTerrain().setLoot(enemy.getLoot(), enemy.getLootSeed());
+        gameMap.setInCombat(true);
     }
     
     @Override

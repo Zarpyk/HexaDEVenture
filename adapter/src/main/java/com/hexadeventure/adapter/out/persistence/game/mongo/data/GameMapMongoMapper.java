@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.hexadeventure.adapter.out.persistence.common.GridFs;
 import com.hexadeventure.model.combat.CombatTerrain;
 import com.hexadeventure.model.inventory.Inventory;
+import com.hexadeventure.model.inventory.characters.Loot;
 import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import com.hexadeventure.model.map.GameMap;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
@@ -25,6 +26,7 @@ public class GameMapMongoMapper {
                                                                     .allowIfSubType(HashMap.class)
                                                                     .allowIfSubType(PlayableCharacter[].class)
                                                                     .allowIfSubType(PlayableCharacter[][].class)
+                                                                    .allowIfSubType(Loot[].class)
                                                                     .build();
         objectMapper.activateDefaultTyping(ptv,
                                            ObjectMapper.DefaultTyping.NON_FINAL_AND_ENUMS,

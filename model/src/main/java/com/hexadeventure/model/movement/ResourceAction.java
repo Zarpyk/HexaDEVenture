@@ -1,4 +1,6 @@
 package com.hexadeventure.model.movement;
 
-public record ResourceAction(int type, int amount) {
+import com.hexadeventure.model.map.resources.ResourceType;
+
+public record ResourceAction(ResourceType type, int amount) {
 }

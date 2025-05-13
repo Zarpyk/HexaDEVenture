@@ -2,15 +2,20 @@ package com.hexadeventure.adapter.out.persistence.map;
 
 import com.hexadeventure.application.port.out.persistence.ChunkRepository;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
+import com.hexadeventure.model.enemies.Enemy;
+import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.map.Chunk;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.Vector2;
+import com.hexadeventure.model.map.Vector2C;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.SplittableRandom;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -118,23 +123,27 @@ public abstract class AbstractGameMapRepositoryTest {
     
     @Test
     public void givenExistingMap_whenSave_thenMapIsUpdated() {
-        gameMapRepository.save(MapFactory.GAME_MAP);
+        GameMap gameMap = MapFactory.createGameMap();
+        gameMapRepository.save(gameMap);
         
+        // Check initial state
         Vector2 newPos = new Vector2(10, 10);
-        GameMap map = gameMapRepository.findById(MapFactory.GAME_MAP.getId()).orElse(null);
+        GameMap map = gameMapRepository.findById(gameMap.getId()).orElse(null);
         assertThat(map).isNotNull();
         assertThat(map.getMainCharacter().getPosition()).isNotEqualTo(newPos);
         
-        Vector2 oldPos = map.getMainCharacter().getPosition();
-        MapFactory.GAME_MAP.getMainCharacter().setPosition(newPos);
-        gameMapRepository.save(MapFactory.GAME_MAP);
+        gameMap.getMainCharacter().setPosition(newPos);
+        gameMap.getInventory().addItem(new Food("test", 10, 10));
+        gameMap.getCombatTerrain().setModifiable(false);
+        gameMapRepository.save(gameMap);
         
-        Optional<GameMap> updatedMap = gameMapRepository.findById(MapFactory.GAME_MAP.getId());
+        // Check the updated state
+        Optional<GameMap> updatedMap = gameMapRepository.findById(gameMap.getId());
         assertThat(updatedMap).isPresent();
         GameMap mapObject = updatedMap.get();
         assertThat(mapObject.getMainCharacter().getPosition()).isEqualTo(newPos);
-        
-        MapFactory.GAME_MAP.getMainCharacter().setPosition(oldPos);
+        assertThat(mapObject.getInventory().getItems()).hasSize(1);
+        assertThat(mapObject.getCombatTerrain().isModifiable()).isFalse();
     }
     
     @Test
@@ -146,6 +155,50 @@ public abstract class AbstractGameMapRepositoryTest {
                                                                 MapFactory.CHUNK3.getPosition(),
                                                                 MapFactory.CHUNK4.getPosition()));
         assertThat(chunks.size()).isEqualTo(4);
+    }
+    
+    
+    @Test
+    public void givenExistChunk_whenSaveMap_thenChunksAreUpdated() {
+        Map<Vector2C, Chunk> chunks = MapFactory.createChunks();
+        GameMap gameMap = MapFactory.createGameMapWithChunks(chunks);
+        gameMapRepository.save(gameMap);
+        
+        // Check initial state
+        Optional<GameMap> findedMap = gameMapRepository.findByIdAndGetChunks(gameMap.getId(),
+                                                                             chunks.keySet().stream().toList());
+        assertThat(findedMap).isPresent();
+        Map<Vector2C, Chunk> findChunks = findedMap.get().getChunks();
+        assertThat(findChunks.size()).isEqualTo(4);
+        
+        // Modify
+        gameMap.addEnemy(new Vector2(0, 0), new Enemy());
+        gameMap.addResource(new Vector2(0, 0), 10, new SplittableRandom());
+        gameMapRepository.save(gameMap);
+        
+        // Check the updated state
+        findedMap = gameMapRepository.findByIdAndGetChunks(gameMap.getId(),
+                                                           chunks.keySet().stream().toList());
+        assertThat(findedMap).isPresent();
+        findChunks = findedMap.get().getChunks();
+        
+        assertThat(findChunks.size()).isEqualTo(4);
+        Chunk chunk = findChunks.get(new Vector2C(0,0));
+        assertThat(chunk).isNotNull();
+        assertThat(chunk.getEnemies().size()).isEqualTo(1);
+        assertThat(chunk.getResources().size()).isEqualTo(1);
+        
+        // Modify 2
+        gameMap.moveEnemy(new Vector2(0, 0), new Vector2(1, 1));
+        gameMapRepository.save(gameMap);
+        
+        // Check the updated state
+        findedMap = gameMapRepository.findByIdAndGetChunks(gameMap.getId(),
+                                                           chunks.keySet().stream().toList());
+        assertThat(findedMap).isPresent();
+        findChunks = findedMap.get().getChunks();
+        chunk = findChunks.get(new Vector2C(0,0));
+        assertThat(chunk.getEnemies().get(new Vector2(1, 1))).isNotNull();
     }
     
     @Test
