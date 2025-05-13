@@ -12,10 +12,7 @@ import com.hexadeventure.adapter.utils.Vector2Deserializer;
 import com.hexadeventure.application.exceptions.GameInCombatException;
 import com.hexadeventure.application.exceptions.GameNotStartedException;
 import com.hexadeventure.application.port.in.game.GameUseCase;
-import com.hexadeventure.model.map.Chunk;
-import com.hexadeventure.model.map.ChunkData;
-import com.hexadeventure.model.map.Vector2;
-import com.hexadeventure.model.map.Vector2C;
+import com.hexadeventure.model.map.*;
 import com.hexadeventure.model.movement.MovementResponse;
 import io.restassured.internal.mapping.Jackson2Mapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +28,8 @@ public class MovementTest {
     private static final Vector2DTO MOVE_POSITION = new Vector2DTO(10, 10);
     private static final MovementResponse MOVEMENT_RESPONSE = new MovementResponse(new ArrayList<>());
     private static final ChunkData CHUNK_DATA = new ChunkData(Map.of(new Vector2C(0, 0),
-                                                                     new Chunk(new Vector2C(0, 0))));
+                                                                     new Chunk(new Vector2C(0, 0))),
+                                                              new MainCharacter(new Vector2(0, 0)));
     
     private final GameUseCase gameUseCase = mock(GameUseCase.class);
     

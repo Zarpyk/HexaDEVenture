@@ -134,7 +134,8 @@ public class GameService implements GameUseCase {
         Set<Vector2C> chunkAroundPlayer = currentChunk.getAroundPositions(RENDER_DISTANCE, false);
         Map<Vector2C, Chunk> mapChunks = gameMapRepository.findMapChunks(gameMap.getId(), chunkAroundPlayer);
         
-        return new ChunkData(mapChunks);
+        return new ChunkData(mapChunks,
+                             mainCharacter);
     }
     
     @Override

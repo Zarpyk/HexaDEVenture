@@ -70,6 +70,7 @@ public class MovementTest {
         ChunkData chunkData = gameService.getChunks(TEST_USER_EMAIL);
         
         assertThat(chunkData.chunks().size()).isEqualTo(9);
+        assertThat(chunkData.mainCharacter().getPosition()).isEqualTo(MapFactory.EMPTY_START_POSITION);
     }
     //endregion
     

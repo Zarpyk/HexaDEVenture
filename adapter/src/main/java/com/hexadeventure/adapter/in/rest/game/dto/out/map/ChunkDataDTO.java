@@ -2,15 +2,15 @@ package com.hexadeventure.adapter.in.rest.game.dto.out.map;
 
 import com.hexadeventure.model.map.ChunkData;
 
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.List;
 
-public record ChunkDataDTO(Map<Vector2DTO, ChunkDTO> chunks) {
+public record ChunkDataDTO(List<ChunkDTO> chunks, Vector2DTO mainCharacterPosition) {
     public static ChunkDataDTO fromModel(ChunkData model) {
-        return new ChunkDataDTO(model.chunks().entrySet().stream()
-                                     .collect(Collectors.toMap(
-                                             entry -> Vector2DTO.fromModel(entry.getKey()),
-                                             entry -> ChunkDTO.fromModel(entry.getValue())
-                                     )));
+        return new ChunkDataDTO(model.chunks()
+                                     .values()
+                                     .stream()
+                                     .map((ChunkDTO::fromModel))
+                                     .toList(),
+                                Vector2DTO.fromModel(model.mainCharacter().getPosition()));
     }
 }
