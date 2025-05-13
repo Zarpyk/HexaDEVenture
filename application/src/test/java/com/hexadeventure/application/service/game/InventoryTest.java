@@ -42,6 +42,20 @@ public class InventoryTest {
         Mockito.reset(gameMapRepository);
     }
     
+    //region GetRecipesCount
+    @Test
+    public void givenUser_whenGetRecipesCount_thenReturnCount() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        
+        int recipesCount = inventoryService.getRecipesCount(UserFactory.EMAIL);
+        
+        assertThat(recipesCount).isEqualTo(ItemFactory.TEST_RECIPE_COUNT + ItemFactory.TEST_EXTRA_RECIPE_COUNT);
+    }
+    //endregion
+    
     //region GetRecipes
     @Test
     public void givenInvalidPage_whenGetRecipes_thenThrowException() {

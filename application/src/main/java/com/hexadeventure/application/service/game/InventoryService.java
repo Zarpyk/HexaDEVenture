@@ -37,6 +37,12 @@ public class InventoryService implements InventoryUseCase {
     }
     
     @Override
+    public int getRecipesCount(String email) {
+        List<Recipe> recipes = settingsImporter.importRecipes();
+        return recipes.size();
+    }
+    
+    @Override
     public Recipe[] getRecipes(String email, int page, int size) {
         List<Recipe> recipes = settingsImporter.importRecipes();
         int totalRecipes = recipes.size();

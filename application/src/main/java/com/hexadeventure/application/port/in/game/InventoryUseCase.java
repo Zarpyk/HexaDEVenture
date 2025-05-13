@@ -4,6 +4,7 @@ import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.inventory.recipes.Recipe;
 
 public interface InventoryUseCase {
+    int getRecipesCount(String email);
     Recipe[] getRecipes(String email, int page, int size);
     void craft(String email, int recipeIndex, int count);
     Inventory getInventory(String email);

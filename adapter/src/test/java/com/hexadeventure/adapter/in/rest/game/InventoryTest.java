@@ -6,6 +6,7 @@ import com.hexadeventure.adapter.in.rest.game.dto.in.EquipWeaponDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.in.UnequipWeaponDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.in.UseItemDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.InventoryDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.RecipeCountDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.RecipesDTO;
 import com.hexadeventure.application.exceptions.*;
 import com.hexadeventure.application.port.in.game.InventoryUseCase;
@@ -34,6 +35,15 @@ public class InventoryTest {
     @BeforeEach
     public void beforeEach() {
         RestCommon.Setup(new InventoryController(inventoryUseCase));
+    }
+    
+    @Test
+    public void givenUser_whenGetRecipesCount_thenReturnOkWithDTO() {
+        when(inventoryUseCase.getRecipesCount(UserFactory.EMAIL)).thenReturn(10);
+        RestCommon.get("game/craft/recipes/count")
+                  .then()
+                  .statusCode(HttpStatus.OK.value())
+                  .extract().body().as(RecipeCountDTO.class);
     }
     
     @Test

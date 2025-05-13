@@ -4,6 +4,7 @@ import com.hexadeventure.adapter.in.rest.game.dto.in.EquipWeaponDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.in.UnequipWeaponDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.in.UseItemDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.InventoryDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.RecipeCountDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.RecipesDTO;
 import com.hexadeventure.application.port.in.game.InventoryUseCase;
 import com.hexadeventure.model.inventory.Inventory;
@@ -25,6 +26,17 @@ public class InventoryController {
     
     public InventoryController(InventoryUseCase inventoryUseCase) {
         this.inventoryUseCase = inventoryUseCase;
+    }
+    
+    @GetMapping("/game/craft/recipes/count")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Recipes retrieved successfully",
+                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = RecipesDTO.class)))
+    })
+    public ResponseEntity<RecipeCountDTO> getRecipesCount(Principal principal) {
+        int recipesCount = inventoryUseCase.getRecipesCount(principal.getName());
+        return ResponseEntity.ok(new RecipeCountDTO(recipesCount));
     }
     
     @GetMapping("/game/craft/recipes")
