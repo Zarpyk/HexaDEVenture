@@ -13,6 +13,7 @@ public record WeaponDataDTO(WeaponType weaponType,
                             double healingPower,
                             double hypnotizationPower) {
     public static WeaponDataDTO fromModel(Weapon model) {
+        if (model == null) return null;
         return new WeaponDataDTO(model.getWeaponType(),
                                  model.getDamage(),
                                  model.getMeleeDefense(),

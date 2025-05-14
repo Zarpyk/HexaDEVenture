@@ -15,8 +15,10 @@ import com.hexadeventure.model.inventory.Inventory;
 import com.hexadeventure.model.inventory.characters.PlayableCharacter;
 import com.hexadeventure.model.inventory.foods.Food;
 import com.hexadeventure.model.inventory.potions.Potion;
+import com.hexadeventure.model.inventory.potions.PotionType;
 import com.hexadeventure.model.inventory.recipes.Recipe;
 import com.hexadeventure.model.inventory.weapons.Weapon;
+import com.hexadeventure.model.inventory.weapons.WeaponType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -95,7 +97,7 @@ public class InventoryTest {
     
     @Test
     public void givenInvalidRecipe_whenCraft_thenReturnBadRequest() {
-        CraftDTO craftDTO = new CraftDTO(TEST_RECIPE_INDEX, TEST_CRAFT_COUNT);
+        CraftDTO craftDTO = new CraftDTO(-1, TEST_CRAFT_COUNT);
         doThrow(InvalidRecipeException.class).when(inventoryUseCase).craft(UserFactory.EMAIL,
                                                                            -1,
                                                                            TEST_CRAFT_COUNT);
@@ -125,7 +127,8 @@ public class InventoryTest {
     
     @Test
     public void givenID_whenGetCharacter_thenReturnOkWithDTO() {
-        when(inventoryUseCase.getCharacter(eq(UserFactory.EMAIL), anyString())).thenReturn(new PlayableCharacter());
+        when(inventoryUseCase.getCharacter(eq(UserFactory.EMAIL), anyString()))
+                .thenReturn(new PlayableCharacter("test", 0, 0));
         RestCommon.getWithParam("game/inventory/character", "characterId", "")
                   .then()
                   .statusCode(HttpStatus.OK.value())
@@ -134,7 +137,8 @@ public class InventoryTest {
     
     @Test
     public void givenID_whenGetWeapon_thenReturnOkWithDTO() {
-        when(inventoryUseCase.getWeapon(eq(UserFactory.EMAIL), anyString())).thenReturn(new Weapon());
+        when(inventoryUseCase.getWeapon(eq(UserFactory.EMAIL), anyString()))
+                .thenReturn(new Weapon("test", WeaponType.MELEE, 0));
         RestCommon.getWithParam("game/inventory/weapon", "weaponId", "")
                   .then()
                   .statusCode(HttpStatus.OK.value())
@@ -143,7 +147,8 @@ public class InventoryTest {
     
     @Test
     public void givenID_whenGetPotion_thenReturnOkWithDTO() {
-        when(inventoryUseCase.getPotion(eq(UserFactory.EMAIL), anyString())).thenReturn(new Potion());
+        when(inventoryUseCase.getPotion(eq(UserFactory.EMAIL), anyString()))
+                .thenReturn(new Potion("test", 0, PotionType.HEALING, 0));
         RestCommon.getWithParam("game/inventory/potion", "potionId", "")
                   .then()
                   .statusCode(HttpStatus.OK.value())
@@ -152,7 +157,8 @@ public class InventoryTest {
     
     @Test
     public void givenID_whenGetFood_thenReturnOkWithDTO() {
-        when(inventoryUseCase.getFood(eq(UserFactory.EMAIL), anyString())).thenReturn(new Food());
+        when(inventoryUseCase.getFood(eq(UserFactory.EMAIL), anyString()))
+                .thenReturn(new Food("test", 0, 0));
         RestCommon.getWithParam("game/inventory/food", "foodId", "")
                   .then()
                   .statusCode(HttpStatus.OK.value())
