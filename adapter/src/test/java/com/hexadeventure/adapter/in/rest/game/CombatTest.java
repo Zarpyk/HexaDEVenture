@@ -3,7 +3,6 @@ package com.hexadeventure.adapter.in.rest.game;
 import com.hexadeventure.adapter.in.rest.common.RestCommon;
 import com.hexadeventure.adapter.in.rest.common.UserFactory;
 import com.hexadeventure.adapter.in.rest.game.dto.in.PlaceCharacterDTO;
-import com.hexadeventure.adapter.in.rest.game.dto.in.RemoveCharacterDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.combat.CombatInfoDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.combat.CombatProcessDTO;
 import com.hexadeventure.application.exceptions.CombatNotStartedException;
@@ -135,28 +134,37 @@ public class CombatTest {
     //region RemoveCharacter
     @Test
     public void givenNonEmptyPosition_whenRemoveCharacter_thenReturnOK() {
-        RemoveCharacterDTO removeCharacterDTO = new RemoveCharacterDTO(TEST_ROW, TEST_COLUMN);
-        RestCommon.deleteWithBody("/game/combat/character", removeCharacterDTO, true)
+        RestCommon.deleteWithParam("/game/combat/character",
+                                   "row",
+                                   Integer.toString(TEST_ROW),
+                                   "column",
+                                   Integer.toString(TEST_ROW))
                   .then()
                   .statusCode(HttpStatus.OK.value());
     }
     
     @Test
     public void givenPositionOnEmptyPosition_whenRemoveCharacter_thenReturnMethodNotAllowed() {
-        RemoveCharacterDTO removeCharacterDTO = new RemoveCharacterDTO(TEST_ROW, TEST_COLUMN);
         doThrow(InvalidPositionException.class).when(combatUseCase).removeCharacter(UserFactory.EMAIL,
                                                                                     TEST_ROW,
                                                                                     TEST_COLUMN);
-        RestCommon.deleteWithBody("/game/combat/character", removeCharacterDTO, true)
+        RestCommon.deleteWithParam("/game/combat/character",
+                                   "row",
+                                   Integer.toString(TEST_ROW),
+                                   "column",
+                                   Integer.toString(TEST_ROW))
                   .then()
                   .statusCode(HttpStatus.BAD_REQUEST.value());
     }
     
     @Test
     public void givenInvalidPosition_whenRemoveCharacter_thenReturnBadRequest() {
-        RemoveCharacterDTO removeCharacterDTO = new RemoveCharacterDTO(-1, -1);
         doThrow(InvalidPositionException.class).when(combatUseCase).removeCharacter(UserFactory.EMAIL, -1, -1);
-        RestCommon.deleteWithBody("/game/combat/character", removeCharacterDTO, true)
+        RestCommon.deleteWithParam("/game/combat/character",
+                                   "row",
+                                   Integer.toString(-1),
+                                   "column",
+                                   Integer.toString(-1))
                   .then()
                   .statusCode(HttpStatus.BAD_REQUEST.value());
     }

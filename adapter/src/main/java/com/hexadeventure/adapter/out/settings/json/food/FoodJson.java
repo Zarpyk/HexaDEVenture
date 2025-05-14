@@ -12,7 +12,7 @@ import lombok.Setter;
 public class FoodJson extends ItemJson<Food> {
     private double healthPoints;
     
-    public static String getID(FoodJson foodJson) {
+    public static String getId(FoodJson foodJson) {
         return foodJson.getName();
     }
     

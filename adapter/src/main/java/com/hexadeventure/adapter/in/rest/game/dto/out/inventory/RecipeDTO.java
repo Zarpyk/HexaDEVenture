@@ -5,7 +5,7 @@ import com.hexadeventure.model.inventory.recipes.Recipe;
 
 import java.util.Arrays;
 
-public record RecipeDTO(String resultID,
+public record RecipeDTO(String resultId,
                         ItemType resultType,
                         int resultCount,
                         RecipeResourceDTO[] materials,
@@ -13,7 +13,7 @@ public record RecipeDTO(String resultID,
     
     public static RecipeDTO fromModel(Recipe recipe) {
         if (recipe == null) return null;
-        return new RecipeDTO(recipe.getResultID(),
+        return new RecipeDTO(recipe.getResultId(),
                              recipe.getResultType(),
                              recipe.getResultAmount(),
                              Arrays.stream(recipe.getMaterials())

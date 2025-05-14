@@ -2,16 +2,21 @@ package com.hexadeventure.adapter.in.rest.game;
 
 import com.hexadeventure.adapter.in.rest.common.RestCommon;
 import com.hexadeventure.adapter.in.rest.common.UserFactory;
+import com.hexadeventure.adapter.in.rest.game.dto.in.CraftDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.in.EquipWeaponDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.in.UnequipWeaponDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.in.UseItemDTO;
-import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.InventoryDTO;
-import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.RecipeCountDTO;
-import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.RecipesDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.combat.CharacterDataDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.combat.WeaponDataDTO;
+import com.hexadeventure.adapter.in.rest.game.dto.out.inventory.*;
 import com.hexadeventure.application.exceptions.*;
 import com.hexadeventure.application.port.in.game.InventoryUseCase;
 import com.hexadeventure.model.inventory.Inventory;
+import com.hexadeventure.model.inventory.characters.PlayableCharacter;
+import com.hexadeventure.model.inventory.foods.Food;
+import com.hexadeventure.model.inventory.potions.Potion;
 import com.hexadeventure.model.inventory.recipes.Recipe;
+import com.hexadeventure.model.inventory.weapons.Weapon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -71,33 +76,30 @@ public class InventoryTest {
     
     @Test
     public void givenEnoughMaterials_whenCraft_thenReturnOk() {
-        RestCommon.postWithParam("game/craft",
-                                 "recipeIndex", Integer.toString(TEST_RECIPE_INDEX),
-                                 "count", Integer.toString(TEST_CRAFT_COUNT))
+        CraftDTO craftDTO = new CraftDTO(TEST_RECIPE_INDEX, TEST_CRAFT_COUNT);
+        RestCommon.postWithBody("game/craft", craftDTO)
                   .then()
                   .statusCode(HttpStatus.OK.value());
     }
     
     @Test
     public void givenEmptyInventory_whenCraft_thenReturnMethodNotAllowed() {
+        CraftDTO craftDTO = new CraftDTO(TEST_RECIPE_INDEX, TEST_CRAFT_COUNT);
         doThrow(NotEnoughResourcesException.class).when(inventoryUseCase).craft(UserFactory.EMAIL,
                                                                                 TEST_RECIPE_INDEX,
                                                                                 TEST_CRAFT_COUNT);
-        RestCommon.postWithParam("game/craft",
-                                 "recipeIndex", Integer.toString(TEST_RECIPE_INDEX),
-                                 "count", Integer.toString(TEST_CRAFT_COUNT))
+        RestCommon.postWithBody("game/craft", craftDTO)
                   .then()
                   .statusCode(HttpStatus.METHOD_NOT_ALLOWED.value());
     }
     
     @Test
     public void givenInvalidRecipe_whenCraft_thenReturnBadRequest() {
+        CraftDTO craftDTO = new CraftDTO(TEST_RECIPE_INDEX, TEST_CRAFT_COUNT);
         doThrow(InvalidRecipeException.class).when(inventoryUseCase).craft(UserFactory.EMAIL,
                                                                            -1,
                                                                            TEST_CRAFT_COUNT);
-        RestCommon.postWithParam("game/craft",
-                                 "recipeIndex", Integer.toString(-1),
-                                 "count", Integer.toString(TEST_CRAFT_COUNT))
+        RestCommon.postWithBody("game/craft", craftDTO)
                   .then()
                   .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -111,6 +113,50 @@ public class InventoryTest {
                   .then()
                   .statusCode(HttpStatus.OK.value())
                   .extract().body().as(InventoryDTO.class);
+    }
+    
+    @Test
+    public void givenInvalidID_whenGetItem_thenReturnMethodNotAllowed() {
+        doThrow(InvalidIdException.class).when(inventoryUseCase).getCharacter(UserFactory.EMAIL, anyString());
+        RestCommon.getWithParam("game/inventory/character", "characterId", "")
+                  .then()
+                  .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+    
+    @Test
+    public void givenID_whenGetCharacter_thenReturnOkWithDTO() {
+        when(inventoryUseCase.getCharacter(UserFactory.EMAIL, anyString())).thenReturn(new PlayableCharacter());
+        RestCommon.getWithParam("game/inventory/character", "characterId", "")
+                  .then()
+                  .statusCode(HttpStatus.OK.value())
+                  .extract().body().as(CharacterDataDTO.class);
+    }
+    
+    @Test
+    public void givenID_whenGetWeapon_thenReturnOkWithDTO() {
+        when(inventoryUseCase.getWeapon(UserFactory.EMAIL, anyString())).thenReturn(new Weapon());
+        RestCommon.getWithParam("game/inventory/weapon", "weaponId", "")
+                  .then()
+                  .statusCode(HttpStatus.OK.value())
+                  .extract().body().as(WeaponDataDTO.class);
+    }
+    
+    @Test
+    public void givenID_whenGetPotion_thenReturnOkWithDTO() {
+        when(inventoryUseCase.getPotion(UserFactory.EMAIL, anyString())).thenReturn(new Potion());
+        RestCommon.getWithParam("game/inventory/potion", "potionId", "")
+                  .then()
+                  .statusCode(HttpStatus.OK.value())
+                  .extract().body().as(PotionDataDTO.class);
+    }
+    
+    @Test
+    public void givenID_whenGetFood_thenReturnOkWithDTO() {
+        when(inventoryUseCase.getFood(UserFactory.EMAIL, anyString())).thenReturn(new Food());
+        RestCommon.getWithParam("game/inventory/food", "foodId", "")
+                  .then()
+                  .statusCode(HttpStatus.OK.value())
+                  .extract().body().as(FoodDataDTO.class);
     }
     
     @Test

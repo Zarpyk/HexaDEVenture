@@ -86,13 +86,13 @@ public class ItemFactory {
         Food food = new Food(TEST_FOOD_NAME, 1, TEST_FOOD_HEALING);
         foodsCache.put(TEST_FOOD_NAME, food);
         
-        Potion potion = new Potion(TEST_HEALTH_POTION_NAME, 1, TEST_POTION_POWER, PotionType.HEALING);
+        Potion potion = new Potion(TEST_HEALTH_POTION_NAME, 1, PotionType.HEALING, TEST_POTION_POWER);
         potionsCache.put(TEST_HEALTH_POTION_NAME, potion);
-        potion = new Potion(TEST_SPEED_POTION_NAME, 1, TEST_POTION_POWER, PotionType.SPEED);
+        potion = new Potion(TEST_SPEED_POTION_NAME, 1, PotionType.SPEED, TEST_POTION_POWER);
         potionsCache.put(TEST_SPEED_POTION_NAME, potion);
-        potion = new Potion(TEST_STRENGTH_POTION_NAME, 1, TEST_POTION_POWER, PotionType.STRENGTH);
+        potion = new Potion(TEST_STRENGTH_POTION_NAME, 1, PotionType.STRENGTH, TEST_POTION_POWER);
         potionsCache.put(TEST_STRENGTH_POTION_NAME, potion);
-        potion = new Potion(TEST_DEFENSE_POTION_NAME, 1, TEST_POTION_POWER, PotionType.DEFENSE);
+        potion = new Potion(TEST_DEFENSE_POTION_NAME, 1, PotionType.DEFENSE, TEST_POTION_POWER);
         potionsCache.put(TEST_DEFENSE_POTION_NAME, potion);
         
         Material material = new Material("Wood", 1, TEST_MATERIAL_TYPE);

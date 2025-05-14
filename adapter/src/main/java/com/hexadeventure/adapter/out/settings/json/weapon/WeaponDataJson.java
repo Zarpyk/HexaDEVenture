@@ -41,7 +41,7 @@ public class WeaponDataJson extends ItemJson<WeaponSetting> {
     private double minHypnotizationPower;
     private double maxHypnotizationPower;
     
-    public static String getID(WeaponDataJson weaponDataJson) {
+    public static String getId(WeaponDataJson weaponDataJson) {
         return weaponDataJson.getName();
     }
     

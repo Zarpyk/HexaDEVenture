@@ -71,23 +71,6 @@ public class RestCommon {
                       .when().post(path);
     }
     
-    public static MockMvcResponse postWithParam(String path, String... params) {
-        return postWithParam(path, true, params);
-    }
-    
-    public static MockMvcResponse postWithParam(String path, boolean withAuth, String... params) {
-        if(params.length % 2 != 0) throw new IllegalArgumentException("Params must be in key-value pairs");
-        if(withAuth) RestAssuredMockMvc.authentication = principal(new UserPrincipal());
-        else RestAssuredMockMvc.authentication = null;
-        
-        Map<String, String> paramMap = new HashMap<>();
-        for (int i = 0; i < params.length; i += 2) {
-            paramMap.put(params[i], params[i + 1]);
-        }
-        
-        return given().params(paramMap).when().post(path);
-    }
-    
     public static MockMvcResponse delete(String path) {
         return delete(path, true);
     }
@@ -98,14 +81,20 @@ public class RestCommon {
         return given().when().delete(path);
     }
     
-    public static MockMvcResponse deleteWithBody(String path, Object body) {
-        return deleteWithBody(path, body, true);
+    public static MockMvcResponse deleteWithParam(String path, String... params) {
+        return deleteWithParam(path, true, params);
     }
     
-    public static MockMvcResponse deleteWithBody(String path, Object body, boolean withAuth) {
+    public static MockMvcResponse deleteWithParam(String path, boolean withAuth, String... params) {
+        if(params.length % 2 != 0) throw new IllegalArgumentException("Params must be in key-value pairs");
         if(withAuth) RestAssuredMockMvc.authentication = principal(new UserPrincipal());
         else RestAssuredMockMvc.authentication = null;
-        return given().contentType(ContentType.JSON).body(body)
-                      .when().delete(path);
+        
+        Map<String, String> paramMap = new HashMap<>();
+        for (int i = 0; i < params.length; i += 2) {
+            paramMap.put(params[i], params[i + 1]);
+        }
+        
+        return given().params(paramMap).when().delete(path);
     }
 }

@@ -2,7 +2,6 @@ package com.hexadeventure.model.inventory.potions;
 
 import com.hexadeventure.model.inventory.Item;
 import com.hexadeventure.model.inventory.ItemType;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,10 +12,10 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 public class Potion extends Item {
-    private double potionPower;
     private PotionType potionType;
+    private double potionPower;
     
-    public Potion(String name, int skin, double potionPower, PotionType potionType) {
+    public Potion(String name, int skin, PotionType potionType, double potionPower) {
         super(name, ItemType.POTION, skin);
         this.potionType = potionType;
         this.potionPower = potionPower;

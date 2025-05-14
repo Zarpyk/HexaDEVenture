@@ -1,7 +1,6 @@
 package com.hexadeventure.adapter.in.rest.game;
 
 import com.hexadeventure.adapter.in.rest.game.dto.in.PlaceCharacterDTO;
-import com.hexadeventure.adapter.in.rest.game.dto.in.RemoveCharacterDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.combat.CombatInfoDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.combat.CombatProcessDTO;
 import com.hexadeventure.application.port.in.game.CombatUseCase;
@@ -64,10 +63,13 @@ public class CombatController {
             @ApiResponse(responseCode = "405", description = "Game not started or combat not started"),
     })
     public ResponseEntity<Void> removeCharacter(Principal principal,
-                                                @RequestBody RemoveCharacterDTO removeCharacterDTO) {
-        combatUseCase.removeCharacter(principal.getName(),
-                                      removeCharacterDTO.row(),
-                                      removeCharacterDTO.column());
+                                                @Schema(minimum = "0", maximum = "3")
+                                                @RequestParam
+                                                int row,
+                                                @Schema(minimum = "0", maximum = "4")
+                                                @RequestParam
+                                                int column) {
+        combatUseCase.removeCharacter(principal.getName(), row, column);
         return ResponseEntity.ok().build();
     }
     

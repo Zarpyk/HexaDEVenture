@@ -108,7 +108,7 @@ public class InventoryTest {
         for (int page = 1; page <= 2; page++) {
             Recipe[] recipes = inventoryService.getRecipes(UserFactory.EMAIL, page, size);
             for (int i = 0; i < size; i++) {
-                assertThat(recipes[i].getResultID()).isEqualTo(ItemFactory.TEST_RECIPE_NAME +
+                assertThat(recipes[i].getResultId()).isEqualTo(ItemFactory.TEST_RECIPE_NAME +
                                                                (i + (size * (page - 1))));
                 assertThat(recipes[i].getCraftableAmount()).isEqualTo(0);
             }
@@ -129,7 +129,7 @@ public class InventoryTest {
         for (int page = 1; page <= 2; page++) {
             Recipe[] recipes = inventoryService.getRecipes(UserFactory.EMAIL, page, size);
             for (int i = 0; i < size; i++) {
-                assertThat(recipes[i].getResultID()).isEqualTo(ItemFactory.TEST_RECIPE_NAME +
+                assertThat(recipes[i].getResultId()).isEqualTo(ItemFactory.TEST_RECIPE_NAME +
                                                                (i + (size * (page - 1))));
                 assertThat(recipes[i].getCraftableAmount()).isEqualTo(craftableCount);
             }
@@ -310,6 +310,198 @@ public class InventoryTest {
         GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
         
         assertThat(inventoryService.getInventory(UserFactory.EMAIL)).isEqualTo(map.getInventory());
+    }
+    //endregion
+    
+    //region GetInventoryItem
+    @Test
+    public void givenNullId_whenGetCharacter_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        
+        assertThatExceptionOfType(InvalidIdException.class)
+                .isThrownBy(() -> inventoryService.getCharacter(UserFactory.EMAIL, null));
+        assertThatExceptionOfType(InvalidIdException.class)
+                .isThrownBy(() -> inventoryService.getCharacter(UserFactory.EMAIL, ""));
+    }
+    
+    @Test
+    public void givenEmptyId_whenGetWeapon_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        
+        assertThatExceptionOfType(InvalidIdException.class)
+                .isThrownBy(() -> inventoryService.getWeapon(UserFactory.EMAIL, null));
+        assertThatExceptionOfType(InvalidIdException.class)
+                .isThrownBy(() -> inventoryService.getWeapon(UserFactory.EMAIL, ""));
+    }
+    
+    @Test
+    public void givenEmptyId_whenGetPotion_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        
+        assertThatExceptionOfType(InvalidIdException.class)
+                .isThrownBy(() -> inventoryService.getPotion(UserFactory.EMAIL, null));
+        assertThatExceptionOfType(InvalidIdException.class)
+                .isThrownBy(() -> inventoryService.getPotion(UserFactory.EMAIL, ""));
+    }
+    
+    @Test
+    public void givenEmptyId_whenGetFood_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        
+        assertThatExceptionOfType(InvalidIdException.class)
+                .isThrownBy(() -> inventoryService.getFood(UserFactory.EMAIL, null));
+        assertThatExceptionOfType(InvalidIdException.class)
+                .isThrownBy(() -> inventoryService.getFood(UserFactory.EMAIL, ""));
+    }
+    
+    @Test
+    public void givenEmptyId_whenGetMaterial_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        
+        assertThatExceptionOfType(InvalidIdException.class)
+                .isThrownBy(() -> inventoryService.getMaterial(UserFactory.EMAIL, null));
+        assertThatExceptionOfType(InvalidIdException.class)
+                .isThrownBy(() -> inventoryService.getMaterial(UserFactory.EMAIL, ""));
+    }
+    
+    @Test
+    public void givenId_whenGetCharacter_thenReturnCharacter() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        PlayableCharacter character = PlayableCharacterFactory.createNoWeaponCharacter(0);
+        map.getInventory().addCharacter(character);
+        
+        assertThat(inventoryService.getCharacter(UserFactory.EMAIL, character.getId())).isEqualTo(character);
+    }
+    
+    @Test
+    public void givenId_whenGetWeapon_thenReturnWeapon() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        Weapon weapon = WeaponFactory.createMeleeWeapon();
+        map.getInventory().addItem(weapon, 1);
+        
+        assertThat(inventoryService.getWeapon(UserFactory.EMAIL, weapon.getId())).isEqualTo(weapon);
+    }
+    
+    @Test
+    public void givenId_whenGetPotion_thenReturnPotion() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        Potion potion = settingsImporter.importPotions().get(ItemFactory.TEST_HEALTH_POTION_NAME);
+        map.getInventory().addItem(potion, 1);
+        
+        assertThat(inventoryService.getPotion(UserFactory.EMAIL, potion.getId())).isEqualTo(potion);
+    }
+    
+    @Test
+    public void givenId_whenGetFood_thenReturnFood() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        Food food = settingsImporter.importFoods().get(ItemFactory.TEST_FOOD_NAME);
+        map.getInventory().addItem(food, 1);
+        
+        assertThat(inventoryService.getFood(UserFactory.EMAIL, food.getId())).isEqualTo(food);
+    }
+    
+    @Test
+    public void givenId_whenGetMaterial_thenReturnMaterial() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        Material material = settingsImporter.importMaterials().get(ItemFactory.TEST_MATERIAL_TYPE);
+        map.getInventory().addItem(material, 1);
+        
+        assertThat(inventoryService.getMaterial(UserFactory.EMAIL, material.getId())).isEqualTo(material);
+    }
+    
+    @Test
+    public void givenNoStartGameUser_whenGetCharacter_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(null);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        PlayableCharacter character = PlayableCharacterFactory.createNoWeaponCharacter(0);
+        map.getInventory().addCharacter(character);
+        
+        assertThatExceptionOfType(GameNotStartedException.class)
+                .isThrownBy(() -> inventoryService.getCharacter(UserFactory.EMAIL, character.getId()));
+    }
+    
+    @Test
+    public void givenNoStartGameUser_whenGetWeapon_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(null);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        Weapon weapon = WeaponFactory.createMeleeWeapon();
+        map.getInventory().addItem(weapon, 1);
+        
+        assertThatExceptionOfType(GameNotStartedException.class)
+                .isThrownBy(() -> inventoryService.getWeapon(UserFactory.EMAIL, weapon.getId()));
+    }
+    
+    @Test
+    public void givenNoStartGameUser_whenGetPotion_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(null);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        Potion potion = settingsImporter.importPotions().get(ItemFactory.TEST_HEALTH_POTION_NAME);
+        map.getInventory().addItem(potion, 1);
+        
+        assertThatExceptionOfType(GameNotStartedException.class)
+                .isThrownBy(() -> inventoryService.getPotion(UserFactory.EMAIL, potion.getId()));
+    }
+    
+    @Test
+    public void givenNoStartGameUser_whenGetFood_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(null);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        Food food = settingsImporter.importFoods().get(ItemFactory.TEST_FOOD_NAME);
+        map.getInventory().addItem(food, 1);
+        
+        assertThatExceptionOfType(GameNotStartedException.class)
+                .isThrownBy(() -> inventoryService.getFood(UserFactory.EMAIL, food.getId()));
+    }
+    
+    @Test
+    public void givenNoStartGameUser_whenGetMaterial_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(null);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        Material material = settingsImporter.importMaterials().get(ItemFactory.TEST_MATERIAL_TYPE);
+        map.getInventory().addItem(material, 1);
+        
+        assertThatExceptionOfType(GameNotStartedException.class)
+                .isThrownBy(() -> inventoryService.getMaterial(UserFactory.EMAIL, material.getId()));
     }
     //endregion
     

@@ -16,7 +16,7 @@ public class ItemFactory {
     }
     
     public static Potion createPotion() {
-        return new Potion(TEST_POTION_NAME, 1, 1, PotionType.HEALING);
+        return new Potion(TEST_POTION_NAME, 1, PotionType.HEALING, 1);
     }
     
     public static Material createMaterial() {

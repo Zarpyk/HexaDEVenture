@@ -11,7 +11,7 @@ import lombok.Setter;
 public class MaterialJson extends ItemJson<Material> {
     private ResourceType materialType;
     
-    public static ResourceType getID(MaterialJson materialJson) {
+    public static ResourceType getId(MaterialJson materialJson) {
         return materialJson.getMaterialType();
     }
     

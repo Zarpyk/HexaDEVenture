@@ -62,7 +62,7 @@ public class SettingsImporterAdapter implements SettingsImporter {
     
     @Override
     public Map<String, WeaponSetting> importWeapons() {
-        return importJson(weaponsCache, WEAPONS_JSON, WeaponDataJson::getID, WeaponDataJson.class);
+        return importJson(weaponsCache, WEAPONS_JSON, WeaponDataJson::getId, WeaponDataJson.class);
     }
     
     @Override
@@ -93,17 +93,17 @@ public class SettingsImporterAdapter implements SettingsImporter {
     
     @Override
     public Map<String, Food> importFoods() {
-        return importJson(foodsCache, FOODS_JSON, FoodJson::getID, FoodJson.class);
+        return importJson(foodsCache, FOODS_JSON, FoodJson::getId, FoodJson.class);
     }
     
     @Override
     public Map<String, Potion> importPotions() {
-        return importJson(potionsCache, POTIONS_JSON, PotionJson::getID, PotionJson.class);
+        return importJson(potionsCache, POTIONS_JSON, PotionJson::getId, PotionJson.class);
     }
     
     @Override
     public Map<ResourceType, Material> importMaterials() {
-        return importJson(materialsCache, MATERIALS_JSON, MaterialJson::getID, MaterialJson.class);
+        return importJson(materialsCache, MATERIALS_JSON, MaterialJson::getId, MaterialJson.class);
     }
     
     @Override

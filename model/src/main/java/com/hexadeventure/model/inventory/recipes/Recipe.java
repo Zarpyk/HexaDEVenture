@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 public class Recipe {
-    private final String resultID;
+    private final String resultId;
     private final ItemType resultType;
     private final int resultAmount;
     private final RecipeResource[] materials;
@@ -14,8 +14,8 @@ public class Recipe {
     @Setter
     private int craftableAmount;
     
-    public Recipe(String resultID, ItemType resultType, int resultAmount, RecipeResource[] materials) {
-        this.resultID = resultID;
+    public Recipe(String resultId, ItemType resultType, int resultAmount, RecipeResource[] materials) {
+        this.resultId = resultId;
         this.resultType = resultType;
         this.resultAmount = resultAmount;
         this.materials = materials;

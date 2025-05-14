@@ -184,7 +184,7 @@ public class SettingsImporterTest {
         assertThat(optionalRecipe).isPresent();
         
         Recipe recipe = optionalRecipe.get();
-        assertThat(recipe.getResultID()).isNotBlank();
+        assertThat(recipe.getResultId()).isNotBlank();
         assertThat(recipe.getResultType()).isNotNull();
         assertThat(recipe.getResultAmount()).isPositive();
         assertThat(recipe.getMaterials()).isNotEmpty();

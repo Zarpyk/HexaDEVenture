@@ -105,6 +105,56 @@ public class InventoryService implements InventoryUseCase {
     }
     
     @Override
+    public PlayableCharacter getCharacter(String email, String characterId) {
+        Inventory inventory = getInventory(email);
+        Map<String, PlayableCharacter> characters = inventory.getCharacters();
+        if(characterId == null) throw new InvalidIdException();
+        PlayableCharacter character = characters.get(characterId);
+        if(character == null) throw new InvalidIdException();
+        return character;
+    }
+    
+    @Override
+    public Weapon getWeapon(String email, String weaponId) {
+        Inventory inventory = getInventory(email);
+        Map<String, Item> items = inventory.getItems();
+        if(weaponId == null) throw new InvalidIdException();
+        Item item = items.get(weaponId);
+        if(!(item instanceof Weapon weapon)) throw new InvalidIdException();
+        return weapon;
+    }
+    
+    @Override
+    public Potion getPotion(String email, String potionId) {
+        Inventory inventory = getInventory(email);
+        Map<String, Item> items = inventory.getItems();
+        if(potionId == null) throw new InvalidIdException();
+        Item item = items.get(potionId);
+        if(!(item instanceof Potion potion)) throw new InvalidIdException();
+        return potion;
+    }
+    
+    @Override
+    public Food getFood(String email, String foodId) {
+        Inventory inventory = getInventory(email);
+        Map<String, Item> items = inventory.getItems();
+        if(foodId == null) throw new InvalidIdException();
+        Item item = items.get(foodId);
+        if(!(item instanceof Food food)) throw new InvalidIdException();
+        return food;
+    }
+    
+    @Override
+    public Material getMaterial(String email, String materialId) {
+        Inventory inventory = getInventory(email);
+        Map<String, Item> items = inventory.getItems();
+        if(materialId == null) throw new InvalidIdException();
+        Item item = items.get(materialId);
+        if(!(item instanceof Material material)) throw new InvalidIdException();
+        return material;
+    }
+    
+    @Override
     public void equipWeapon(String email, String characterId, String weaponId) {
         useItem(email, characterId, weaponId);
     }
@@ -197,7 +247,7 @@ public class InventoryService implements InventoryUseCase {
         switch (recipe.getResultType()) {
             case WEAPON -> {
                 Map<String, WeaponSetting> weapons = settingsImporter.importWeapons();
-                WeaponSetting setting = weapons.get(recipe.getResultID());
+                WeaponSetting setting = weapons.get(recipe.getResultId());
                 SplittableRandom random = new SplittableRandom();
                 for (int i = 0; i < recipe.getResultAmount() * count; i++) {
                     Weapon weapon = new Weapon(setting, random);
@@ -206,17 +256,17 @@ public class InventoryService implements InventoryUseCase {
             }
             case FOOD -> {
                 Map<String, Food> food = settingsImporter.importFoods();
-                Item foodItem = food.get(recipe.getResultID());
+                Item foodItem = food.get(recipe.getResultId());
                 inventory.addItem(foodItem, recipe.getResultAmount() * count);
             }
             case POTION -> {
                 Map<String, Potion> potions = settingsImporter.importPotions();
-                Item potionItem = potions.get(recipe.getResultID());
+                Item potionItem = potions.get(recipe.getResultId());
                 inventory.addItem(potionItem, recipe.getResultAmount() * count);
             }
             case MATERIAL -> {
                 Map<ResourceType, Material> materials = settingsImporter.importMaterials();
-                Item materialItem = materials.get(ResourceType.valueOf(recipe.getResultID()));
+                Item materialItem = materials.get(ResourceType.valueOf(recipe.getResultId()));
                 inventory.addItem(materialItem, recipe.getResultAmount() * count);
             }
         }
