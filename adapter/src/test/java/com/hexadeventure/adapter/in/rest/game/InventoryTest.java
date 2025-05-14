@@ -117,7 +117,7 @@ public class InventoryTest {
     
     @Test
     public void givenInvalidID_whenGetItem_thenReturnMethodNotAllowed() {
-        doThrow(InvalidIdException.class).when(inventoryUseCase).getCharacter(UserFactory.EMAIL, anyString());
+        doThrow(InvalidIdException.class).when(inventoryUseCase).getCharacter(eq(UserFactory.EMAIL), anyString());
         RestCommon.getWithParam("game/inventory/character", "characterId", "")
                   .then()
                   .statusCode(HttpStatus.BAD_REQUEST.value());
@@ -125,7 +125,7 @@ public class InventoryTest {
     
     @Test
     public void givenID_whenGetCharacter_thenReturnOkWithDTO() {
-        when(inventoryUseCase.getCharacter(UserFactory.EMAIL, anyString())).thenReturn(new PlayableCharacter());
+        when(inventoryUseCase.getCharacter(eq(UserFactory.EMAIL), anyString())).thenReturn(new PlayableCharacter());
         RestCommon.getWithParam("game/inventory/character", "characterId", "")
                   .then()
                   .statusCode(HttpStatus.OK.value())
@@ -134,7 +134,7 @@ public class InventoryTest {
     
     @Test
     public void givenID_whenGetWeapon_thenReturnOkWithDTO() {
-        when(inventoryUseCase.getWeapon(UserFactory.EMAIL, anyString())).thenReturn(new Weapon());
+        when(inventoryUseCase.getWeapon(eq(UserFactory.EMAIL), anyString())).thenReturn(new Weapon());
         RestCommon.getWithParam("game/inventory/weapon", "weaponId", "")
                   .then()
                   .statusCode(HttpStatus.OK.value())
@@ -143,7 +143,7 @@ public class InventoryTest {
     
     @Test
     public void givenID_whenGetPotion_thenReturnOkWithDTO() {
-        when(inventoryUseCase.getPotion(UserFactory.EMAIL, anyString())).thenReturn(new Potion());
+        when(inventoryUseCase.getPotion(eq(UserFactory.EMAIL), anyString())).thenReturn(new Potion());
         RestCommon.getWithParam("game/inventory/potion", "potionId", "")
                   .then()
                   .statusCode(HttpStatus.OK.value())
@@ -152,7 +152,7 @@ public class InventoryTest {
     
     @Test
     public void givenID_whenGetFood_thenReturnOkWithDTO() {
-        when(inventoryUseCase.getFood(UserFactory.EMAIL, anyString())).thenReturn(new Food());
+        when(inventoryUseCase.getFood(eq(UserFactory.EMAIL), anyString())).thenReturn(new Food());
         RestCommon.getWithParam("game/inventory/food", "foodId", "")
                   .then()
                   .statusCode(HttpStatus.OK.value())
