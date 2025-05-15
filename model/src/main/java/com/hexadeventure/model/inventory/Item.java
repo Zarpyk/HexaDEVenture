@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
-public abstract class Item {
+public abstract class Item implements Comparable<Item> {
     private String id;
     private String name;
     private ItemType type;
@@ -42,6 +42,21 @@ public abstract class Item {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, type);
+    }
+    
+    @Override
+    public int compareTo(Item o) {
+        // Sort by name alphabetically
+        int compare = this.name.compareTo(o.name);
+        if(compare != 0) return compare;
+        // If names are equal, compare by type
+        compare = this.type.compareTo(o.type);
+        if(compare != 0) return compare;
+        // If types are equal, compare by skin
+        compare = Integer.compare(this.skin, o.skin);
+        if(compare != 0) return compare;
+        // If skins are equal, compare by id
+        return this.id.compareTo(o.id);
     }
 }
 

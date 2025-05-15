@@ -1,5 +1,6 @@
 package com.hexadeventure.model.inventory.characters;
 
+import com.hexadeventure.model.inventory.Item;
 import com.hexadeventure.model.inventory.weapons.Weapon;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
-public class PlayableCharacter {
+public class PlayableCharacter implements Comparable<PlayableCharacter> {
     private String id;
     private String name;
     @Setter
@@ -51,5 +52,14 @@ public class PlayableCharacter {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+    
+    @Override
+    public int compareTo(PlayableCharacter o) {
+        // Sort by name alphabetically
+        int compare = this.name.compareTo(o.name);
+        if(compare != 0) return compare;
+        // If names are equal, compare by id
+        return this.id.compareTo(o.id);
     }
 }

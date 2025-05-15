@@ -586,6 +586,27 @@ public class InventoryTest {
         assertThatExceptionOfType(InvalidItemException.class)
                 .isThrownBy(() -> inventoryService.equipWeapon(UserFactory.EMAIL, character.getId(), null));
     }
+    
+    @Test
+    public void givenCharacterWithWeapon_whenEquipWeapon_thenReturnEquippedWeaponToInventory() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        PlayableCharacter character = PlayableCharacterFactory.createNoWeaponCharacter(0);
+        Weapon weapon = WeaponFactory.createMeleeWeapon();
+        Weapon rangedWeapon = WeaponFactory.createRangedWeapon();
+        map.getInventory().addCharacter(character);
+        map.getInventory().addItem(weapon, 1);
+        map.getInventory().addItem(rangedWeapon, 1);
+        
+        inventoryService.equipWeapon(UserFactory.EMAIL, character.getId(), weapon.getId());
+        inventoryService.equipWeapon(UserFactory.EMAIL, character.getId(), rangedWeapon.getId());
+        
+        assertThat(map.getInventory().getCharacters().get(character.getId()).getWeapon()).isEqualTo(rangedWeapon);
+        assertThat(map.getInventory().getItems().get(rangedWeapon.getId())).isNull();
+        assertThat(map.getInventory().getItems().get(weapon.getId())).isNotNull();
+    }
     //endregion
     
     //region UnequipWeapon

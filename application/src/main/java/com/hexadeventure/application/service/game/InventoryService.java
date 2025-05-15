@@ -199,8 +199,19 @@ public class InventoryService implements InventoryUseCase {
         Map<String, Item> items = inventory.getItems();
         Item item = items.get(itemId);
         if(item == null) throw new InvalidItemException();
+        
+        // Save the old weapon to add it back to the inventory
+        Weapon oldWeapon = character.getWeapon();
+        boolean haveDefaultWeapon = Objects.equals(character.getWeapon().getId(), Weapon.DEFAULT_WEAPON.getId());
+        
+        // Use new weapon
         useItem(character, item);
         inventory.removeItem(item, 1);
+        
+        // Add the weapon to inventory if it was not the default weapon and use the new weapon successfully
+        if(!haveDefaultWeapon) {
+            inventory.addItem(oldWeapon, 1);
+        }
     }
     
     private void useItem(PlayableCharacter character, Item item) {
