@@ -18,6 +18,7 @@ public class CombatTerrainJpaMapper {
                                                                     .allowIfBaseType("com.hexadeventure")
                                                                     .allowIfSubType(PlayableCharacter[][].class)
                                                                     .allowIfSubType(PlayableCharacter[].class)
+                                                                    .allowIfSubType(Loot[].class)
                                                                     .build();
         
         objectMapper.activateDefaultTyping(ptv,
