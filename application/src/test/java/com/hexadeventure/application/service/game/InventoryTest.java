@@ -404,6 +404,17 @@ public class InventoryTest {
     }
     
     @Test
+    public void givenDefaultWeaponID_whenGetWeapon_thenReturnDefaultWeapon() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        Weapon weapon = Weapon.DEFAULT_WEAPON;
+        
+        assertThat(inventoryService.getWeapon(UserFactory.EMAIL, weapon.getId())).isEqualTo(weapon);
+    }
+    
+    @Test
     public void givenId_whenGetPotion_thenReturnPotion() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.EMPTY_MAP_ID);

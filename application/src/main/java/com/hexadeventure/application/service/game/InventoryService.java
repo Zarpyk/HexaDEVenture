@@ -119,6 +119,7 @@ public class InventoryService implements InventoryUseCase {
         Inventory inventory = getInventory(email);
         Map<String, Item> items = inventory.getItems();
         if(weaponId == null) throw new InvalidIdException();
+        if(weaponId.equals(Weapon.DEFAULT_WEAPON.getId())) return Weapon.DEFAULT_WEAPON;
         Item item = items.get(weaponId);
         if(!(item instanceof Weapon weapon)) throw new InvalidIdException();
         return weapon;
