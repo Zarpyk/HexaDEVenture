@@ -1,9 +1,17 @@
 package com.hexadeventure.adapter.in.rest.game.dto.out.combat;
 
+import com.hexadeventure.model.inventory.ItemType;
 import com.hexadeventure.model.inventory.weapons.Weapon;
 import com.hexadeventure.model.inventory.weapons.WeaponType;
 
-public record WeaponDataDTO(WeaponType weaponType,
+import java.util.Objects;
+
+public record WeaponDataDTO(String id,
+                            String name,
+                            ItemType itemType,
+                            int skin,
+                            int count,
+                            WeaponType weaponType,
                             double damage,
                             double meleeDefense,
                             double rangedDefense,
@@ -13,8 +21,13 @@ public record WeaponDataDTO(WeaponType weaponType,
                             double healingPower,
                             double hypnotizationPower) {
     public static WeaponDataDTO fromModel(Weapon model) {
-        if (model == null) return null;
-        return new WeaponDataDTO(model.getWeaponType(),
+        if(model == null) return null;
+        return new WeaponDataDTO(model.getId(),
+                                 model.getName(),
+                                 model.getType(),
+                                 model.getSkin(),
+                                 model.getCount(),
+                                 model.getWeaponType(),
                                  model.getDamage(),
                                  model.getMeleeDefense(),
                                  model.getRangedDefense(),
