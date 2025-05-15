@@ -37,6 +37,9 @@ public class PlayableCharacter implements Comparable<PlayableCharacter> {
     public PlayableCharacter(String name, double health, double speed, double hypnotizationResistance) {
         this(name, health, speed);
         this.hypnotizationResistance = Math.round(hypnotizationResistance * 100) / 100d;
+        
+        changedStats = new ChangedStats();
+        changedStats.updateStats(health, false);
     }
     
     public void setWeapon(Weapon weapon) {
