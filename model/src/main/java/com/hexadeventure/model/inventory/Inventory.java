@@ -16,8 +16,8 @@ public class Inventory {
     
     public Inventory() {
         id = UUID.randomUUID().toString();
-        this.items = new TreeMap<>();
-        this.characters = new TreeMap<>();
+        this.items = new HashMap<>();
+        this.characters = new HashMap<>();
     }
     
     public void addItem(Item item) {
