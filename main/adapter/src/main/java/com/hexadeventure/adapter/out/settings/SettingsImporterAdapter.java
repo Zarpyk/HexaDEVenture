@@ -24,11 +24,9 @@ import com.hexadeventure.model.inventory.weapons.WeaponSetting;
 import com.hexadeventure.model.inventory.weapons.WeaponType;
 import com.hexadeventure.model.map.GameMap;
 import com.hexadeventure.model.map.resources.ResourceType;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -110,9 +108,9 @@ public class SettingsImporterAdapter implements SettingsImporter {
     public InitialResources importInitialResources() {
         if(initialResources.getInitialWeapons() != null) return initialResources;
         try {
-            // From: https://stackoverflow.com/a/49468282/11451105
-            File file = ResourceUtils.getFile("classpath:" + INITIAL_RESOURCES_JSON);
-            InputStream inputStream = new FileInputStream(file);
+            // From: https://stackoverflow.com/a/70604475/11451105
+            ClassPathResource resource = new ClassPathResource(INITIAL_RESOURCES_JSON);
+            InputStream inputStream = resource.getInputStream();
             
             InitialResourcesJson json = objectMapper.readValue(inputStream, InitialResourcesJson.class);
             InitialResources model = json.toModel();
@@ -159,9 +157,9 @@ public class SettingsImporterAdapter implements SettingsImporter {
     public List<Recipe> importRecipes() {
         if(!recipesCache.isEmpty()) return recipesCache;
         try {
-            // From: https://stackoverflow.com/a/49468282/11451105
-            File file = ResourceUtils.getFile("classpath:" + RECIPES_JSON);
-            InputStream inputStream = new FileInputStream(file);
+            // From: https://stackoverflow.com/a/70604475/11451105
+            ClassPathResource resource = new ClassPathResource(RECIPES_JSON);
+            InputStream inputStream = resource.getInputStream();
             
             RecipeJson[] json = objectMapper.readValue(inputStream, RecipeJson[].class);
             List<Recipe> model = Arrays.stream(json).map(RecipeJson::toModel)
@@ -177,9 +175,9 @@ public class SettingsImporterAdapter implements SettingsImporter {
     private Map<String, EnemySetting> importEnemies() {
         if(!enemiesCache.isEmpty()) return enemiesCache;
         try {
-            // From: https://stackoverflow.com/a/49468282/11451105
-            File file = ResourceUtils.getFile("classpath:" + ENEMIES_JSON);
-            InputStream inputStream = new FileInputStream(file);
+            // From: https://stackoverflow.com/a/70604475/11451105
+            ClassPathResource resource = new ClassPathResource(ENEMIES_JSON);
+            InputStream inputStream = resource.getInputStream();
             
             EnemyJson[] json = objectMapper.readValue(inputStream, EnemyJson[].class);
             for (EnemyJson enemy : json) {
@@ -195,9 +193,9 @@ public class SettingsImporterAdapter implements SettingsImporter {
     private Set<EnemyPattern> importEnemyPatterns() {
         if(!enemyPatternsCache.isEmpty()) return enemyPatternsCache;
         try {
-            // From: https://stackoverflow.com/a/49468282/11451105
-            File file = ResourceUtils.getFile("classpath:" + ENEMY_PATTERNS_JSON);
-            InputStream inputStream = new FileInputStream(file);
+            // From: https://stackoverflow.com/a/70604475/11451105
+            ClassPathResource resource = new ClassPathResource(ENEMY_PATTERNS_JSON);
+            InputStream inputStream = resource.getInputStream();
             
             EnemyPatternJson[] json = objectMapper.readValue(inputStream, EnemyPatternJson[].class);
             Map<String, EnemySetting> enemies = importEnemies();
@@ -227,9 +225,9 @@ public class SettingsImporterAdapter implements SettingsImporter {
                                                                       Class<JSON_T> clazz) {
         if(!cache.isEmpty()) return cache;
         try {
-            // From: https://stackoverflow.com/a/49468282/11451105
-            File file = ResourceUtils.getFile("classpath:" + jsonFile);
-            InputStream inputStream = new FileInputStream(file);
+            // From: https://stackoverflow.com/a/70604475/11451105
+            ClassPathResource resource = new ClassPathResource(jsonFile);
+            InputStream inputStream = resource.getInputStream();
             
             JSON_T[] json = objectMapper.readValue(inputStream,
                                                    objectMapper.getTypeFactory().constructArrayType(clazz));
