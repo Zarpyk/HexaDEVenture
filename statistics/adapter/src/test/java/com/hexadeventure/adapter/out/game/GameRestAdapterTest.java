@@ -19,9 +19,11 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 public class GameRestAdapterTest {
-    private final static String HOST = "https://localhost:8080";
+    private final static String HOST = "http://localhost:8080";
     
     private final static UserInfoDTO USER_INFO_DTO = new UserInfoDTO(UUID.randomUUID().toString(),
+                                                                     "",
+                                                                     "",
                                                                      0,
                                                                      0,
                                                                      0,

@@ -17,6 +17,7 @@ public class StatsService implements StatsUseCase {
     public double getWinRate(String userId) {
         UserInfo userInfo = gameRestPort.getUserInfo(userId);
         if(userInfo == null) throw new UserNotFoundException();
+        if (userInfo.getPlayedGames() == 0) return 0;
         return (double) userInfo.getWins() / userInfo.getPlayedGames();
     }
     
@@ -24,6 +25,7 @@ public class StatsService implements StatsUseCase {
     public double getAverageTime(String userId) {
         UserInfo userInfo = gameRestPort.getUserInfo(userId);
         if(userInfo == null) throw new UserNotFoundException();
+        if (userInfo.getPlayedGames() == 0) return 0;
         return (double) userInfo.getPlayedTime() / userInfo.getPlayedGames();
     }
     
@@ -31,6 +33,7 @@ public class StatsService implements StatsUseCase {
     public double getAverageDistance(String userId) {
         UserInfo userInfo = gameRestPort.getUserInfo(userId);
         if(userInfo == null) throw new UserNotFoundException();
+        if (userInfo.getPlayedGames() == 0) return 0;
         return (double) userInfo.getTravelledDistance() / userInfo.getPlayedGames();
     }
 }

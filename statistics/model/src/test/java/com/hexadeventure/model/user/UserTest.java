@@ -10,6 +10,8 @@ public class UserTest {
     @Test
     public void givenArg_whenCreatingAUserInfo_thenCreatesAUserInfo() {
         UserInfo user = new UserInfo(UUID.randomUUID().toString(),
+                                     "",
+                                     "",
                                      0,
                                      0,
                                      0,

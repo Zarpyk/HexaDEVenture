@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
-
 @RestController
 public class StatsController {
     private final StatsUseCase statsUseCase;
@@ -26,8 +24,7 @@ public class StatsController {
             @ApiResponse(responseCode = "200", description = "User registered successfully"),
             @ApiResponse(responseCode = "400", description = "User not found")
     })
-    public ResponseEntity<WinRateDTO> getWinRate(Principal principal,
-                                                 @RequestParam String userId) {
+    public ResponseEntity<WinRateDTO> getWinRate(@RequestParam String userId) {
         double winRate = statsUseCase.getWinRate(userId);
         return ResponseEntity.ok(new WinRateDTO(winRate));
     }
@@ -37,8 +34,7 @@ public class StatsController {
             @ApiResponse(responseCode = "200", description = "User registered successfully"),
             @ApiResponse(responseCode = "400", description = "User not found")
     })
-    public ResponseEntity<AverageTimeDTO> getAverageTime(Principal principal,
-                                                         @RequestParam String userId) {
+    public ResponseEntity<AverageTimeDTO> getAverageTime(@RequestParam String userId) {
         double averageTime = statsUseCase.getAverageTime(userId);
         return ResponseEntity.ok(new AverageTimeDTO(averageTime));
     }
@@ -48,8 +44,7 @@ public class StatsController {
             @ApiResponse(responseCode = "200", description = "User registered successfully"),
             @ApiResponse(responseCode = "400", description = "User not found")
     })
-    public ResponseEntity<AverageDistanceDTO> getAverageDistance(Principal principal,
-                                                                 @RequestParam String userId) {
+    public ResponseEntity<AverageDistanceDTO> getAverageDistance(@RequestParam String userId) {
         double averageDistance = statsUseCase.getAverageDistance(userId);
         return ResponseEntity.ok(new AverageDistanceDTO(averageDistance));
     }

@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UserInfo {
     private String id;
+    private String email;
+    private String username;
     private int wins;
     private int playedGames;
     private int playedTime;

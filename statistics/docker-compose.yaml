@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: 'postgres:17-alpine'
+    environment:
+      - 'POSTGRES_USER=root'
+      - 'POSTGRES_PASSWORD=test'
+      - 'POSTGRES_DB=hexadeventure'
+    networks:
+      - 'hexadeventure'
+
+  main:
+    build:
+      context: ../main
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgres
+    environment:
+      - "SPRING_PROFILES_ACTIVE=jpa"
+      - "SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/hexadeventure"
+      - "SPRING_DATASOURCE_USERNAME=root"
+      - "SPRING_DATASOURCE_PASSWORD=test"
+    networks:
+      - 'hexadeventure'
+
+networks:
+  hexadeventure:

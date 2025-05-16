@@ -14,12 +14,23 @@ import static org.mockito.Mockito.when;
 
 public class StatsServiceTest {
     private final static UserInfo USER_INFO = new UserInfo(UUID.randomUUID().toString(),
+                                                           "test@test.com",
+                                                           "Test User",
                                                            2,
                                                            3,
                                                            1000,
                                                            null,
                                                            4000,
                                                            200);
+    private final static UserInfo USER_INFO_EMPTY = new UserInfo(UUID.randomUUID().toString(),
+                                                                 "test@test.com",
+                                                                 "Test User",
+                                                                 0,
+                                                                 0,
+                                                                 0,
+                                                                 null,
+                                                                 0,
+                                                                 0);
     
     private final GameRestPort gameRestPort = mock(GameRestPort.class);
     
@@ -32,6 +43,15 @@ public class StatsServiceTest {
         double winRate = statsService.getWinRate(USER_INFO.getId());
         
         assertThat(winRate).isEqualTo((double) USER_INFO.getWins() / USER_INFO.getPlayedGames());
+    }
+    
+    @Test
+    public void givenUserWith0Play_whenGetWinRate_thenReturn0() {
+        when(gameRestPort.getUserInfo(USER_INFO_EMPTY.getId())).thenReturn(USER_INFO_EMPTY);
+        
+        double winRate = statsService.getWinRate(USER_INFO_EMPTY.getId());
+        
+        assertThat(winRate).isEqualTo(0);
     }
     
     @Test
@@ -53,6 +73,15 @@ public class StatsServiceTest {
     }
     
     @Test
+    public void givenUserWith0Play_whenGetAverageTime_thenReturn0() {
+        when(gameRestPort.getUserInfo(USER_INFO_EMPTY.getId())).thenReturn(USER_INFO_EMPTY);
+        
+        double averageTime = statsService.getAverageTime(USER_INFO_EMPTY.getId());
+        
+        assertThat(averageTime).isEqualTo(0);
+    }
+    
+    @Test
     public void givenInvalidUserId_whenGetAverageTime_thenThrowException() {
         when(gameRestPort.getUserInfo(USER_INFO.getId())).thenReturn(null);
         
@@ -68,6 +97,15 @@ public class StatsServiceTest {
         
         assertThat(travelledDistance).isEqualTo((double) USER_INFO.getTravelledDistance() /
                                                 USER_INFO.getPlayedGames());
+    }
+    
+    @Test
+    public void givenUserWith0Play_whenGetAverageDistance_thenReturn0() {
+        when(gameRestPort.getUserInfo(USER_INFO_EMPTY.getId())).thenReturn(USER_INFO_EMPTY);
+        
+        double travelledDistance = statsService.getAverageDistance(USER_INFO_EMPTY.getId());
+        
+        assertThat(travelledDistance).isEqualTo(0);
     }
     
     @Test

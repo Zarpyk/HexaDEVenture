@@ -15,8 +15,9 @@ public class UserService implements UserUseCase {
     }
     
     @Override
-    public User getUser(String userId) {
-        Optional<User> user = userRepository.findById(userId);
+    public User getUser(String email, String userId) {
+        if(email == null && userId == null) throw new InvalidIdException();
+        Optional<User> user = email == null ? userRepository.findById(userId) : userRepository.findByEmail(email);
         if(user.isEmpty()) throw new InvalidIdException();
         return user.get();
     }

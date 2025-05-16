@@ -8,13 +8,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
+@SuppressWarnings("HttpUrlsUsage")
 @Component
 public class GameRestAdapter implements GameRestPort {
     private final RestClient restClient;
     
     public GameRestAdapter(RestClient.Builder restClient, GameServiceConfig configuration) {
         this.restClient = restClient
-                .baseUrl("https://" + configuration.getHost() + ":" + configuration.getPort())
+                .baseUrl("http://" + configuration.getHost() + ":" + configuration.getPort())
                 .build();
     }
     

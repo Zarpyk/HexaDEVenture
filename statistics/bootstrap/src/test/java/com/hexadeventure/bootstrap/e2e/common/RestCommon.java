@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 
 public class RestCommon {
+    
     public static Response get(int port, String path) {
         return get(port, path, true);
     }
@@ -48,6 +49,25 @@ public class RestCommon {
                           .when().post(path);
         } else {
             return given().port(port).and()
+                          .contentType(ContentType.JSON).body(body)
+                          .when().post(path);
+        }
+    }
+    
+    public static Response postWithBody(String host, int port, String path, Object body) {
+        return postWithBody(host, port, path, body, true);
+    }
+    
+    public static Response postWithBody(String host, int port, String path, Object body, boolean withAuth) {
+        if(withAuth) {
+            return given().baseUri(host)
+                          .port(port).and()
+                          .auth().preemptive().basic(UserFactory.EMAIL, UserFactory.PASSWORD)
+                          .contentType(ContentType.JSON).body(body)
+                          .when().post(path);
+        } else {
+            return given().baseUri(host)
+                          .port(port).and()
                           .contentType(ContentType.JSON).body(body)
                           .when().post(path);
         }

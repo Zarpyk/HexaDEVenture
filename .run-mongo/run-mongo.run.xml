@@ -3,6 +3,7 @@
     <option name="ACTIVE_PROFILES" value="mongo" />
     <module name="main.bootstrap" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.hexadeventure.bootstrap.Launcher" />
+    <option name="WORKING_DIRECTORY" value="file://$ProjectFileDir$/main" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.hexadeventure.bootstrap.*" />
