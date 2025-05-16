@@ -21,7 +21,7 @@ public class GameServiceTestContainerConfig {
                         Wait.forHttp("/actuator/health")
                             .forPort(8080)
                             .forStatusCode(HttpStatus.OK.value())
-                            .withStartupTimeout(Duration.ofMinutes(1)));
+                            .withStartupTimeout(Duration.ofSeconds(30)));
     
     static {
         container.start();
