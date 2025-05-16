@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="run-jpa" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="jpa" />
-    <module name="bootstrap" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="com.hexadeventure.bootstrap.Launcher" />
+    <module name="main.bootstrap" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.hexadeventure.main.bootstrap.Launcher" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.hexadeventure.bootstrap.*" />

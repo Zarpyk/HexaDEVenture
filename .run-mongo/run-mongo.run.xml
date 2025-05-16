@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="run-mongo" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="mongo" />
-    <module name="bootstrap" />
+    <module name="main.bootstrap" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.hexadeventure.bootstrap.Launcher" />
     <extension name="coverage">
       <pattern>
