@@ -5,10 +5,7 @@ import com.hexadeventure.adapter.in.rest.common.UserFactory;
 import com.hexadeventure.adapter.in.rest.game.dto.in.PlaceCharacterDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.combat.CombatInfoDTO;
 import com.hexadeventure.adapter.in.rest.game.dto.out.combat.CombatProcessDTO;
-import com.hexadeventure.application.exceptions.CombatNotStartedException;
-import com.hexadeventure.application.exceptions.GameNotStartedException;
-import com.hexadeventure.application.exceptions.InvalidCharacterException;
-import com.hexadeventure.application.exceptions.InvalidPositionException;
+import com.hexadeventure.application.exceptions.*;
 import com.hexadeventure.application.port.in.game.CombatUseCase;
 import com.hexadeventure.model.combat.CombatAction;
 import com.hexadeventure.model.combat.CombatProcess;
@@ -174,8 +171,16 @@ public class CombatTest {
     @Test
     public void givenStartCombatUser_whenProcessCombatTurn_thenOkWithDTO() {
         when(combatUseCase.processCombatTurn(UserFactory.EMAIL)).thenReturn(COMBAT_INFO);
-        RestCommon.post("/game/combat/process", true).then().statusCode(HttpStatus.OK.value()).extract().body().as(
-                CombatProcessDTO.class);
+        RestCommon.post("/game/combat/process", true)
+                  .then().statusCode(HttpStatus.OK.value())
+                  .extract().body().as(CombatProcessDTO.class);
+    }
+    
+    @Test
+    public void givenNoCharacterTerrain_whenProcessCombatTurn_thenReturnBadRequest() {
+        doThrow(NoCharacterOnTerrainException.class).when(combatUseCase).processCombatTurn(UserFactory.EMAIL);
+        RestCommon.post("/game/combat/process", true)
+                  .then().statusCode(HttpStatus.BAD_REQUEST.value());
     }
     //endregion
 }

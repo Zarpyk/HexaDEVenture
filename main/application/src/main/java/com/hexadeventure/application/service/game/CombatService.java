@@ -1,9 +1,6 @@
 package com.hexadeventure.application.service.game;
 
-import com.hexadeventure.application.exceptions.CombatNotStartedException;
-import com.hexadeventure.application.exceptions.GameInCombatException;
-import com.hexadeventure.application.exceptions.InvalidCharacterException;
-import com.hexadeventure.application.exceptions.InvalidPositionException;
+import com.hexadeventure.application.exceptions.*;
 import com.hexadeventure.application.port.in.game.CombatUseCase;
 import com.hexadeventure.application.port.out.persistence.GameMapRepository;
 import com.hexadeventure.application.port.out.persistence.UserRepository;
@@ -26,7 +23,9 @@ import com.hexadeventure.model.map.resources.ResourceType;
 import com.hexadeventure.model.user.User;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.SplittableRandom;
 
 public class CombatService implements CombatUseCase {
@@ -57,7 +56,7 @@ public class CombatService implements CombatUseCase {
         if(!gameMap.isInCombat()) throw new CombatNotStartedException();
         
         CombatTerrain combatTerrain = gameMap.getCombatTerrain();
-        if (!combatTerrain.isModifiable()) throw new GameInCombatException();
+        if(!combatTerrain.isModifiable()) throw new GameInCombatException();
         checkParams(row, column, combatTerrain);
         
         Inventory inventory = gameMap.getInventory();
@@ -80,7 +79,7 @@ public class CombatService implements CombatUseCase {
         if(!gameMap.isInCombat()) throw new CombatNotStartedException();
         
         CombatTerrain combatTerrain = gameMap.getCombatTerrain();
-        if (!combatTerrain.isModifiable()) throw new GameInCombatException();
+        if(!combatTerrain.isModifiable()) throw new GameInCombatException();
         checkParams(row, column, combatTerrain);
         
         PlayableCharacter playableCharacter = combatTerrain.getCharacterAt(row, column);
@@ -101,6 +100,12 @@ public class CombatService implements CombatUseCase {
         if(!gameMap.isInCombat()) throw new CombatNotStartedException();
         
         CombatTerrain combatTerrain = gameMap.getCombatTerrain();
+        
+        if(combatTerrain.isModifiable() && Arrays.stream(combatTerrain.getPlayerTerrain())
+                                                 .flatMap(Arrays::stream)
+                                                 .allMatch(Objects::isNull)) {
+            throw new NoCharacterOnTerrainException();
+        }
         
         // Process the combat
         CombatProcessor combatProcessor = new CombatProcessor(combatTerrain);

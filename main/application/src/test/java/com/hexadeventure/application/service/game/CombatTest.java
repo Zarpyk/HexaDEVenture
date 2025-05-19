@@ -563,6 +563,27 @@ public class CombatTest {
     }
     
     @Test
+    public void givenNoCharacterTerrain_whenProcessCombatTurn_thenThrowException() {
+        User testUser = UserFactory.createTestUser(userRepository);
+        testUser.setMapId(MapFactory.EMPTY_MAP_ID);
+        
+        // Create an empty game map
+        GameMap map = MapFactory.createEmptyGameMap(gameMapRepository, aStarPathfinder, settingsImporter);
+        map.setInCombat(true);
+        
+        // Create characters and enemies
+        PlayableCharacter character = PlayableCharacterFactory.createMeleeCharacter(9999);
+        PlayableCharacter enemy = PlayableCharacterFactory.createMeleeCharacter(15);
+        
+        // Place enemies on the combat terrain
+        map.getCombatTerrain().placeEnemy(0, 0, enemy);
+        
+        // Execute the method
+        assertThatExceptionOfType(NoCharacterOnTerrainException.class)
+                .isThrownBy(() -> combatService.processCombatTurn(TEST_USER_EMAIL));
+    }
+    
+    @Test
     public void givenCharactersAndEnemies_whenEnemyDead_thenRemoveFromTerrain() {
         User testUser = UserFactory.createTestUser(userRepository);
         testUser.setMapId(MapFactory.EMPTY_MAP_ID);

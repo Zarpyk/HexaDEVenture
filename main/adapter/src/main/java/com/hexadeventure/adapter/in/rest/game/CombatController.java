@@ -78,6 +78,7 @@ public class CombatController {
             @ApiResponse(responseCode = "200", description = "Combat turn processed successfully",
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = CombatProcessDTO.class))),
+            @ApiResponse(responseCode = "400", description = "No character on the combat terrain"),
             @ApiResponse(responseCode = "401", description = "User not logged in",
                          content = @Content),
             @ApiResponse(responseCode = "405", description = "Game not started or combat not started",
