@@ -25,8 +25,4 @@ public class InventoryJpaEntity {
     // Probably only for PostgreSQL
     @ColumnTransformer(write = "?::json")
     private String charactersJson;
-    
-    @OneToOne
-    @JoinColumn(name = "game_map_id")
-    private GameMapJpaEntity gameMap;
 }

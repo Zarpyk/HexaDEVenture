@@ -14,8 +14,4 @@ public class MainCharacterJpaEntity {
     private String id;
     private int x;
     private int y;
-    
-    @OneToOne
-    @JoinColumn(name = "game_map_id")
-    private GameMapJpaEntity map;
 }
