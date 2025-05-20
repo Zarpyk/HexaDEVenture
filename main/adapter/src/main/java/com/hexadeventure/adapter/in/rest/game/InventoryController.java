@@ -57,7 +57,13 @@ public class InventoryController {
             @ApiResponse(responseCode = "405", description = "Game not started",
                          content = @Content),
     })
-    public ResponseEntity<RecipesDTO> getRecipes(Principal principal, @RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<RecipesDTO> getRecipes(Principal principal,
+                                                 @RequestParam
+                                                 @Schema(minimum = "1")
+                                                 int page,
+                                                 @RequestParam
+                                                 @Schema(minimum = "1")
+                                                 int size) {
         Recipe[] recipes = inventoryUseCase.getRecipes(principal.getName(), page, size);
         return ResponseEntity.ok(RecipesDTO.fromModel(recipes));
     }

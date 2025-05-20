@@ -1,0 +1,612 @@
+[
+  {
+    "resultID": "Sword",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Iron",
+        "type": "MATERIAL",
+        "amount": 4
+      },
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "resultID": "Large Sword",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Iron",
+        "type": "MATERIAL",
+        "amount": 7
+      },
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 3
+      }
+    ]
+  },
+  {
+    "resultID": "Royal Sword",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Steel",
+        "type": "MATERIAL",
+        "amount": 8
+      },
+      {
+        "id": "Gold",
+        "type": "MATERIAL",
+        "amount": 4
+      },
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "resultID": "Saber",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Steel",
+        "type": "MATERIAL",
+        "amount": 4
+      },
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "resultID": "Axe",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Iron",
+        "type": "MATERIAL",
+        "amount": 4
+      },
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 3
+      }
+    ]
+  },
+  {
+    "resultID": "Double-bitted Axe",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Steel",
+        "type": "MATERIAL",
+        "amount": 8
+      },
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 3
+      }
+    ]
+  },
+  {
+    "resultID": "Rough Double-bitted Axe",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Stone",
+        "type": "MATERIAL",
+        "amount": 9
+      },
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 3
+      }
+    ]
+  },
+  {
+    "resultID": "Crossbow",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 6
+      },
+      {
+        "id": "Iron",
+        "type": "MATERIAL",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "resultID": "Heavy Crossbow",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 6
+      },
+      {
+        "id": "Steel",
+        "type": "MATERIAL",
+        "amount": 5
+      }
+    ]
+  },
+  {
+    "resultID": "Bombs",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Iron",
+        "type": "MATERIAL",
+        "amount": 5
+      },
+      {
+        "id": "Stone",
+        "type": "MATERIAL",
+        "amount": 8
+      }
+    ]
+  },
+  {
+    "resultID": "Throwing Axe",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Iron",
+        "type": "MATERIAL",
+        "amount": 3
+      },
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "resultID": "Throwing Knife",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Iron",
+        "type": "MATERIAL",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "resultID": "Circular Shield",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 4
+      },
+      {
+        "id": "Iron",
+        "type": "MATERIAL",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "resultID": "Basic Shield",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 3
+      },
+      {
+        "id": "Iron",
+        "type": "MATERIAL",
+        "amount": 4
+      }
+    ]
+  },
+  {
+    "resultID": "Reinforced Shield",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 3
+      },
+      {
+        "id": "Steel",
+        "type": "MATERIAL",
+        "amount": 7
+      }
+    ]
+  },
+  {
+    "resultID": "Square Shield",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 5
+      },
+      {
+        "id": "Steel",
+        "type": "MATERIAL",
+        "amount": 5
+      }
+    ]
+  },
+  {
+    "resultID": "Royal Circular Shield",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 3
+      },
+      {
+        "id": "Gold",
+        "type": "MATERIAL",
+        "amount": 5
+      }
+    ]
+  },
+  {
+    "resultID": "Royal Shield",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 3
+      },
+      {
+        "id": "Steel",
+        "type": "MATERIAL",
+        "amount": 5
+      },
+      {
+        "id": "Gold",
+        "type": "MATERIAL",
+        "amount": 4
+      }
+    ]
+  },
+  {
+    "resultID": "Royal Reinforced Shield",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 4
+      },
+      {
+        "id": "Steel",
+        "type": "MATERIAL",
+        "amount": 8
+      },
+      {
+        "id": "Gold",
+        "type": "MATERIAL",
+        "amount": 5
+      }
+    ]
+  },
+  {
+    "resultID": "Royal Square Shield",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 5
+      },
+      {
+        "id": "Steel",
+        "type": "MATERIAL",
+        "amount": 7
+      },
+      {
+        "id": "Gold",
+        "type": "MATERIAL",
+        "amount": 6
+      }
+    ]
+  },
+  {
+    "resultID": "Defense Staff",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 6
+      },
+      {
+        "id": "Iron",
+        "type": "MATERIAL",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "resultID": "Defense Book",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 4
+      },
+      {
+        "id": "Defense Potion",
+        "type": "POTION",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "resultID": "Healing Wand",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 3
+      },
+      {
+        "id": "Healing Potion",
+        "type": "POTION",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "resultID": "Healing Staff",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 6
+      },
+      {
+        "id": "Healing Potion",
+        "type": "POTION",
+        "amount": 3
+      }
+    ]
+  },
+  {
+    "resultID": "Healing Book",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 4
+      },
+      {
+        "id": "Healing Potion",
+        "type": "POTION",
+        "amount": 5
+      }
+    ]
+  },
+  {
+    "resultID": "Hypnotization Wand",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 2
+      },
+      {
+        "id": "Speed Potion",
+        "type": "POTION",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "resultID": "Hypnotization Staff",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 4
+      },
+      {
+        "id": "Speed Potion",
+        "type": "POTION",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "resultID": "Hypnotization Book",
+    "resultType": "WEAPON",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Wood",
+        "type": "MATERIAL",
+        "amount": 2
+      },
+      {
+        "id": "Speed Potion",
+        "type": "POTION",
+        "amount": 4
+      }
+    ]
+  },
+  {
+    "resultID": "Healing Potion",
+    "resultType": "POTION",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Apple",
+        "type": "FOOD",
+        "amount": 2
+      },
+      {
+        "id": "Slice of bread",
+        "type": "FOOD",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "resultID": "Speed Potion",
+    "resultType": "POTION",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Apple",
+        "type": "FOOD",
+        "amount": 2
+      },
+      {
+        "id": "Potato",
+        "type": "FOOD",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "resultID": "Strength Potion",
+    "resultType": "POTION",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Cooked Meat",
+        "type": "FOOD",
+        "amount": 2
+      },
+      {
+        "id": "Potato",
+        "type": "FOOD",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "resultID": "Defense Potion",
+    "resultType": "POTION",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Stone",
+        "type": "MATERIAL",
+        "amount": 5
+      },
+      {
+        "id": "Potato",
+        "type": "FOOD",
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "resultID": "Croissant",
+    "resultType": "FOOD",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Slice of bread",
+        "type": "FOOD",
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "resultID": "Baguette",
+    "resultType": "FOOD",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Slice of bread",
+        "type": "FOOD",
+        "amount": 3
+      }
+    ]
+  },
+  {
+    "resultID": "Mixed Food",
+    "resultType": "FOOD",
+    "resultAmount": 1,
+    "materials": [
+      {
+        "id": "Cooked Meat",
+        "type": "FOOD",
+        "amount": 1
+      },
+      {
+        "id": "Potato",
+        "type": "FOOD",
+        "amount": 2
+      },
+      {
+        "id": "Apple",
+        "type": "FOOD",
+        "amount": 1
+      },
+      {
+        "id": "Slice of bread",
+        "type": "FOOD",
+        "amount": 1
+      }
+    ]
+  }
+]

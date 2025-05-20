@@ -52,4 +52,19 @@ public class RestCommon {
                           .when().post(path);
         }
     }
+    
+    public static Response delete(int port, String path) {
+        return delete(port, path, true);
+    }
+    
+    public static Response delete(int port, String path, boolean withAuth) {
+        if(withAuth) {
+            return given().port(port).and()
+                          .auth().preemptive().basic(UserFactory.EMAIL, UserFactory.PASSWORD)
+                          .when().delete(path);
+        } else {
+            return given().port(port)
+                          .when().delete(path);
+        }
+    }
 }

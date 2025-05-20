@@ -1,0 +1,52 @@
+[
+  {
+    "id": "Skeleton Warrior",
+    "weaponType": "MELEE",
+    "minHealth": 100,
+    "maxHealth": 200,
+    "minSpeed": 25,
+    "maxSpeed": 100,
+    "minHypnotizationResistance": 2,
+    "maxHypnotizationResistance": 10
+  },
+  {
+    "id": "Skeleton Archer",
+    "weaponType": "RANGED",
+    "minHealth": 50,
+    "maxHealth": 150,
+    "minSpeed": 50,
+    "maxSpeed": 125,
+    "minHypnotizationResistance": 2,
+    "maxHypnotizationResistance": 10
+  },
+  {
+    "id": "Skeleton Guardian",
+    "weaponType": "TANK",
+    "minHealth": 150,
+    "maxHealth": 400,
+    "minSpeed": 10,
+    "maxSpeed": 75,
+    "minHypnotizationResistance": 5,
+    "maxHypnotizationResistance": 15
+  },
+  {
+    "id": "Skeleton Healer",
+    "weaponType": "HEALER",
+    "minHealth": 100,
+    "maxHealth": 250,
+    "minSpeed": 10,
+    "maxSpeed": 50,
+    "minHypnotizationResistance": 5,
+    "maxHypnotizationResistance": 15
+  },
+  {
+    "id": "Giant Skeleton",
+    "weaponType": "MELEE",
+    "minHealth": 500,
+    "maxHealth": 500,
+    "minSpeed": 10,
+    "maxSpeed": 10,
+    "minHypnotizationResistance": 19,
+    "maxHypnotizationResistance": 19
+  }
+]

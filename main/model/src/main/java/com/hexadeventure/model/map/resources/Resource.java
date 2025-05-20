@@ -1,7 +1,7 @@
 package com.hexadeventure.model.map.resources;
 
 import com.hexadeventure.model.map.Vector2;
-import com.hexadeventure.utils.DoubleMapper;
+import com.hexadeventure.model.utils.DoubleMapper;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

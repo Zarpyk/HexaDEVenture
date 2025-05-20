@@ -34,7 +34,7 @@ public class CombatController {
             @ApiResponse(responseCode = "405", description = "Game not started or combat not started",
                          content = @Content),
     })
-    public ResponseEntity<CombatInfoDTO> move(Principal principal) {
+    public ResponseEntity<CombatInfoDTO> getCombat(Principal principal) {
         CombatTerrain response = combatUseCase.getCombatStatus(principal.getName());
         return ResponseEntity.ok(CombatInfoDTO.fromModel(response));
     }

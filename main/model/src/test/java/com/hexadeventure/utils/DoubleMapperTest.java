@@ -1,5 +1,6 @@
 package com.hexadeventure.utils;
 
+import com.hexadeventure.model.utils.DoubleMapper;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 

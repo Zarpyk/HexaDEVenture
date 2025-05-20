@@ -1,4 +1,4 @@
-package com.hexadeventure.utils;
+package com.hexadeventure.model.utils;
 
 public class DoubleMapper {
     /**

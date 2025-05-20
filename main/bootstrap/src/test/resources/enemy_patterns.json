@@ -1,0 +1,1395 @@
+[
+  {
+    "minThreshold": -1,
+    "enemies": [
+      [
+        "Skeleton Warrior",
+        "Giant Skeleton",
+        "Skeleton Warrior",
+        "Skeleton Warrior"
+      ],
+      [
+        "Skeleton Archer",
+        "Skeleton Warrior",
+        "Skeleton Warrior",
+        "Skeleton Archer"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Healer",
+        "Skeleton Archer",
+        "Skeleton Guardian"
+      ]
+    ],
+    "loot": []
+  },
+  {
+    "minThreshold": 0.0,
+    "enemies": [
+      [
+        "Skeleton Warrior",
+        null,
+        null,
+        "Skeleton Warrior"
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Apple",
+        "count": 2,
+        "probability": 1.0
+      },
+      {
+        "type": "FOOD",
+        "id": "Apple",
+        "count": 3,
+        "probability": 0.2
+      },
+      {
+        "type": "FOOD",
+        "id": "Slice of bread",
+        "count": 1,
+        "probability": 0.7
+      },
+      {
+        "type": "FOOD",
+        "id": "Potato",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "MATERIAL",
+        "id": "WOOD",
+        "count": 1,
+        "probability": 0.7
+      },
+      {
+        "type": "MATERIAL",
+        "id": "WOOD",
+        "count": 2,
+        "probability": 0.3
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 1,
+        "probability": 0.2
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.0,
+    "enemies": [
+      [
+        null,
+        null,
+        "Skeleton Warrior",
+        null
+      ],
+      [
+        null,
+        null,
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Apple",
+        "count": 1,
+        "probability": 0.9
+      },
+      {
+        "type": "FOOD",
+        "id": "Slice of bread",
+        "count": 2,
+        "probability": 0.6
+      },
+      {
+        "type": "FOOD",
+        "id": "Potato",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "MATERIAL",
+        "id": "WOOD",
+        "count": 1,
+        "probability": 0.8
+      },
+      {
+        "type": "MATERIAL",
+        "id": "STONE",
+        "count": 1,
+        "probability": 0.2
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 1,
+        "probability": 0.15
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.2,
+    "enemies": [
+      [
+        null,
+        "Skeleton Warrior",
+        "Skeleton Warrior",
+        null
+      ],
+      [
+        null,
+        null,
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Apple",
+        "count": 2,
+        "probability": 0.8
+      },
+      {
+        "type": "FOOD",
+        "id": "Slice of bread",
+        "count": 2,
+        "probability": 0.6
+      },
+      {
+        "type": "FOOD",
+        "id": "Potato",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "FOOD",
+        "id": "Croissant",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "FOOD",
+        "id": "Cooked Meat",
+        "count": 1,
+        "probability": 0.3
+      },
+      {
+        "type": "MATERIAL",
+        "id": "WOOD",
+        "count": 2,
+        "probability": 0.7
+      },
+      {
+        "type": "MATERIAL",
+        "id": "STONE",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 1,
+        "probability": 0.3
+      },
+      {
+        "type": "POTION",
+        "id": "Speed Potion",
+        "count": 1,
+        "probability": 0.2
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.2,
+    "enemies": [
+      [
+        null,
+        "Skeleton Guardian",
+        "Skeleton Warrior",
+        null
+      ],
+      [
+        null,
+        null,
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Apple",
+        "count": 1,
+        "probability": 0.7
+      },
+      {
+        "type": "FOOD",
+        "id": "Slice of bread",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "FOOD",
+        "id": "Croissant",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "FOOD",
+        "id": "Cooked Meat",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "MATERIAL",
+        "id": "WOOD",
+        "count": 1,
+        "probability": 0.6
+      },
+      {
+        "type": "MATERIAL",
+        "id": "STONE",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 1,
+        "probability": 0.25
+      },
+      {
+        "type": "POTION",
+        "id": "Speed Potion",
+        "count": 1,
+        "probability": 0.25
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.2,
+    "enemies": [
+      [
+        null,
+        null,
+        "Skeleton Warrior",
+        null
+      ],
+      [
+        null,
+        "Skeleton Healer",
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Apple",
+        "count": 2,
+        "probability": 0.6
+      },
+      {
+        "type": "FOOD",
+        "id": "Potato",
+        "count": 2,
+        "probability": 0.5
+      },
+      {
+        "type": "FOOD",
+        "id": "Croissant",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "FOOD",
+        "id": "Cooked Meat",
+        "count": 1,
+        "probability": 0.3
+      },
+      {
+        "type": "MATERIAL",
+        "id": "WOOD",
+        "count": 2,
+        "probability": 0.5
+      },
+      {
+        "type": "MATERIAL",
+        "id": "STONE",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 1,
+        "probability": 0.3
+      },
+      {
+        "type": "POTION",
+        "id": "Strength Potion",
+        "count": 1,
+        "probability": 0.2
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.2,
+    "enemies": [
+      [
+        null,
+        null,
+        "Skeleton Warrior",
+        null
+      ],
+      [
+        null,
+        "Skeleton Archer",
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Slice of bread",
+        "count": 2,
+        "probability": 0.7
+      },
+      {
+        "type": "FOOD",
+        "id": "Potato",
+        "count": 1,
+        "probability": 0.6
+      },
+      {
+        "type": "FOOD",
+        "id": "Croissant",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "FOOD",
+        "id": "Cooked Meat",
+        "count": 1,
+        "probability": 0.3
+      },
+      {
+        "type": "MATERIAL",
+        "id": "WOOD",
+        "count": 1,
+        "probability": 0.6
+      },
+      {
+        "type": "MATERIAL",
+        "id": "STONE",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 1,
+        "probability": 0.3
+      },
+      {
+        "type": "POTION",
+        "id": "Defense Potion",
+        "count": 1,
+        "probability": 0.2
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.5,
+    "enemies": [
+      [
+        null,
+        "Skeleton Guardian",
+        "Skeleton Warrior",
+        "Skeleton Warrior"
+      ],
+      [
+        null,
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Croissant",
+        "count": 2,
+        "probability": 0.7
+      },
+      {
+        "type": "FOOD",
+        "id": "Cooked Meat",
+        "count": 1,
+        "probability": 0.6
+      },
+      {
+        "type": "FOOD",
+        "id": "Baguette",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "FOOD",
+        "id": "Roasted chicken",
+        "count": 1,
+        "probability": 0.3
+      },
+      {
+        "type": "MATERIAL",
+        "id": "STONE",
+        "count": 2,
+        "probability": 0.6
+      },
+      {
+        "type": "MATERIAL",
+        "id": "IRON",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Speed Potion",
+        "count": 1,
+        "probability": 0.3
+      },
+      {
+        "type": "POTION",
+        "id": "Strength Potion",
+        "count": 1,
+        "probability": 0.3
+      },
+      {
+        "type": "POTION",
+        "id": "Defense Potion",
+        "count": 1,
+        "probability": 0.3
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.5,
+    "enemies": [
+      [
+        null,
+        "Skeleton Guardian",
+        "Skeleton Guardian",
+        null
+      ],
+      [
+        null,
+        "Skeleton Archer",
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        "Skeleton Healer",
+        null,
+        null
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Croissant",
+        "count": 1,
+        "probability": 0.6
+      },
+      {
+        "type": "FOOD",
+        "id": "Cooked Meat",
+        "count": 2,
+        "probability": 0.5
+      },
+      {
+        "type": "FOOD",
+        "id": "Baguette",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "FOOD",
+        "id": "Roasted chicken",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "MATERIAL",
+        "id": "STONE",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "MATERIAL",
+        "id": "IRON",
+        "count": 2,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "POTION",
+        "id": "Speed Potion",
+        "count": 1,
+        "probability": 0.3
+      },
+      {
+        "type": "POTION",
+        "id": "Strength Potion",
+        "count": 1,
+        "probability": 0.3
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.5,
+    "enemies": [
+      [
+        null,
+        "Skeleton Warrior",
+        "Skeleton Warrior",
+        null
+      ],
+      [
+        "Skeleton Archer",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Cooked Meat",
+        "count": 2,
+        "probability": 0.7
+      },
+      {
+        "type": "FOOD",
+        "id": "Baguette",
+        "count": 1,
+        "probability": 0.6
+      },
+      {
+        "type": "FOOD",
+        "id": "Roasted chicken",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "MATERIAL",
+        "id": "STONE",
+        "count": 2,
+        "probability": 0.6
+      },
+      {
+        "type": "MATERIAL",
+        "id": "IRON",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Defense Potion",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Strength Potion",
+        "count": 1,
+        "probability": 0.3
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.7,
+    "enemies": [
+      [
+        "Skeleton Guardian",
+        "Skeleton Guardian",
+        "Skeleton Guardian",
+        "Skeleton Guardian"
+      ],
+      [
+        null,
+        "Skeleton Archer",
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        "Skeleton Healer",
+        null,
+        null
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Baguette",
+        "count": 2,
+        "probability": 0.7
+      },
+      {
+        "type": "FOOD",
+        "id": "Roasted chicken",
+        "count": 1,
+        "probability": 0.6
+      },
+      {
+        "type": "FOOD",
+        "id": "Pork ribs",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "MATERIAL",
+        "id": "IRON",
+        "count": 2,
+        "probability": 0.6
+      },
+      {
+        "type": "MATERIAL",
+        "id": "STEEL",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "POTION",
+        "id": "Speed Potion",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Strength Potion",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Defense Potion",
+        "count": 1,
+        "probability": 0.4
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.7,
+    "enemies": [
+      [
+        "Skeleton Warrior",
+        "Skeleton Guardian",
+        "Skeleton Guardian",
+        "Skeleton Warrior"
+      ],
+      [
+        null,
+        null,
+        "Skeleton Archer",
+        null
+      ],
+      [
+        null,
+        "Skeleton Healer",
+        "Skeleton Archer",
+        null
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Baguette",
+        "count": 1,
+        "probability": 0.6
+      },
+      {
+        "type": "FOOD",
+        "id": "Roasted chicken",
+        "count": 2,
+        "probability": 0.5
+      },
+      {
+        "type": "FOOD",
+        "id": "Pork ribs",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "MATERIAL",
+        "id": "IRON",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "MATERIAL",
+        "id": "STEEL",
+        "count": 2,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 2,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Speed Potion",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Strength Potion",
+        "count": 1,
+        "probability": 0.4
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.7,
+    "enemies": [
+      [
+        "Skeleton Warrior",
+        "Skeleton Warrior",
+        "Skeleton Warrior",
+        "Skeleton Warrior"
+      ],
+      [
+        null,
+        "Skeleton Warrior",
+        "Skeleton Warrior",
+        null
+      ],
+      [
+        null,
+        "Skeleton Healer",
+        null,
+        null
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Baguette",
+        "count": 2,
+        "probability": 0.6
+      },
+      {
+        "type": "FOOD",
+        "id": "Roasted chicken",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "FOOD",
+        "id": "Pork ribs",
+        "count": 2,
+        "probability": 0.4
+      },
+      {
+        "type": "MATERIAL",
+        "id": "IRON",
+        "count": 2,
+        "probability": 0.5
+      },
+      {
+        "type": "MATERIAL",
+        "id": "STEEL",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "POTION",
+        "id": "Defense Potion",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Strength Potion",
+        "count": 1,
+        "probability": 0.4
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.7,
+    "enemies": [
+      [
+        "Skeleton Warrior",
+        "Skeleton Guardian",
+        "Skeleton Guardian",
+        "Skeleton Warrior"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        "Skeleton Guardian"
+      ],
+      [
+        null,
+        null,
+        null,
+        null
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Roasted chicken",
+        "count": 2,
+        "probability": 0.6
+      },
+      {
+        "type": "FOOD",
+        "id": "Pork ribs",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "MATERIAL",
+        "id": "IRON",
+        "count": 1,
+        "probability": 0.6
+      },
+      {
+        "type": "MATERIAL",
+        "id": "STEEL",
+        "count": 2,
+        "probability": 0.5
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "POTION",
+        "id": "Speed Potion",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Defense Potion",
+        "count": 1,
+        "probability": 0.4
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.8,
+    "enemies": [
+      [
+        "Skeleton Warrior",
+        "Skeleton Guardian",
+        "Skeleton Warrior",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Healer",
+        "Skeleton Healer",
+        null
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        null
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Roasted chicken",
+        "count": 2,
+        "probability": 0.7
+      },
+      {
+        "type": "FOOD",
+        "id": "Pork ribs",
+        "count": 2,
+        "probability": 0.6
+      },
+      {
+        "type": "MATERIAL",
+        "id": "STEEL",
+        "count": 2,
+        "probability": 0.6
+      },
+      {
+        "type": "MATERIAL",
+        "id": "GOLD",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 2,
+        "probability": 0.6
+      },
+      {
+        "type": "POTION",
+        "id": "Speed Potion",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "POTION",
+        "id": "Strength Potion",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "POTION",
+        "id": "Defense Potion",
+        "count": 1,
+        "probability": 0.5
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.8,
+    "enemies": [
+      [
+        "Skeleton Guardian",
+        "Skeleton Warrior",
+        "Skeleton Warrior",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Warrior",
+        "Skeleton Healer",
+        "Skeleton Healer",
+        "Skeleton Archer"
+      ],
+      [
+        null,
+        "Skeleton Archer",
+        "Skeleton Archer",
+        null
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Roasted chicken",
+        "count": 1,
+        "probability": 0.6
+      },
+      {
+        "type": "FOOD",
+        "id": "Pork ribs",
+        "count": 2,
+        "probability": 0.7
+      },
+      {
+        "type": "FOOD",
+        "id": "Mixed Food",
+        "count": 1,
+        "probability": 0.3
+      },
+      {
+        "type": "MATERIAL",
+        "id": "STEEL",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "MATERIAL",
+        "id": "GOLD",
+        "count": 2,
+        "probability": 0.4
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "POTION",
+        "id": "Speed Potion",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "POTION",
+        "id": "Defense Potion",
+        "count": 1,
+        "probability": 0.5
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.8,
+    "enemies": [
+      [
+        "Skeleton Warrior",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        null
+      ],
+      [
+        "Skeleton Archer",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        "Skeleton Archer"
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Pork ribs",
+        "count": 2,
+        "probability": 0.7
+      },
+      {
+        "type": "FOOD",
+        "id": "Mixed Food",
+        "count": 1,
+        "probability": 0.4
+      },
+      {
+        "type": "MATERIAL",
+        "id": "STEEL",
+        "count": 2,
+        "probability": 0.6
+      },
+      {
+        "type": "MATERIAL",
+        "id": "GOLD",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 2,
+        "probability": 0.6
+      },
+      {
+        "type": "POTION",
+        "id": "Speed Potion",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "POTION",
+        "id": "Strength Potion",
+        "count": 1,
+        "probability": 0.5
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.9,
+    "enemies": [
+      [
+        "Skeleton Guardian",
+        "Skeleton Warrior",
+        "Skeleton Warrior",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        "Skeleton Healer",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Healer",
+        "Skeleton Healer",
+        "Skeleton Warrior"
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Pork ribs",
+        "count": 3,
+        "probability": 0.8
+      },
+      {
+        "type": "FOOD",
+        "id": "Mixed Food",
+        "count": 1,
+        "probability": 0.5
+      },
+      {
+        "type": "MATERIAL",
+        "id": "GOLD",
+        "count": 3,
+        "probability": 0.7
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 2,
+        "probability": 0.7
+      },
+      {
+        "type": "POTION",
+        "id": "Speed Potion",
+        "count": 1,
+        "probability": 0.6
+      },
+      {
+        "type": "POTION",
+        "id": "Strength Potion",
+        "count": 1,
+        "probability": 0.6
+      },
+      {
+        "type": "POTION",
+        "id": "Defense Potion",
+        "count": 1,
+        "probability": 0.6
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.9,
+    "enemies": [
+      [
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        "Skeleton Archer",
+        "Skeleton Guardian"
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Pork ribs",
+        "count": 2,
+        "probability": 0.7
+      },
+      {
+        "type": "FOOD",
+        "id": "Mixed Food",
+        "count": 2,
+        "probability": 0.6
+      },
+      {
+        "type": "MATERIAL",
+        "id": "GOLD",
+        "count": 2,
+        "probability": 0.7
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 2,
+        "probability": 0.7
+      },
+      {
+        "type": "POTION",
+        "id": "Speed Potion",
+        "count": 2,
+        "probability": 0.6
+      },
+      {
+        "type": "POTION",
+        "id": "Strength Potion",
+        "count": 1,
+        "probability": 0.6
+      },
+      {
+        "type": "POTION",
+        "id": "Defense Potion",
+        "count": 1,
+        "probability": 0.6
+      }
+    ]
+  },
+  {
+    "minThreshold": 0.9,
+    "enemies": [
+      [
+        "Skeleton Guardian",
+        "Skeleton Warrior",
+        "Skeleton Guardian",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Archer",
+        "Skeleton Guardian",
+        "Skeleton Guardian"
+      ],
+      [
+        "Skeleton Guardian",
+        "Skeleton Healer",
+        "Skeleton Guardian",
+        "Skeleton Guardian"
+      ]
+    ],
+    "loot": [
+      {
+        "type": "FOOD",
+        "id": "Pork ribs",
+        "count": 2,
+        "probability": 0.8
+      },
+      {
+        "type": "FOOD",
+        "id": "Mixed Food",
+        "count": 2,
+        "probability": 0.7
+      },
+      {
+        "type": "MATERIAL",
+        "id": "GOLD",
+        "count": 3,
+        "probability": 0.8
+      },
+      {
+        "type": "POTION",
+        "id": "Healing Potion",
+        "count": 3,
+        "probability": 0.7
+      },
+      {
+        "type": "POTION",
+        "id": "Speed Potion",
+        "count": 2,
+        "probability": 0.7
+      },
+      {
+        "type": "POTION",
+        "id": "Strength Potion",
+        "count": 2,
+        "probability": 0.7
+      },
+      {
+        "type": "POTION",
+        "id": "Defense Potion",
+        "count": 2,
+        "probability": 0.7
+      }
+    ]
+  }
+]

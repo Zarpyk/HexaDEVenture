@@ -1,0 +1,63 @@
+{
+  "initialCharacters": [
+    {
+      "name": "Hero",
+      "minHealth": 200,
+      "maxHealth": 300,
+      "minSpeed": 75,
+      "maxSpeed": 150
+    },
+    {
+      "name": "Adventurer",
+      "minHealth": 50,
+      "maxHealth": 150,
+      "minSpeed": 50,
+      "maxSpeed": 125
+    },
+    {
+      "name": "Guardian",
+      "minHealth": 150,
+      "maxHealth": 400,
+      "minSpeed": 10,
+      "maxSpeed": 75
+    },
+    {
+      "name": "Mage",
+      "minHealth": 100,
+      "maxHealth": 250,
+      "minSpeed": 10,
+      "maxSpeed": 50
+    }
+  ],
+  "initialWeapons": [
+    {
+      "id": "Large Sword",
+      "count": 1
+    },
+    {
+      "id": "Heavy Crossbow",
+      "count": 1
+    },
+    {
+      "id": "Basic Shield",
+      "count": 1
+    },
+    {
+      "id": "Hypnotization Wand",
+      "count": 1
+    }
+  ],
+  "initialFood": [
+    {
+      "id": "Slice of bread",
+      "count": 5
+    }
+  ],
+  "initialPotions": [],
+  "initialMaterials": [
+    {
+      "id": "WOOD",
+      "count": 5
+    }
+  ]
+}

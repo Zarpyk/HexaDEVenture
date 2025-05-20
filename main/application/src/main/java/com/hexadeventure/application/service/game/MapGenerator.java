@@ -10,7 +10,7 @@ import com.hexadeventure.model.inventory.weapons.WeaponSetting;
 import com.hexadeventure.model.inventory.weapons.WeaponType;
 import com.hexadeventure.model.map.*;
 import com.hexadeventure.model.map.resources.Resource;
-import com.hexadeventure.utils.DoubleMapper;
+import com.hexadeventure.model.utils.DoubleMapper;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

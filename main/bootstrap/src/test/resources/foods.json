@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Slice of bread",
+    "skin": 1,
+    "healthPoints": 20.0
+  },
+  {
+    "name": "Croissant",
+    "skin": 2,
+    "healthPoints": 50.0
+  },
+  {
+    "name": "Baguette",
+    "skin": 3,
+    "healthPoints": 75.0
+  },
+  {
+    "name": "Cooked Meat",
+    "skin": 4,
+    "healthPoints": 50.0
+  },
+  {
+    "name": "Roasted chicken",
+    "skin": 5,
+    "healthPoints": 120.0
+  },
+  {
+    "name": "Pork ribs",
+    "skin": 6,
+    "healthPoints": 200.0
+  },
+  {
+    "name": "Apple",
+    "skin": 7,
+    "healthPoints": 25.0
+  },
+  {
+    "name": "Potato",
+    "skin": 8,
+    "healthPoints": 50.0
+  },
+  {
+    "name": "Mixed Food",
+    "skin": 9,
+    "healthPoints": 300.0
+  }
+]

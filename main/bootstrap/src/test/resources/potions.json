@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Healing Potion",
+    "skin": 1,
+    "potionPower": 25.0,
+    "potionType": "HEALING"
+  },
+  {
+    "name": "Speed Potion",
+    "skin": 2,
+    "potionPower": 25.0,
+    "potionType": "SPEED"
+  },
+  {
+    "name": "Strength Potion",
+    "skin": 3,
+    "potionPower": 25.0,
+    "potionType": "STRENGTH"
+  },
+  {
+    "name": "Defense Potion",
+    "skin": 4,
+    "potionPower": 25.0,
+    "potionType": "DEFENSE"
+  }
+]
