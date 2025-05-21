@@ -4,9 +4,10 @@ import com.hexadeventure.model.movement.MovementResponse;
 
 import java.util.List;
 
-public record MovementResponseDTO(List<MovementActionDTO> actions) {
+public record MovementResponseDTO(List<MovementActionDTO> actions, boolean newChunks) {
     public static MovementResponseDTO fromModel(MovementResponse model) {
-        return new MovementResponseDTO(model.actions().stream().map(MovementActionDTO::fromModel).toList());
+        return new MovementResponseDTO(model.actions().stream().map(MovementActionDTO::fromModel).toList(),
+                                       model.newChunks());
     }
 }
 
