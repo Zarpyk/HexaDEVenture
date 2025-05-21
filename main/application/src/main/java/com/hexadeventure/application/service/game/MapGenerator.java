@@ -42,8 +42,8 @@ public class MapGenerator {
     private static final int BOSS_PATHFINDING_GENERATE_CHUNKS_WIDTH = 1;
     private static final int BOSS_VARIATION = 3;
     
-    private static final double GENERATE_ENEMY_PROBABILITY = 0.15;
-    private static final double GENERATE_ENEMY_PROBABILITY_MAX_INCREMENT = 3;
+    private static final double GENERATE_ENEMY_PROBABILITY = 0.10;
+    private static final double GENERATE_ENEMY_PROBABILITY_MAX_INCREMENT = 1.0;
     private static final int GENERATE_ENEMY_CENTER_RADIUS = 5;
     private static final int GENERATE_ENEMY_BOSS_RADIUS = 2;
     private static final int GENERATE_ENEMY_VARIATION = 4;
