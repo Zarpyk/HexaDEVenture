@@ -222,6 +222,7 @@ public class MovementTest {
         assertThat(enemyMovement).isNotNull();
         assertThat(last.targetPosition().x).isEqualTo(enemyMovement.targetPosition().x);
         assertThat(last.targetPosition().y).isEqualTo(enemyMovement.targetPosition().y);
+        assertThat(last.startCombat()).isTrue();
         
         // Check enemy initial position
         Vector2 enemyInitialMovement = actions.getFirst().enemyMovements().getFirst().originalPosition();
