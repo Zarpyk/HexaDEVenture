@@ -178,7 +178,7 @@ public class CombatProcessor {
         if(healed) return;
         
         // If no healable characters, attack
-        CharacterCombatInfo attackTarget = character.isEnemy() ? characters.first() : enemies.first();
+        CharacterCombatInfo attackTarget = character.isEnemy() ? getFirstCharacter() : getFirstEnemy();
         processAttackTurn(character, attackTarget, character.getDamage());
     }
     
