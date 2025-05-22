@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 
 public class MovementTest {
     private static final Vector2DTO MOVE_POSITION = new Vector2DTO(10, 10);
-    private static final MovementResponse MOVEMENT_RESPONSE = new MovementResponse(new ArrayList<>());
+    private static final MovementResponse MOVEMENT_RESPONSE = new MovementResponse(new ArrayList<>(), false);
     private static final ChunkData CHUNK_DATA = new ChunkData(Map.of(new Vector2C(0, 0),
                                                                      new Chunk(new Vector2C(0, 0))),
                                                               new MainCharacter(new Vector2(0, 0)));
