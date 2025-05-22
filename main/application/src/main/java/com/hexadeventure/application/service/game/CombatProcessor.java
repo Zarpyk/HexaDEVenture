@@ -112,24 +112,32 @@ public class CombatProcessor {
     private void processSecondRowRanged(CharacterCombatInfo character) {
         CharacterCombatInfo target = null;
         TreeSet<CharacterCombatInfo> targets = character.isEnemy() ? characters : enemies;
+        CharacterCombatInfo firstRowTarget = null;
         for (CharacterCombatInfo info : targets) {
             if(info.isDead()) continue;
-            if(info.getRow() == FIRST_ROW_INDEX) continue;
+            if(info.getRow() == FIRST_ROW_INDEX) {
+                firstRowTarget = info;
+                continue;
+            }
             target = info;
             break;
         }
-        if(target == null) target = targets.first();
+        if(target == null && firstRowTarget != null) target = firstRowTarget;
         processAttackTurn(character, target, character.getAggroGeneration());
     }
     
     @SuppressWarnings("DuplicatedCode")
     private void processThirdRowRanged(CharacterCombatInfo character) {
         CharacterCombatInfo target = null;
+        CharacterCombatInfo firstRowTarget = null;
         CharacterCombatInfo secondRowTarget = null;
         TreeSet<CharacterCombatInfo> targets = character.isEnemy() ? characters : enemies;
         for (CharacterCombatInfo info : targets) {
             if(info.isDead()) continue;
-            if(info.getRow() == FIRST_ROW_INDEX) continue;
+            if(info.getRow() == FIRST_ROW_INDEX) {
+                firstRowTarget = info;
+                continue;
+            }
             if(info.getRow() == SECOND_ROW_INDEX) {
                 secondRowTarget = info;
                 continue;
@@ -139,7 +147,7 @@ public class CombatProcessor {
         }
         if(target == null) {
             if(secondRowTarget != null) target = secondRowTarget;
-            else target = targets.first();
+            else if(firstRowTarget != null) target = firstRowTarget;
         }
         processAttackTurn(character, target, character.getAggroGeneration());
     }
@@ -213,6 +221,7 @@ public class CombatProcessor {
         if(row.isEmpty()) return null;
         CharacterCombatInfo target = row.getFirst();
         for (CharacterCombatInfo info : row) {
+            if(info.isDead()) continue;
             if(info.getHealth() == info.getCharacter().getHealth()) continue;
             if(info.getHealth() > target.getHealth()) continue;
             if(info.getHealth() == target.getHealth() &&
@@ -220,7 +229,7 @@ public class CombatProcessor {
             target = info;
             break;
         }
-        if(target.getHealth() == target.getCharacter().getHealth()) return null;
+        if(target.isDead() || target.getHealth() == target.getCharacter().getHealth()) return null;
         return target;
     }
     
