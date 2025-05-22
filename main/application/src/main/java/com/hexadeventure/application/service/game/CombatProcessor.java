@@ -116,7 +116,7 @@ public class CombatProcessor {
         for (CharacterCombatInfo info : targets) {
             if(info.isDead()) continue;
             if(info.getRow() == FIRST_ROW_INDEX) {
-                firstRowTarget = info;
+                if(firstRowTarget == null) firstRowTarget = info;
                 continue;
             }
             target = info;
@@ -135,11 +135,11 @@ public class CombatProcessor {
         for (CharacterCombatInfo info : targets) {
             if(info.isDead()) continue;
             if(info.getRow() == FIRST_ROW_INDEX) {
-                firstRowTarget = info;
+                if(firstRowTarget == null) firstRowTarget = info;
                 continue;
             }
             if(info.getRow() == SECOND_ROW_INDEX) {
-                secondRowTarget = info;
+                if(secondRowTarget == null) secondRowTarget = info;
                 continue;
             }
             target = info;
