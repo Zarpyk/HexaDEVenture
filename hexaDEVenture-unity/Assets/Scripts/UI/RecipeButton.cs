@@ -1,8 +1,4 @@
-﻿using System;
-using Network;
-using Network.In.Game.Combat;
-using Network.In.Game.DTOEnum;
-using Network.In.Game.Inventory;
+﻿using Network.In.Game.Inventory;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

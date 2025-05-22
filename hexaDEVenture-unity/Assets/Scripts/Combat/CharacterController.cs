@@ -1,5 +1,4 @@
-﻿using System;
-using Network.In.Game.Combat;
+﻿using Network.In.Game.Combat;
 using UnityEngine;
 using UnityEngine.UI;
 

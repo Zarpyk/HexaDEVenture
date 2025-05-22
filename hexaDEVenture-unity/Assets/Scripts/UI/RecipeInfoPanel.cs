@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Network.In.Game.Inventory;
+﻿using Network.In.Game.Inventory;
 using TMPro;
 using UnityEngine;
 
