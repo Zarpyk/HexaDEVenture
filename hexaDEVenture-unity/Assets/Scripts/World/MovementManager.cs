@@ -35,6 +35,8 @@ namespace World {
         private float _animationTime = 0.1f;
 
         private GameObject _mainCharacter;
+        
+        private bool _isMoving;
 
         private void Awake() {
             _mainCamera = Camera.main;
@@ -64,6 +66,7 @@ namespace World {
 
         private async void OnClick(InputAction.CallbackContext context) {
             try {
+                if (_isMoving) return;
                 if (!_gameSystem.IsInGame() ||
                     _gameSystem.IsPaused() ||
                     _gameSystem.IsInCombat() ||
@@ -73,6 +76,8 @@ namespace World {
 
                 if (!Physics.Raycast(ray, out RaycastHit hit, _maxDistance, _groundLayer)) return;
 
+                _isMoving = true;
+                
                 // Convertir la posición del mundo a coordenadas de grid
                 Vector3 worldPosition = hit.point;
                 Vector2Int gridPosition = new(Mathf.RoundToInt(worldPosition.x + _worldManager.CenterOffset),
@@ -108,6 +113,8 @@ namespace World {
                         await _battlefieldManager.StartCombat();
                     }
                 }
+                
+                _isMoving = false;
             } catch (Exception e) {
                 Debug.LogError(e);
             }
