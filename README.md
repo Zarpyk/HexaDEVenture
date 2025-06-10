@@ -115,6 +115,7 @@ See [LICENSE](LICENSE) for details.
 ## Acknowledgments
 
 - Based on references from [Sven Woltmann’s project](https://github.com/SvenWoltmann/hexagonal-architecture-java).
-- Game Assets from [Kenney](https://www.kenney.nl/) and [Kay Lousberg](https://kaylousberg.itch.io/) 
+- Game Assets from [Kenney](https://www.kenney.nl/) and [Kay Lousberg](https://kaylousberg.itch.io/)
+- Unity Assets: [FastScriptReload](https://github.com/handzlikchris/FastScriptReload), [Hierarcy 2](https://github.com/truongnguyentungduy/hierarchy-2) and [UnityEditor-DarkMode](https://github.com/0x7c13/UnityEditor-DarkMode)
 
 ---
