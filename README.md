@@ -42,7 +42,7 @@ The system uses **multiple output ports/adapters**, including multi-database per
 - Automated testing with high coverage.  
 - Containerized deployment with Docker.  
 - Swagger documentation for both services.
-- Fully integrated Unity frontend.
+- Fully integrated Unity frontend prototype.
 
 ## Architecture
 
@@ -114,6 +114,7 @@ See [LICENSE](LICENSE) for details.
 
 ## Acknowledgments
 
-- Based on references from [Sven Woltmann’s project](https://github.com/SvenWoltmann/hexagonal-architecture-java).  
+- Based on references from [Sven Woltmann’s project](https://github.com/SvenWoltmann/hexagonal-architecture-java).
+- Game Assets from [Kenney](https://www.kenney.nl/) and [Kay Lousberg](https://kaylousberg.itch.io/) 
 
 ---
