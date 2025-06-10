@@ -29,7 +29,7 @@
 
 **HexaDEVenture** is a project that showcases **Hexagonal Architecture (Ports & Adapters)** in a realistic and moderately complex environment. It consists of two services developed in **Java Spring Boot**: a **turn-based strategy game** and a **statistics microservice** communicating via HTTP. 
 
-The system uses **multiple output ports/adapters**, including multi-database persistence (PostgreSQL and MongoDB), the JNoise library, an A* pathfinding adapter, and a HTTP communication adapter. It also features a Unity-based frontend fully integrated with the game service, an easy deployment using Docker, and includes extensive automated tests with approximately **90% code coverage**.
+The system uses **multiple output ports/adapters**, including multi-database persistence (PostgreSQL and MongoDB), the [JNoise](https://github.com/Articdive/JNoise) library, an A* pathfinding adapter, and a HTTP communication adapter. It also features a Unity-based frontend fully integrated with the game service, an easy deployment using Docker, and includes extensive automated tests with approximately **90% code coverage**.
 
 ## Features
 
